@@ -1,6 +1,6 @@
 # Plex Background
 
-This is a simple script to retrieve plex media background
+This is a simple script to retrieve plex media background, i developed this to use it with projectivy android tv launcher
 
 To use the script, you have to specify your plex token and plex server url
 
