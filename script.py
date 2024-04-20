@@ -16,7 +16,7 @@ order_by = 'added'
 download_movies = True
 download_series = True
 # Set the number of latest movies to download
-limit = 10
+limit = 1
 
 def resize_image(image, height):
     ratio = height / image.height
@@ -35,7 +35,7 @@ def clean_filename(filename):
     return cleaned_filename
 
 def download_latest_media(order_by, limit, media_type):
-    baseurl = 'http://XXX:32400'
+    baseurl = 'http://XXXX:32400'
     token = 'XXXX'
     plex = PlexServer(baseurl, token)
 
@@ -120,8 +120,8 @@ def download_latest_media(order_by, limit, media_type):
                     info_text_width, info_text_height = draw.textlength(info_text, font=font_info), draw.textlength(info_text, font=font_info)
                     summary_text_width, summary_text_height = draw.textlength(summary_text, font=font_summary), draw.textlength(summary_text, font=font_summary)
                     title_position = (200, 540)
-                    info_position = (210, 750)
-                    summary_position = (200, 850)
+                    summary_position = (210, 780)
+                    info_position = (210, 850)
                     shadow_offset = 1
                     shadow_color = "black"
                     main_color = "white"
