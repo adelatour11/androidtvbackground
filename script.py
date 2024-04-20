@@ -16,7 +16,7 @@ order_by = 'added'
 download_movies = True
 download_series = True
 # Set the number of latest movies to download
-limit = 1
+limit = 10
 
 def resize_image(image, height):
     ratio = height / image.height
@@ -88,28 +88,22 @@ def download_latest_media(order_by, limit, media_type):
                     
                     # Open the background image with PIL
                     image = Image.open(background_filename)
+                    bckg = Image.open(os.path.join(os.path.dirname(__file__),"bckg.png"))
                     
                     # Resize the image to have a height of 1080 pixels
-                    image = resize_image(image, 1080)
-                    width1, height1 = image.size
-                    newimage = Image.new("RGB", (width1 * 2, height1 * 2))
+                    image = resize_image(image, 1500)
 
                     # Open overlay image
                     overlay = Image.open(os.path.join(os.path.dirname(__file__),"overlay.png"))
-                    bckg = Image.open(os.path.join(os.path.dirname(__file__),"bckg.png"))
                     plexlogo = Image.open(os.path.join(os.path.dirname(__file__),"plexlogo.png"))
 
-                    image.paste(overlay, (0, 0), overlay)
-
-                    newimage.paste(bckg, (0, 0))
-                    newimage.paste(bckg, (0, height1))
-                    newimage.paste(bckg, (width1, height1))
-                    newimage.paste(image, (width1, 0))
-                    newimage.paste(plexlogo, (215, 530),plexlogo)
+                    bckg.paste(image, (1175, 0))
+                    bckg.paste(overlay, (1175,0), overlay)
+                    bckg.paste(plexlogo, (215, 530),plexlogo)
 
 
                     # Add text on top of the image with shadow effect
-                    draw = ImageDraw.Draw(newimage)
+                    draw = ImageDraw.Draw(bckg)
                     font_title = ImageFont.truetype(urlopen(truetype_url), size=190)
                     font_info = ImageFont.truetype(urlopen(truetype_url), size=75)
                     font_summary = ImageFont.truetype(urlopen(truetype_url), size=50)
@@ -139,7 +133,8 @@ def download_latest_media(order_by, limit, media_type):
                     draw.text(summary_position, summary_text, font=font_summary, fill=summary_color)
                     
                     # Save the modified image
-                    newimage.save(background_filename)
+                    bckg = bckg.convert('RGB')  # Convert image to RGB mode to save as JPEG
+                    bckg.save(background_filename)
                     
                     print(f"Background saved: {background_filename}")
                 else:
