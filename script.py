@@ -21,12 +21,18 @@ def resize_image(image, height):
     width = int(image.width * ratio)
     return image.resize((width, height))
 
+def truncate_summary(summary, max_chars):
+    if len(summary) > max_chars:
+        return summary[:max_chars-3] + "..."
+    else:
+        return summary
+
 def download_latest_media(order_by, limit, media_type):
-    baseurl = 'http://XXXXX:32400'
-    token = 'XXXX'
+    baseurl = 'http://192.168.1.14:32400'
+    token = 'ExqkqqzQVL1sVnYppfvS'
     plex = PlexServer(baseurl, token)
 
-# Create a directory to save the backgrounds
+    # Create a directory to save the backgrounds
     background_dir = f"{media_type}_backgrounds"
     os.makedirs(background_dir, exist_ok=True)
 
@@ -71,7 +77,6 @@ def download_latest_media(order_by, limit, media_type):
                     width1, height1 = image.size
                     newimage = Image.new("RGB", (width1 * 2, height1 * 2))
 
-                    
                     # Open overlay image
                     overlay = Image.open(os.path.join(os.path.dirname(__file__),"overlay.png"))
                     black = Image.open(os.path.join(os.path.dirname(__file__),"black.png"))
@@ -79,7 +84,6 @@ def download_latest_media(order_by, limit, media_type):
 
                     image.paste(overlay, (0, 0), overlay)
 
-                    
                     newimage.paste(black, (0, 0))
                     newimage.paste(black, (0, height1))
                     newimage.paste(black, (width1, height1))
@@ -91,15 +95,20 @@ def download_latest_media(order_by, limit, media_type):
                     draw = ImageDraw.Draw(newimage)
                     font_title = ImageFont.truetype(urlopen(truetype_url), size=190)
                     font_info = ImageFont.truetype(urlopen(truetype_url), size=75)
+                    font_summary = ImageFont.truetype(urlopen(truetype_url), size=50)
                     title_text = f"{item.title}"
                     info_text = "Now Available"
+                    summary_text = truncate_summary(item.summary, 130)
                     title_text_width, title_text_height = draw.textlength(title_text, font=font_title), draw.textlength(title_text, font=font_title)
                     info_text_width, info_text_height = draw.textlength(info_text, font=font_info), draw.textlength(info_text, font=font_info)
+                    summary_text_width, summary_text_height = draw.textlength(summary_text, font=font_summary), draw.textlength(summary_text, font=font_summary)
                     title_position = (200, 540)
                     info_position = (210, 750)
+                    summary_position = (210, 850)
                     shadow_offset = 1
                     shadow_color = "black"
                     main_color = "white"
+                    summary_color = "grey"
                     # Draw shadow for title
                     draw.text((title_position[0] + shadow_offset, title_position[1] + shadow_offset), title_text, font=font_title, fill=shadow_color)
                     # Draw main title text
@@ -108,6 +117,10 @@ def download_latest_media(order_by, limit, media_type):
                     draw.text((info_position[0] + shadow_offset, info_position[1] + shadow_offset), info_text, font=font_info, fill=shadow_color)
                     # Draw main info text
                     draw.text(info_position, info_text, font=font_info, fill=main_color)
+                    # Draw shadow for summary
+                    draw.text((summary_position[0] + shadow_offset, summary_position[1] + shadow_offset), summary_text, font=font_summary, fill=shadow_color)
+                    # Draw main summary text
+                    draw.text(summary_position, summary_text, font=font_summary, fill=summary_color)
                     
                     # Save the modified image
                     newimage.save(background_filename)
