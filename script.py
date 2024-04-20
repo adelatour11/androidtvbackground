@@ -10,11 +10,11 @@ truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto
 from plexapi.server import PlexServer
 
 # Set the order_by parameter to 'aired' or 'added'
-order_by = 'aired'
+order_by = 'added'
 download_movies = True
 download_series = True
 # Set the number of latest movies to download
-limit = 3
+limit = 10
 
 def resize_image(image, height):
     ratio = height / image.height
@@ -28,12 +28,23 @@ def truncate_summary(summary, max_chars):
         return summary
 
 def download_latest_media(order_by, limit, media_type):
-    baseurl = 'http://XXX:32400'
-    token = 'XXXX'
+    baseurl = 'http://XXXX:32400'
+    token = 'XXXXX'
     plex = PlexServer(baseurl, token)
 
     # Create a directory to save the backgrounds
     background_dir = f"{media_type}_backgrounds"
+
+
+    # Delete the contents of the folder
+    for file in os.listdir(background_dir):
+        file_path = os.path.join(background_dir, file)
+        try:
+            if os.path.isfile(file_path):
+                os.unlink(file_path)
+        except Exception as e:
+            print(f"Error deleting file: {e}")
+    
     os.makedirs(background_dir, exist_ok=True)
 
     if media_type == 'movie' and download_movies:
