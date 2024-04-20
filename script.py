@@ -22,8 +22,8 @@ def resize_image(image, height):
     return image.resize((width, height))
 
 def download_latest_media(order_by, limit, media_type):
-    baseurl = 'http://XXX:32400'
-    token = 'XXX'
+    baseurl = 'http://XXXX:32400'
+    token = 'XXXX'
     plex = PlexServer(baseurl, token)
 
 # Create a directory to save the backgrounds
@@ -68,21 +68,32 @@ def download_latest_media(order_by, limit, media_type):
                     
                     # Resize the image to have a height of 1080 pixels
                     image = resize_image(image, 1080)
+                    width1, height1 = image.size
+                    newimage = Image.new("RGB", (width1 * 2, height1 * 2))
+
                     
                     # Open overlay image
                     overlay = Image.open(os.path.join(os.path.dirname(__file__),"overlay.png"))
+                    black = Image.open(os.path.join(os.path.dirname(__file__),"black.png"))
+
                     image.paste(overlay, (0, 0), overlay)
 
+                    
+                    newimage.paste(black, (0, 0))
+                    newimage.paste(black, (0, height1))
+                    newimage.paste(image, (width1, 0))
+
+
                     # Add text on top of the image with shadow effect
-                    draw = ImageDraw.Draw(image)
-                    font_title = ImageFont.truetype(urlopen(truetype_url), size=100)
-                    font_info = ImageFont.truetype(urlopen(truetype_url), size=35)
+                    draw = ImageDraw.Draw(newimage)
+                    font_title = ImageFont.truetype(urlopen(truetype_url), size=180)
+                    font_info = ImageFont.truetype(urlopen(truetype_url), size=65)
                     title_text = f"{item.title}"
-                    info_text = "Available now on Plex"
+                    info_text = "Now Available on Plex"
                     title_text_width, title_text_height = draw.textlength(title_text, font=font_title), draw.textlength(title_text, font=font_title)
                     info_text_width, info_text_height = draw.textlength(info_text, font=font_info), draw.textlength(info_text, font=font_info)
-                    title_position = (100, 500)
-                    info_position = (110, 615)
+                    title_position = (200, 500)
+                    info_position = (210, 685)
                     shadow_offset = 1
                     shadow_color = "black"
                     main_color = "white"
@@ -96,7 +107,7 @@ def download_latest_media(order_by, limit, media_type):
                     draw.text(info_position, info_text, font=font_info, fill=main_color)
                     
                     # Save the modified image
-                    image.save(background_filename)
+                    newimage.save(background_filename)
                     
                     print(f"Background saved: {background_filename}")
                 else:
