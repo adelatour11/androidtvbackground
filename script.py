@@ -28,8 +28,8 @@ def truncate_summary(summary, max_chars):
         return summary
 
 def download_latest_media(order_by, limit, media_type):
-    baseurl = 'http://192.168.1.14:32400'
-    token = 'ExqkqqzQVL1sVnYppfvS'
+    baseurl = 'http://XXXX:32400'
+    token = 'XXXX'
     plex = PlexServer(baseurl, token)
 
     # Create a directory to save the backgrounds
@@ -79,14 +79,14 @@ def download_latest_media(order_by, limit, media_type):
 
                     # Open overlay image
                     overlay = Image.open(os.path.join(os.path.dirname(__file__),"overlay.png"))
-                    black = Image.open(os.path.join(os.path.dirname(__file__),"black.png"))
+                    bckg = Image.open(os.path.join(os.path.dirname(__file__),"bckg.png"))
                     plexlogo = Image.open(os.path.join(os.path.dirname(__file__),"plexlogo.png"))
 
                     image.paste(overlay, (0, 0), overlay)
 
-                    newimage.paste(black, (0, 0))
-                    newimage.paste(black, (0, height1))
-                    newimage.paste(black, (width1, height1))
+                    newimage.paste(bckg, (0, 0))
+                    newimage.paste(bckg, (0, height1))
+                    newimage.paste(bckg, (width1, height1))
                     newimage.paste(image, (width1, 0))
                     newimage.paste(plexlogo, (215, 530),plexlogo)
 
