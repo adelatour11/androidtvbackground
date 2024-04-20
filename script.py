@@ -22,7 +22,7 @@ def resize_image(image, height):
     return image.resize((width, height))
 
 def download_latest_media(order_by, limit, media_type):
-    baseurl = 'http://XXX:32400'
+    baseurl = 'http://XXXXX:32400'
     token = 'XXXX'
     plex = PlexServer(baseurl, token)
 
@@ -75,13 +75,16 @@ def download_latest_media(order_by, limit, media_type):
                     # Open overlay image
                     overlay = Image.open(os.path.join(os.path.dirname(__file__),"overlay.png"))
                     black = Image.open(os.path.join(os.path.dirname(__file__),"black.png"))
+                    plexlogo = Image.open(os.path.join(os.path.dirname(__file__),"plexlogo.png"))
 
                     image.paste(overlay, (0, 0), overlay)
 
                     
                     newimage.paste(black, (0, 0))
                     newimage.paste(black, (0, height1))
+                    newimage.paste(black, (width1, height1))
                     newimage.paste(image, (width1, 0))
+                    newimage.paste(plexlogo, (215, 530),plexlogo)
 
 
                     # Add text on top of the image with shadow effect
@@ -89,10 +92,10 @@ def download_latest_media(order_by, limit, media_type):
                     font_title = ImageFont.truetype(urlopen(truetype_url), size=190)
                     font_info = ImageFont.truetype(urlopen(truetype_url), size=75)
                     title_text = f"{item.title}"
-                    info_text = "Now Available on Plex"
+                    info_text = "Now Available"
                     title_text_width, title_text_height = draw.textlength(title_text, font=font_title), draw.textlength(title_text, font=font_title)
                     info_text_width, info_text_height = draw.textlength(info_text, font=font_info), draw.textlength(info_text, font=font_info)
-                    title_position = (200, 500)
+                    title_position = (200, 540)
                     info_position = (210, 750)
                     shadow_offset = 1
                     shadow_color = "black"
