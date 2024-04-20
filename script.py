@@ -82,7 +82,7 @@ def download_latest_media(order_by, limit, media_type):
                     title_text_width, title_text_height = draw.textlength(title_text, font=font_title), draw.textlength(title_text, font=font_title)
                     info_text_width, info_text_height = draw.textlength(info_text, font=font_info), draw.textlength(info_text, font=font_info)
                     title_position = (100, 500)
-                    info_position = (100, 615)
+                    info_position = (110, 615)
                     shadow_offset = 1
                     shadow_color = "black"
                     main_color = "white"
