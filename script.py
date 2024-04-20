@@ -28,7 +28,7 @@ def truncate_summary(summary, max_chars):
         return summary
 
 def download_latest_media(order_by, limit, media_type):
-    baseurl = 'http://XXXX:32400'
+    baseurl = 'http://XXX:32400'
     token = 'XXXX'
     plex = PlexServer(baseurl, token)
 
@@ -88,7 +88,7 @@ def download_latest_media(order_by, limit, media_type):
                     newimage.paste(bckg, (0, height1))
                     newimage.paste(bckg, (width1, height1))
                     newimage.paste(image, (width1, 0))
-                    newimage.paste(plexlogo, (215, 530),plexlogo)
+                    newimage.paste(plexlogo, (215, 430),plexlogo)
 
 
                     # Add text on top of the image with shadow effect
@@ -102,9 +102,9 @@ def download_latest_media(order_by, limit, media_type):
                     title_text_width, title_text_height = draw.textlength(title_text, font=font_title), draw.textlength(title_text, font=font_title)
                     info_text_width, info_text_height = draw.textlength(info_text, font=font_info), draw.textlength(info_text, font=font_info)
                     summary_text_width, summary_text_height = draw.textlength(summary_text, font=font_summary), draw.textlength(summary_text, font=font_summary)
-                    title_position = (200, 540)
-                    info_position = (210, 750)
-                    summary_position = (210, 850)
+                    title_position = (200, 440)
+                    info_position = (210, 650)
+                    summary_position = (210, 750)
                     shadow_offset = 1
                     shadow_color = "black"
                     main_color = "white"
