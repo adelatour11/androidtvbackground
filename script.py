@@ -35,12 +35,14 @@ def clean_filename(filename):
     return cleaned_filename
 
 def download_latest_media(order_by, limit, media_type):
-    baseurl = 'http://XXXX:32400'
-    token = 'XXXX'
+    baseurl = 'http://XXXXX:32400'
+    token = 'XXXXX'
     plex = PlexServer(baseurl, token)
 
     # Create a directory to save the backgrounds
-    background_dir = f"{media_type}_backgrounds"
+    background_dir = f"plex_backgrounds"
+    os.makedirs(background_dir, exist_ok=True)  # Create the directory if it doesn't exist
+
     # Delete the contents of the folder
     for file in os.listdir(background_dir):
         file_path = os.path.join(background_dir, file)
