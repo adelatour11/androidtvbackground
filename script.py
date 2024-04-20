@@ -22,7 +22,7 @@ def resize_image(image, height):
     return image.resize((width, height))
 
 def download_latest_media(order_by, limit, media_type):
-    baseurl = 'http://XXXX:32400'
+    baseurl = 'http://XXX:32400'
     token = 'XXXX'
     plex = PlexServer(baseurl, token)
 
@@ -86,14 +86,14 @@ def download_latest_media(order_by, limit, media_type):
 
                     # Add text on top of the image with shadow effect
                     draw = ImageDraw.Draw(newimage)
-                    font_title = ImageFont.truetype(urlopen(truetype_url), size=180)
-                    font_info = ImageFont.truetype(urlopen(truetype_url), size=65)
+                    font_title = ImageFont.truetype(urlopen(truetype_url), size=190)
+                    font_info = ImageFont.truetype(urlopen(truetype_url), size=75)
                     title_text = f"{item.title}"
                     info_text = "Now Available on Plex"
                     title_text_width, title_text_height = draw.textlength(title_text, font=font_title), draw.textlength(title_text, font=font_title)
                     info_text_width, info_text_height = draw.textlength(info_text, font=font_info), draw.textlength(info_text, font=font_info)
                     title_position = (200, 500)
-                    info_position = (210, 685)
+                    info_position = (210, 750)
                     shadow_offset = 1
                     shadow_color = "black"
                     main_color = "white"
