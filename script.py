@@ -1,7 +1,7 @@
 import requests
 import os
 import time
-from PIL import Image, ImageDraw, ImageFont  # Import Image module
+from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 from urllib.request import urlopen
 import unicodedata
@@ -18,7 +18,6 @@ download_movies = True
 download_series = True
 # Set the number of latest movies to download
 limit = 10
-
 
 # Create a directory to save the backgrounds
 background_dir = f"plex_backgrounds"
@@ -44,12 +43,10 @@ def clean_filename(filename):
     return cleaned_filename
 
 def download_latest_media(order_by, limit, media_type):
-    baseurl = 'http://XXXX:32400'
+    baseurl = 'http://XXX:32400'
     token = 'XXXX'
     plex = PlexServer(baseurl, token)
 
-
-    
     os.makedirs(background_dir, exist_ok=True)
 
     if media_type == 'movie' and download_movies:
@@ -101,36 +98,80 @@ def download_latest_media(order_by, limit, media_type):
                     bckg.paste(overlay, (1175,0), overlay)
                     bckg.paste(plexlogo, (215, 530),plexlogo)
 
-
                     # Add text on top of the image with shadow effect
                     draw = ImageDraw.Draw(bckg)
                     font_title = ImageFont.truetype(urlopen(truetype_url), size=190)
                     font_info = ImageFont.truetype(urlopen(truetype_url), size=75)
                     font_summary = ImageFont.truetype(urlopen(truetype_url), size=50)
+                    font_metadata = ImageFont.truetype(urlopen(truetype_url), size=50)
+                    font_custom = ImageFont.truetype(urlopen(truetype_url), size=70)                 
                     title_text = f"{item.title}"
-                    info_text = "Now Available"
+                    if media_type == 'movie':
+                        if item.audienceRating:
+                            rating_text = f" IMDb: {item.audienceRating}"
+                        elif item.rating:
+                            rating_text = f" IMDb: {item.rating}"
+                        else:
+                            rating_text = ""
+                        duration_hours = item.duration // (60*60*1000)
+                        duration_minutes = (item.duration // (60*1000)) % 60
+                        duration_text = f"{duration_hours}h {duration_minutes}min"
+                        info_text = f"{item.year}  |  {', '.join([genre.tag for genre in item.genres])}  |  {duration_text}  |  {rating_text}"
+                    else:
+                        if item.audienceRating:
+                            rating_text = f" IMDb: {item.audienceRating}"
+                        elif item.rating:
+                            rating_text = f" IMDb: {item.rating}"
+                        else:
+                            rating_text = ""
+                        seasons_count = len(item.seasons())
+                        if seasons_count == 1:
+                            seasons_text = "Season"
+                        else:
+                            seasons_text = "Seasons"
+                        info_text = f"{item.year}  |  {', '.join([genre.tag for genre in item.genres])}  |  {seasons_count} {seasons_text}  |  {rating_text}"
                     summary_text = truncate_summary(item.summary, 130)
+                    custom_text = "Now Available"
                     title_text_width, title_text_height = draw.textlength(title_text, font=font_title), draw.textlength(title_text, font=font_title)
                     info_text_width, info_text_height = draw.textlength(info_text, font=font_info), draw.textlength(info_text, font=font_info)
+                    custom_text_width, custom_text_height = draw.textlength(custom_text, font=font_info), draw.textlength(custom_text, font=font_custom)
                     summary_text_width, summary_text_height = draw.textlength(summary_text, font=font_summary), draw.textlength(summary_text, font=font_summary)
+                    metadata_text_width, metadata_text_height = draw.textlength(info_text, font=font_metadata), draw.textlength(info_text, font=font_metadata)
                     title_position = (200, 540)
                     summary_position = (210, 780)
                     info_position = (210, 850)
+                    metadata_position = (210, 910)
+                    custom_position = (210, 930)
                     shadow_offset = 1
                     shadow_color = "black"
                     main_color = "white"
                     info_color = "white"
                     summary_color = (150,150,150)  # Grey color for the summary
+                    metadata_color = "white"
+
                     # Draw shadow for title
                     draw.text((title_position[0] + shadow_offset, title_position[1] + shadow_offset), title_text, font=font_title, fill=shadow_color)
                     # Draw main title text
                     draw.text(title_position, title_text, font=font_title, fill=main_color)
+                    
                     # Draw shadow for info
-                    draw.text((info_position[0] + shadow_offset, info_position[1] + shadow_offset), info_text, font=font_info, fill=shadow_color)
+                    draw.text((info_position[0] + shadow_offset, info_position[1] + shadow_offset), info_text, font=font_summary, fill=shadow_color)
                     # Draw main info text
-                    draw.text(info_position, info_text, font=font_info, fill=info_color)
+                    draw.text(info_position, info_text, font=font_summary, fill=summary_color)
+                    
+                    # Draw shadow for summary text
+                    draw.text((summary_position[0] + shadow_offset, summary_position[1] + shadow_offset), summary_text, font=font_summary, fill=shadow_color)
                     # Draw summary text
                     draw.text(summary_position, summary_text, font=font_summary, fill=summary_color)
+
+
+                    # Draw shadow for custom text
+                    draw.text((custom_position[0] + shadow_offset, custom_position[1] + shadow_offset), custom_text, font=font_custom, fill=shadow_color)                  
+                    # Draw custom text
+                    draw.text(custom_position, custom_text, font=font_custom, fill=metadata_color)
+
+
+
                     
                     # Save the modified image
                     bckg = bckg.convert('RGB')  # Convert image to RGB mode to save as JPEG
