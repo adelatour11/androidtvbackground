@@ -12,6 +12,6 @@ it resizes the image, add an overlay and add text on top
 How to :
 - Download the content of the github and put the script and images in a specific folder
 - Edit the script "script.py" to specify you plex server url and plex token, specify the number of poster to generate, specify if you want to include movies and tv, specify if you want latest added or latest aired items. You can also edit the code to change the text position or content
-- As you run "python script.py" it will create a new folder called plex backgrounds and it will create the images automatically. Each time the script is run it will delete the content of the folder and create new images
+- As you run "python script.py" it will create a new folder called plex backgrounds and it will create the images automatically. Each time the script runs it will delete the content of the folder and create new images
 
 
