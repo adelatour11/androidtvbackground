@@ -7,7 +7,11 @@ To use the script, you have to specify your plex token and plex server url
 The script retrieves the background of the latests shows (movies or tv shows)
 it resizes the image, add an overlay and add text on top
 
-![image](https://github.com/adelatour11/plexbackground/assets/1473994/ca6c4fb6-98ee-4fad-9f5b-aea3fb0548cf)
+![image](https://github.com/adelatour11/plexbackground/assets/1473994/3cf48b69-1b4f-45d5-8f46-565864994660)
+
+![image](https://github.com/adelatour11/plexbackground/assets/1473994/d1886abd-5102-476c-b020-7466b5aa4be1)
+
+
 
 How to :
 - install python and dependencies
