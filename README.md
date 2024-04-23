@@ -13,10 +13,9 @@ it resizes the image, add an overlay and add text on top
 
 ![image](https://github.com/adelatour11/plexbackground/assets/1473994/d1886abd-5102-476c-b020-7466b5aa4be1)
 
-![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/213c6a28-ba61-46e3-841a-96cc97d21c69)
+![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/0f23fd09-85a3-4891-9f26-138ced73709d)
 
-![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/a52152e2-35c0-41ac-985f-74a5245da780)
-
+![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/ff73a973-9c01-4969-9446-f18a23a61d15)
 
 
 How to :
