@@ -5,19 +5,17 @@ import os
 import shutil
 from urllib.request import urlopen
 
-
-
 # Base URL for the API
 url = "https://api.themoviedb.org/3/"
 
 # Set your API key here
 headers = {
     "accept": "application/json",
-    "Authorization": "Bearer XXXXX"
+    "Authorization": "Bearer XXXXXX"
 }
+
 # The font used
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
-
 
 # Endpoint for trending shows
 trending_movies_url = f'{url}trending/movie/week?language=en-US'
@@ -30,6 +28,15 @@ trending_movies = trending_movies_response.json()
 # Fetching trending TV shows
 trending_tvshows_response = requests.get(trending_tvshows_url, headers=headers)
 trending_tvshows = trending_tvshows_response.json()
+
+# Fetching genres
+genres_url = f'{url}genre/movie/list?language=en-US'
+genres_response = requests.get(genres_url, headers=headers)
+movie_genres = {genre['id']: genre['name'] for genre in genres_response.json()['genres']}
+
+genres_url = f'{url}genre/tv/list?language=en-US'
+genres_response = requests.get(genres_url, headers=headers)
+tv_genres = {genre['id']: genre['name'] for genre in genres_response.json()['genres']}
 
 # Create a directory to save the backgrounds
 background_dir = "tmdb_backgrounds"
@@ -58,14 +65,12 @@ def resize_image(image, height):
     width = int(image.width * ratio)
     return image.resize((width, height))
 
-
 def clean_filename(filename):
     # Remove problematic characters from the filename
     cleaned_filename = "".join(c if c.isalnum() or c in "._-" else "_" for c in filename)
     return cleaned_filename
 
-
-def process_image(image_url, title):
+def process_image(image_url, title, is_movie, genre, year, rating):
     # Download the background image with a timeout of 10 seconds
     response = requests.get(image_url, timeout=10)
     if response.status_code == 200:
@@ -106,30 +111,27 @@ def process_image(image_url, title):
         shadow_offset = 2
         info_position = (210, 860)
 
-
         # Draw Title for info
         draw.text((title_position[0] + shadow_offset, title_position[1] + shadow_offset), title, font=font_title, fill=shadow_color)
         draw.text(title_position, title, font=font_title, fill=main_color)
-
 
         # Draw Overview for info
         draw.text((overview_position[0] + shadow_offset, overview_position[1] + shadow_offset), overview, font=font_overview, fill=shadow_color)
         draw.text(overview_position, overview, font=font_overview, fill=overview_color)
 
-
         # Draw shadow for custom text
         draw.text((custom_position[0] + shadow_offset, custom_position[1] + shadow_offset), custom_text, font=font_custom, fill=shadow_color)                  
         draw.text(custom_position, custom_text, font=font_custom, fill=metadata_color)
 
-
-        rating_text = " TMDB: "+ str(rating)
-        year_text = truncate(str(year),7) 
-        info_text = f"{year_text}  |  {rating_text}"
+        # Construct info text
+        if is_movie:
+            info_text = f"{year}  |  {genre}  |  TMDB: {rating}"
+        else:
+            info_text = f"{year}  |  {genre}  |  TMDB: {rating}"
 
         #Draw metadata
         draw.text((info_position[0] + shadow_offset, info_position[1] + shadow_offset), info_text, font=font_overview, fill=shadow_color)
         draw.text(info_position, info_text, font=font_overview, fill=overview_color)
-
 
         # Save the resized image
         filename = os.path.join(background_dir, f"{clean_filename(title)}.jpg")
@@ -139,21 +141,20 @@ def process_image(image_url, title):
     else:
         print(f"Failed to download background for {title}")
 
-
 # Process each trending movie
 for movie in trending_movies.get('results', []):
     title = movie['title']
     overview = truncate_overview(movie['overview'],130)
     year = movie['release_date']
     rating = round(movie['vote_average'],1)
+    genre = ', '.join([movie_genres[genre_id] for genre_id in movie['genre_ids']])
     backdrop_path = movie['backdrop_path']
     custom_text = "Now Trending on TMDB"
     if backdrop_path:
         image_url = f"https://image.tmdb.org/t/p/original{backdrop_path}"
-        process_image(image_url, title)
+        process_image(image_url, title, is_movie=True, genre=genre, year=year, rating=rating)
     else:
         print(f"No backdrop image found for {title}")
-
 
 # Process trending TV shows
 for tvshow in trending_tvshows.get('results', []):
@@ -161,10 +162,11 @@ for tvshow in trending_tvshows.get('results', []):
     overview = truncate_overview(tvshow['overview'],130)
     year = tvshow['first_air_date']
     rating = round(tvshow['vote_average'],1)
+    genre = ', '.join([tv_genres[genre_id] for genre_id in tvshow['genre_ids']])
     backdrop_path = tvshow['backdrop_path']
     custom_text = "Now Trending on TMDB"
     if backdrop_path:
         image_url = f"https://image.tmdb.org/t/p/original{backdrop_path}"
-        process_image(image_url, title)
+        process_image(image_url, title, is_movie=False, genre=genre, year=year, rating=rating)
     else:
         print(f"No backdrop image found for {title}")
