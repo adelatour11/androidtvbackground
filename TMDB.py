@@ -11,7 +11,7 @@ url = "https://api.themoviedb.org/3/"
 # Set your API key here
 headers = {
     "accept": "application/json",
-    "Authorization": "Bearer XXXXXX"
+    "Authorization": "Bearer XXXXX"
 }
 
 # The font used
@@ -145,7 +145,7 @@ def process_image(image_url, title, is_movie, genre, year, rating):
 for movie in trending_movies.get('results', []):
     title = movie['title']
     overview = truncate_overview(movie['overview'],130)
-    year = movie['release_date']
+    year = truncate(movie['release_date'],7)
     rating = round(movie['vote_average'],1)
     genre = ', '.join([movie_genres[genre_id] for genre_id in movie['genre_ids']])
     backdrop_path = movie['backdrop_path']
@@ -160,7 +160,7 @@ for movie in trending_movies.get('results', []):
 for tvshow in trending_tvshows.get('results', []):
     title = truncate_overview(tvshow['name'],38)
     overview = truncate_overview(tvshow['overview'],130)
-    year = tvshow['first_air_date']
+    year = truncate(tvshow['first_air_date'],7)
     rating = round(tvshow['vote_average'],1)
     genre = ', '.join([tv_genres[genre_id] for genre_id in tvshow['genre_ids']])
     backdrop_path = tvshow['backdrop_path']
