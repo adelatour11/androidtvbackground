@@ -157,7 +157,7 @@ for movie in trending_movies.get('results', []):
 
 # Process trending TV shows
 for tvshow in trending_tvshows.get('results', []):
-    title = tvshow['name']
+    title = truncate_overview(tvshow['name'],38)
     overview = truncate_overview(tvshow['overview'],130)
     year = tvshow['first_air_date']
     rating = round(tvshow['vote_average'],1)
