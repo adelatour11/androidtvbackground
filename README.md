@@ -15,7 +15,8 @@ it resizes the image, add an overlay and add text on top
 
 ![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/229a5e68-f2cd-45c4-8de8-b63c1bcda760)
 
-![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/f46adcac-583a-4095-bb43-ecbd372437a5)
+![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/86873ca0-44e6-4d3a-9724-8ef8c21b846f)
+
 
 How to :
 - install python and dependencies
