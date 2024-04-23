@@ -13,10 +13,9 @@ it resizes the image, add an overlay and add text on top
 
 ![image](https://github.com/adelatour11/plexbackground/assets/1473994/d1886abd-5102-476c-b020-7466b5aa4be1)
 
-![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/0f23fd09-85a3-4891-9f26-138ced73709d)
+![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/229a5e68-f2cd-45c4-8de8-b63c1bcda760)
 
-![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/ff73a973-9c01-4969-9446-f18a23a61d15)
-
+![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/f46adcac-583a-4095-bb43-ecbd372437a5)
 
 How to :
 - install python and dependencies
