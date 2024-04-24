@@ -4,6 +4,7 @@ from io import BytesIO
 import os
 import shutil
 from urllib.request import urlopen
+import textwrap
 
 # Base URL for the API
 url = "https://api.themoviedb.org/3/"
@@ -102,15 +103,15 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
         # Paste images
         bckg.paste(image, (1175, 0))
         bckg.paste(overlay, (1175, 0), overlay)
-        bckg.paste(tmdblogo, (220, 530), tmdblogo)
+        bckg.paste(tmdblogo, (680, 975), tmdblogo)
 
         # Add title text with shadow
         draw = ImageDraw.Draw(bckg)
 
         #Text font
         font_title = ImageFont.truetype(urlopen(truetype_url), size=190)
-        font_overview = ImageFont.truetype(urlopen(truetype_url), size=50)
-        font_custom = ImageFont.truetype(urlopen(truetype_url), size=70)                 
+        font_overview = ImageFont.truetype(urlopen(truetype_url), size=45)
+        font_custom = ImageFont.truetype(urlopen(truetype_url), size=60)                 
 
         #Text color
         shadow_color = "black"
@@ -120,30 +121,33 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
 
         #Text position
         title_position = (200, 540)
-        overview_position = (210, 780)
-        custom_position = (210, 930)
+        overview_position = (210, 830)
         shadow_offset = 2
-        info_position = (210, 860)
+        info_position = (210, 520)
+        custom_position = (210, 950)
 
         # Draw Title for info
         draw.text((title_position[0] + shadow_offset, title_position[1] + shadow_offset), title, font=font_title, fill=shadow_color)
         draw.text(title_position, title, font=font_title, fill=main_color)
 
+        # Wrap Overview text
+        wrapped_overview = "\n".join(textwrap.wrap(overview, width=90))
+
         # Draw Overview for info
-        draw.text((overview_position[0] + shadow_offset, overview_position[1] + shadow_offset), overview, font=font_overview, fill=shadow_color)
-        draw.text(overview_position, overview, font=font_overview, fill=overview_color)
+        draw.text((overview_position[0] + shadow_offset, overview_position[1] + shadow_offset), wrapped_overview, font=font_overview, fill=shadow_color)
+        draw.text(overview_position, wrapped_overview, font=font_overview, fill=overview_color)
 
         # Determine genre text and additional info
         if is_movie:
             genre_text = genre
-            additional_info = f"{duration} |"
+            additional_info = f"{duration}"
         else:
             genre_text = genre
-            additional_info = f"{seasons} {'Season' if seasons == 1 else 'Seasons'} |"
+            additional_info = f"{seasons} {'Season' if seasons == 1 else 'Seasons'}"
 
-        rating_text = " TMDB: "+ str(rating)
+        rating_text = "TMDB: "+ str(rating)
         year_text = truncate(str(year),7) 
-        info_text = f"{year_text}  |  {genre_text}  |  {additional_info}  {rating_text}"
+        info_text = f"{genre_text}  •  {year_text}  •  {additional_info}  •  {rating_text}"
 
         # Draw metadata
         draw.text((info_position[0] + shadow_offset, info_position[1] + shadow_offset), info_text, font=font_overview, fill=shadow_color)
@@ -164,7 +168,7 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
 # Process each trending movie
 for movie in trending_movies.get('results', []):
     title = movie['title']
-    overview = truncate_overview(movie['overview'],130)
+    overview = truncate_overview(movie['overview'],175)
     year = movie['release_date']
     rating = round(movie['vote_average'],1)
     genre = ', '.join([movie_genres[genre_id] for genre_id in movie['genre_ids']])
@@ -175,12 +179,12 @@ for movie in trending_movies.get('results', []):
     if duration:
         hours = duration // 60
         minutes = duration % 60
-        duration = f"{hours}h {minutes}m"
+        duration = f"{hours}h{minutes}min"
     else:
         duration = "N/A"
 
     backdrop_path = movie['backdrop_path']
-    custom_text = "Now Trending on TMDB"
+    custom_text = "Now Trending on"
     if backdrop_path:
         image_url = f"https://image.tmdb.org/t/p/original{backdrop_path}"
         process_image(image_url, title, is_movie=True, genre=genre, year=year, rating=rating, duration=duration)
@@ -190,7 +194,7 @@ for movie in trending_movies.get('results', []):
 # Process trending TV shows
 for tvshow in trending_tvshows.get('results', []):
     title = truncate_overview(tvshow['name'],38)
-    overview = truncate_overview(tvshow['overview'],130)
+    overview = truncate_overview(tvshow['overview'],175)
     year = tvshow['first_air_date']
     rating = round(tvshow['vote_average'],1)
     genre = ', '.join([tv_genres[genre_id] for genre_id in tvshow['genre_ids']])
