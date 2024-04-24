@@ -201,7 +201,7 @@ for tvshow in trending_tvshows.get('results', []):
     tv_details = get_tv_show_details(tvshow['id'])
     seasons = tv_details.get('number_of_seasons', 0)
     backdrop_path = tvshow['backdrop_path']
-    custom_text = "Now Trending on TMDB"
+    custom_text = "Now Trending on"
     if backdrop_path:
         image_url = f"https://image.tmdb.org/t/p/original{backdrop_path}"
         process_image(image_url, title, is_movie=False, genre=genre, year=year, rating=rating, seasons=seasons)
