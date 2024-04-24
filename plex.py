@@ -7,6 +7,8 @@ from urllib.request import urlopen
 import unicodedata
 import re
 import shutil
+import textwrap
+
 
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
 
@@ -43,7 +45,7 @@ def clean_filename(filename):
     return cleaned_filename
 
 def download_latest_media(order_by, limit, media_type):
-    baseurl = 'http://XXX:32400'
+    baseurl = 'http://XXXX:32400'
     token = 'XXXX'
     plex = PlexServer(baseurl, token)
 
@@ -66,7 +68,6 @@ def download_latest_media(order_by, limit, media_type):
         return
 
     for item in media_sorted[:limit]:
-        print(item.title)
         # Get the URL of the background image
         background_url = item.artUrl
 
@@ -96,15 +97,18 @@ def download_latest_media(order_by, limit, media_type):
 
                     bckg.paste(image, (1175, 0))
                     bckg.paste(overlay, (1175,0), overlay)
-                    bckg.paste(plexlogo, (215, 530),plexlogo)
+                    bckg.paste(plexlogo, (680, 970),plexlogo)
 
                     # Add text on top of the image with shadow effect
                     draw = ImageDraw.Draw(bckg)
+                    
+                    #Text Font
                     font_title = ImageFont.truetype(urlopen(truetype_url), size=190)
-                    font_info = ImageFont.truetype(urlopen(truetype_url), size=75)
-                    font_summary = ImageFont.truetype(urlopen(truetype_url), size=50)
+                    font_info = ImageFont.truetype(urlopen(truetype_url), size=55)
+                    font_summary = ImageFont.truetype(urlopen(truetype_url), size=45)
                     font_metadata = ImageFont.truetype(urlopen(truetype_url), size=50)
-                    font_custom = ImageFont.truetype(urlopen(truetype_url), size=70)                 
+                    font_custom = ImageFont.truetype(urlopen(truetype_url), size=60)                 
+                    
                     title_text = f"{item.title}"
                     if media_type == 'movie':
                         if item.audienceRating:
@@ -115,8 +119,8 @@ def download_latest_media(order_by, limit, media_type):
                             rating_text = ""
                         duration_hours = item.duration // (60*60*1000)
                         duration_minutes = (item.duration // (60*1000)) % 60
-                        duration_text = f"{duration_hours}h {duration_minutes}min"
-                        info_text = f"{item.year}  |  {', '.join([genre.tag for genre in item.genres])}  |  {duration_text}  |  {rating_text}"
+                        duration_text = f"{duration_hours}h{duration_minutes}min"
+                        info_text = f"{item.year}  •  {', '.join([genre.tag for genre in item.genres])}  •  {duration_text}  •  {rating_text}"
                     else:
                         if item.audienceRating:
                             rating_text = f" IMDb: {item.audienceRating}"
@@ -129,20 +133,25 @@ def download_latest_media(order_by, limit, media_type):
                             seasons_text = "Season"
                         else:
                             seasons_text = "Seasons"
-                        info_text = f"{item.year}  |  {', '.join([genre.tag for genre in item.genres])}  |  {seasons_count} {seasons_text}  |  {rating_text}"
-                    summary_text = truncate_summary(item.summary, 130)
-                    custom_text = "Now Available"
+                        info_text = f"{item.year}  •  {', '.join([genre.tag for genre in item.genres])}  •  {seasons_count} {seasons_text}  •  {rating_text}"
+                    summary_text = truncate_summary(item.summary, 175)
+                    custom_text = "Now Available on"
+                    
                     title_text_width, title_text_height = draw.textlength(title_text, font=font_title), draw.textlength(title_text, font=font_title)
                     info_text_width, info_text_height = draw.textlength(info_text, font=font_info), draw.textlength(info_text, font=font_info)
                     custom_text_width, custom_text_height = draw.textlength(custom_text, font=font_info), draw.textlength(custom_text, font=font_custom)
                     summary_text_width, summary_text_height = draw.textlength(summary_text, font=font_summary), draw.textlength(summary_text, font=font_summary)
                     metadata_text_width, metadata_text_height = draw.textlength(info_text, font=font_metadata), draw.textlength(info_text, font=font_metadata)
+                    
+                    #Position
                     title_position = (200, 540)
-                    summary_position = (210, 780)
-                    info_position = (210, 850)
-                    metadata_position = (210, 910)
-                    custom_position = (210, 930)
-                    shadow_offset = 1
+                    summary_position = (210, 830)
+                    info_position = (210, 520)
+                    metadata_position = (210, 920)
+                    custom_position = (210, 950)
+                    shadow_offset = 2
+
+                    #Color
                     shadow_color = "black"
                     main_color = "white"
                     info_color = "white"
@@ -153,6 +162,9 @@ def download_latest_media(order_by, limit, media_type):
                     draw.text((title_position[0] + shadow_offset, title_position[1] + shadow_offset), title_text, font=font_title, fill=shadow_color)
                     # Draw main title text
                     draw.text(title_position, title_text, font=font_title, fill=main_color)
+
+                    # Wrap summary text
+                    wrapped_summary = "\n".join(textwrap.wrap(summary_text, width=90))
                     
                     # Draw shadow for info
                     draw.text((info_position[0] + shadow_offset, info_position[1] + shadow_offset), info_text, font=font_summary, fill=shadow_color)
@@ -160,9 +172,9 @@ def download_latest_media(order_by, limit, media_type):
                     draw.text(info_position, info_text, font=font_summary, fill=summary_color)
                     
                     # Draw shadow for summary text
-                    draw.text((summary_position[0] + shadow_offset, summary_position[1] + shadow_offset), summary_text, font=font_summary, fill=shadow_color)
+                    draw.text((summary_position[0] + shadow_offset, summary_position[1] + shadow_offset), wrapped_summary, font=font_summary, fill=shadow_color)
                     # Draw summary text
-                    draw.text(summary_position, summary_text, font=font_summary, fill=summary_color)
+                    draw.text(summary_position, wrapped_summary, font=font_summary, fill=summary_color)
 
 
                     # Draw shadow for custom text
@@ -177,7 +189,6 @@ def download_latest_media(order_by, limit, media_type):
                     bckg = bckg.convert('RGB')  # Convert image to RGB mode to save as JPEG
                     bckg.save(background_filename)
                     
-                    print(f"Background saved: {background_filename}")
                 else:
                     print(f"Failed to download background for {item.title}")
             except Exception as e:
