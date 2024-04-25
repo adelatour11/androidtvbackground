@@ -12,7 +12,7 @@ url = "https://api.themoviedb.org/3/"
 # Set your API key here
 headers = {
     "accept": "application/json",
-    "Authorization": "Bearer XXXXX"
+    "Authorization": "Bearer XXXX"
 }
 # The font used
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
@@ -32,12 +32,14 @@ trending_tvshows = trending_tvshows_response.json()
 # Fetching genres for movies
 genres_url = f'{url}genre/movie/list?language=en-US'
 genres_response = requests.get(genres_url, headers=headers)
-movie_genres = {genre['id']: genre['name'] for genre in genres_response.json()['genres']}
+genres_data = genres_response.json()
+movie_genres = {genre['id']: genre['name'] for genre in genres_data.get('genres', [])}
 
 # Fetching genres for TV shows
 genres_url = f'{url}genre/tv/list?language=en-US'
 genres_response = requests.get(genres_url, headers=headers)
-tv_genres = {genre['id']: genre['name'] for genre in genres_response.json()['genres']}
+genres_data = genres_response.json()
+tv_genres = {genre['id']: genre['name'] for genre in genres_data.get('genres', [])}
 
 # Fetching TV show details
 def get_tv_show_details(tv_id):
@@ -62,7 +64,7 @@ os.makedirs(background_dir, exist_ok=True)
 #truncate overview
 def truncate_overview(overview, max_chars):
     if len(overview) > max_chars:
-        return overview[:max_chars-3] + "..."
+        return overview[:max_chars]
     else:
         return overview
 
@@ -131,7 +133,7 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
         draw.text(title_position, title, font=font_title, fill=main_color)
 
         # Wrap Overview text
-        wrapped_overview = "\n".join(textwrap.wrap(overview, width=90))
+        wrapped_overview = "\n".join(textwrap.wrap(overview, width=95)) + "..."
 
         # Draw Overview for info
         draw.text((overview_position[0] + shadow_offset, overview_position[1] + shadow_offset), wrapped_overview, font=font_overview, fill=shadow_color)
