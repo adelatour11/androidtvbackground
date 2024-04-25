@@ -22,7 +22,7 @@ download_series = True
 limit = 10
 
 # Create a directory to save the backgrounds
-background_dir = f"plex_backgrounds"
+background_dir = "plex_backgrounds"
 # Clear the contents of the folder
 if os.path.exists(background_dir):
     shutil.rmtree(background_dir)
@@ -46,7 +46,7 @@ def clean_filename(filename):
 
 def download_latest_media(order_by, limit, media_type):
     baseurl = 'http://XXXX:32400'
-    token = 'XXXXX'
+    token = 'XXXX'
     plex = PlexServer(baseurl, token)
 
     os.makedirs(background_dir, exist_ok=True)
