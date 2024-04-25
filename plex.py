@@ -80,7 +80,7 @@ def download_latest_media(order_by, limit, media_type):
                     filename_safe_title = unicodedata.normalize('NFKD', item.title).encode('ASCII', 'ignore').decode('utf-8')
                     filename_safe_title = clean_filename(filename_safe_title)
                     # Save the background image to a file
-                    background_filename = os.path.join(background_dir, f"{filename_safe_title}_background.jpg")
+                    background_filename = os.path.join(background_dir, f"{filename_safe_title}.jpg")
                     with open(background_filename, 'wb') as f:
                         f.write(response.content)
                     
