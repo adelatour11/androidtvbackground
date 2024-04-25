@@ -35,7 +35,7 @@ def resize_image(image, height):
 
 def truncate_summary(summary, max_chars):
     if len(summary) > max_chars:
-        return summary[:max_chars-3] + "..."
+        return summary[:max_chars]
     else:
         return summary
 
@@ -46,7 +46,7 @@ def clean_filename(filename):
 
 def download_latest_media(order_by, limit, media_type):
     baseurl = 'http://XXXX:32400'
-    token = 'XXXX'
+    token = 'XXXXX'
     plex = PlexServer(baseurl, token)
 
     os.makedirs(background_dir, exist_ok=True)
@@ -164,7 +164,7 @@ def download_latest_media(order_by, limit, media_type):
                     draw.text(title_position, title_text, font=font_title, fill=main_color)
 
                     # Wrap summary text
-                    wrapped_summary = "\n".join(textwrap.wrap(summary_text, width=90))
+                    wrapped_summary = "\n".join(textwrap.wrap(summary_text, width=95)) + "..."
                     
                     # Draw shadow for info
                     draw.text((info_position[0] + shadow_offset, info_position[1] + shadow_offset), info_text, font=font_summary, fill=shadow_color)
@@ -188,6 +188,8 @@ def download_latest_media(order_by, limit, media_type):
                     # Save the modified image
                     bckg = bckg.convert('RGB')  # Convert image to RGB mode to save as JPEG
                     bckg.save(background_filename)
+                    print(f"Image saved: {background_filename}")
+
                     
                 else:
                     print(f"Failed to download background for {item.title}")
