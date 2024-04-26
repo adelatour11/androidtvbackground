@@ -12,7 +12,7 @@ url = "https://api.themoviedb.org/3/"
 # Set your TMDB API Read Access Token key here
 headers = {
     "accept": "application/json",
-    "Authorization": "Bearer XXXXX"
+    "Authorization": "Bearer XXXX"
 }
 # The font used
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
@@ -156,7 +156,7 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
         metadata_color = "white"
 
         # Text position
-        title_position = (200, 540)
+        title_position = (200, 520)
         overview_position = (210, 830)
         shadow_offset = 2
         info_position = (210, 750)  # Adjusted position for logo and info
@@ -210,8 +210,8 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
                     # Paste the logo onto the image
                     bckg.paste(logo_image, logo_position,logo_image)
                 except Exception as e:
-                    print(f"Error: {e}")
-                    print(f"Failed to process logo for {title}. Skipping...")
+                    draw.text((title_position[0] + shadow_offset, title_position[1] + shadow_offset), title, font=font_title,fill=shadow_color)
+                    draw.text(title_position, title, font=font_title, fill=main_color)
 
         # Draw custom text
         draw.text((custom_position[0] + shadow_offset, custom_position[1] + shadow_offset), custom_text,
