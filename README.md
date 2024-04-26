@@ -8,6 +8,7 @@ To use the script, you have to specify :
 
 The script retrieves the background of the latests shows (movies or tv shows)
 it resizes the image, add an overlay and add text on top
+There is two versions of the TMDB script, with or without the title logo
 
 ![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/434e7077-daaf-41b6-8e43-08bf380fb2d3)
 
