@@ -17,6 +17,9 @@ it resizes the image, add an overlay and add text on top
 
 ![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/b96f3e83-29a6-4e3f-a202-2e33bc80aa8f)
 
+![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/b28900a4-4776-4aae-b631-e30334d932dd)
+
+![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/1fc35d04-1c7e-47f2-b65a-5a7222fe6309)
 
 
 How to :
