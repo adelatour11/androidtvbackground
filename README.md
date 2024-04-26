@@ -6,9 +6,8 @@ To use the script, you have to specify :
 - your plex token and plex server url
 - Your TMDB API Read Access Token
 
-The script retrieves the background of the latests shows (movies or tv shows)
+The scripts retrieves the background of the latests shows (movies or tv shows)
 it resizes the image, add an overlay and add text on top
-There is two versions of the TMDB script, with or without the title logo
 
 ![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/434e7077-daaf-41b6-8e43-08bf380fb2d3)
 
@@ -27,8 +26,9 @@ There is two versions of the TMDB script, with or without the title logo
 How to :
 - install python and dependencies
 - Download the content of this repository and put the script and images in a specific folder
-- Edit the script "script.py" to specify you credentials,
+- Edit the python script to specify you credentials,
 - For plex media you can specify the number of poster to generate, specify if you want to include movies and tv, specify if you want latest added or latest aired items. You can also edit the code to change the text position or content
+- There is two versions of the TMDB script, one without show logo and one without. Shows that do not have the logo on TMDB will just have the title displayed
 - As you run one of the script  it will create a new folder called backgrounds and it will create the images automatically. Each time the script runs it will delete the content of the folder and create new images
 
 
