@@ -184,7 +184,7 @@ for movie in trending_movies:
 for tvshow in trending_tvshows:
     # Extract TV show details
     title = textwrap.shorten(tvshow['name'], width=38)
-    overview = textwrap.shorten(tvshow['overview'], width=175)
+    overview = tvshow['overview']
     year = tvshow['first_air_date']
     rating = round(tvshow['vote_average'], 1)
     genre = ', '.join([tv_genres[genre_id] for genre_id in tvshow['genre_ids']])
