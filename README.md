@@ -1,13 +1,13 @@
 # Android TV Background
 
-This is a simple script to retrieve plex or TMDB media background, i developed this to use it with alternative android tv launcher
+This is a simple script to retrieve Plex or TMDB media background and use it as Android TV Wallpaper
+I developed this to use it with alternative Android TV launchers
 
 To use the script, you have to specify : 
-- your plex token and plex server url
-- Your TMDB API Read Access Token
+- For Plex.py script : your plex token and plex server url
+- For TMDB.py or TMDBlogo.py : your TMDB API Read Access Token
 
-The scripts retrieves the background of the latests shows (movies or tv shows)
-it resizes the image, add an overlay and add text on top
+The scripts retrieves the background of the latests shows (movies or tv shows), resizes the image, add an overlay and add text or image on top
 
 ![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/434e7077-daaf-41b6-8e43-08bf380fb2d3)
 
@@ -22,13 +22,13 @@ it resizes the image, add an overlay and add text on top
 ![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/e0410589-81a4-40ac-a55d-8fd6eb061721)
 
 
-
 How to :
-- install python and dependencies
-- Download the content of this repository and put the script and images in a specific folder
-- Edit the python script to specify you credentials,
-- For plex media you can specify the number of poster to generate, specify if you want to include movies and tv, specify if you want latest added or latest aired items. You can also edit the code to change the text position or content
-- There is two versions of the TMDB script, one without show logo and one without. Shows that do not have the logo on TMDB will just have the title displayed
-- As you run one of the script  it will create a new folder called backgrounds and it will create the images automatically. Each time the script runs it will delete the content of the folder and create new images
+- install latest version of python 
+- Download the content of this repository
+- Install dependencies : pip install -r requirements.txt
+- Edit the python scripts to specify you credentials
+    - For plex media you can specify the number of poster to generate, specify if you want to include movies and tv, specify if you want latest added or latest aired items. You can also edit the code to change the text position or content
+    - There is two versions of the TMDB script, one without show logo and one without. Shows that do not have the logo on TMDB will just have the title displayed
+- As you run one of the script  it will create a new folder and add the images automatically. Each time the scripts will run it will delete the content of the folder and create new images
 
 
