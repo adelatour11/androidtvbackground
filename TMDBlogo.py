@@ -12,7 +12,7 @@ url = "https://api.themoviedb.org/3/"
 # Set your TMDB API Read Access Token key here
 headers = {
     "accept": "application/json",
-    "Authorization": "Bearer XXXXX"
+    "Authorization": "Bearer XXXX"
 }
 # The font used
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
@@ -53,7 +53,6 @@ def get_movie_details(movie_id):
     movie_details_response = requests.get(movie_details_url, headers=headers)
     return movie_details_response.json()
 
-
 # Create a directory to save the backgrounds
 background_dir = "tmdb_backgrounds"
 # Clear the contents of the folder
@@ -81,7 +80,6 @@ def resize_image(image, height):
     width = int(image.width * ratio)
     return image.resize((width, height))
 
-
 def resize_logo(image, width, height):
     # Get the aspect ratio of the image
     aspect_ratio = image.width / image.height
@@ -98,11 +96,7 @@ def resize_logo(image, width, height):
     
     # Resize the image
     resized_img = image.resize((new_width, new_height))
-    
     return resized_img
-
-
-
 
 def clean_filename(filename):
     # Remove problematic characters from the filename
@@ -162,13 +156,8 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
         info_position = (210, 750)  # Adjusted position for logo and info
         custom_position = (210, 970)
 
-        # Draw Title for info
-        #draw.text((title_position[0] + shadow_offset, title_position[1] + shadow_offset), title, font=font_title,fill=shadow_color)
-        #draw.text(title_position, title, font=font_title, fill=main_color)
-
         # Wrap overview text
         wrapped_overview = "\n".join(textwrap.wrap(overview,width= 70,initial_indent= "",subsequent_indent= "",expand_tabs= True,tabsize= 8,replace_whitespace= True,fix_sentence_endings= False,break_long_words= True,break_on_hyphens= True,drop_whitespace= True,max_lines= 2,placeholder= " ..."))
-        
 
         # Draw Overview for info
         draw.text((overview_position[0] + shadow_offset, overview_position[1] + shadow_offset), wrapped_overview,font=font_overview, fill=shadow_color)
@@ -203,7 +192,7 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
             if logo_response.status_code == 200:
                 try:
                     logo_image = Image.open(BytesIO(logo_response.content))
-                    # Resize the logo image to fit within a box of 500x400 pixels while maintaining aspect ratio
+                    # Resize the logo image to fit within a box while maintaining aspect ratio
                     logo_image = resize_logo(logo_image, 1200,600)
                     logo_position = (210, info_position[1] - logo_image.height - 25)  # Position for logo
                     logo_image = logo_image.convert('RGBA')
@@ -227,20 +216,20 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
     else:
         print(f"Failed to download background for {title}")
 
-
-
-
 # Process each trending movie
 for movie in trending_movies.get('results', []):
+    # Extract movie details
     title = movie['title']
     overview = movie['overview']
     year = movie['release_date']
     rating = round(movie['vote_average'],1)
     genre = ', '.join([movie_genres[genre_id] for genre_id in movie['genre_ids']])
-
-
+    
+    # Fetch additional movie details
     movie_details = get_movie_details(movie['id'])
     duration = movie_details.get('runtime', 0)
+    
+    # Format duration as hours and minutes
     if duration:
         hours = duration // 60
         minutes = duration % 60
@@ -248,27 +237,40 @@ for movie in trending_movies.get('results', []):
     else:
         duration = "N/A"
 
+    # Check if backdrop image is available
     backdrop_path = movie['backdrop_path']
     custom_text = "Now Trending on"
     if backdrop_path:
+        # Construct image URL
         image_url = f"https://image.tmdb.org/t/p/original{backdrop_path}"
+        # Process the image
         process_image(image_url, title, is_movie=True, genre=genre, year=year, rating=rating, duration=duration)
     else:
+        # Print error message if no backdrop image found
         print(f"No backdrop image found for {title}")
 
 # Process trending TV shows
 for tvshow in trending_tvshows.get('results', []):
+    # Extract TV show details
     title = truncate_overview(tvshow['name'],38)
     overview = tvshow['overview']
     year = tvshow['first_air_date']
     rating = round(tvshow['vote_average'],1)
     genre = ', '.join([tv_genres[genre_id] for genre_id in tvshow['genre_ids']])
+    
+    # Fetch additional TV show details
     tv_details = get_tv_show_details(tvshow['id'])
     seasons = tv_details.get('number_of_seasons', 0)
+    
+    # Check if backdrop image is available
     backdrop_path = tvshow['backdrop_path']
     custom_text = "Now Trending on"
     if backdrop_path:
+        # Construct image URL
         image_url = f"https://image.tmdb.org/t/p/original{backdrop_path}"
+        
+        # Process the image
         process_image(image_url, title, is_movie=False, genre=genre, year=year, rating=rating, seasons=seasons)
     else:
+        # Print error message if no backdrop image found
         print(f"No backdrop image found for {title}")
