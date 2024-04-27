@@ -12,7 +12,7 @@ url = "https://api.themoviedb.org/3/"
 # Set your TMDB API Read Access Token key here
 headers = {
     "accept": "application/json",
-    "Authorization": "Bearer XXXX"
+    "Authorization": "Bearer XXXXX"
 }
 # The font used
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
@@ -166,8 +166,9 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
         #draw.text((title_position[0] + shadow_offset, title_position[1] + shadow_offset), title, font=font_title,fill=shadow_color)
         #draw.text(title_position, title, font=font_title, fill=main_color)
 
-        # Wrap Overview text
-        wrapped_overview = "\n".join(textwrap.wrap(overview, width=62)) + "..."
+        # Wrap overview text
+        wrapped_overview = "\n".join(textwrap.wrap(overview,width= 70,initial_indent= "",subsequent_indent= "",expand_tabs= True,tabsize= 8,replace_whitespace= True,fix_sentence_endings= False,break_long_words= True,break_on_hyphens= True,drop_whitespace= True,max_lines= 2,placeholder= " ..."))
+        
 
         # Draw Overview for info
         draw.text((overview_position[0] + shadow_offset, overview_position[1] + shadow_offset), wrapped_overview,font=font_overview, fill=shadow_color)
@@ -232,7 +233,7 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
 # Process each trending movie
 for movie in trending_movies.get('results', []):
     title = movie['title']
-    overview = truncate_overview(movie['overview'],100)
+    overview = movie['overview']
     year = movie['release_date']
     rating = round(movie['vote_average'],1)
     genre = ', '.join([movie_genres[genre_id] for genre_id in movie['genre_ids']])
@@ -258,7 +259,7 @@ for movie in trending_movies.get('results', []):
 # Process trending TV shows
 for tvshow in trending_tvshows.get('results', []):
     title = truncate_overview(tvshow['name'],38)
-    overview = truncate_overview(tvshow['overview'],100)
+    overview = tvshow['overview']
     year = tvshow['first_air_date']
     rating = round(tvshow['vote_average'],1)
     genre = ', '.join([tv_genres[genre_id] for genre_id in tvshow['genre_ids']])
