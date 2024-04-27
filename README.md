@@ -26,9 +26,11 @@ How to :
 - install latest version of python 
 - Download the content of this repository
 - Install dependencies : pip install -r requirements.txt
-- Edit the python scripts to specify you credentials
+- Edit the python scripts with your info
+    - Specify you credentials
     - For plex media you can specify the number of poster to generate, specify if you want to include movies and tv, specify if you want latest added or latest aired items. You can also edit the code to change the text position or content
     - There is two versions of the TMDB script, one without show logo and one without. Shows that do not have the logo on TMDB will just have the title displayed
+    - You can edit the script to change the color, the text position or font
 - As you run one of the script  it will create a new folder and add the images automatically. Each time the scripts will run it will delete the content of the folder and create new images
 
 
