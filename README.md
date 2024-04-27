@@ -32,5 +32,5 @@ How to :
     - There is two versions of the TMDB script, one without show logo and one without. Shows that do not have the logo on TMDB will just have the title displayed
     - You can edit the script to change the color, the text position or font
 - As you run one of the script  it will create a new folder and add the images automatically. Each time the scripts will run it will delete the content of the folder and create new images
-
+- if you want to edit the overlay and background image I have included the source file as a vector format 
 
