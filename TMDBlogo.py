@@ -12,7 +12,7 @@ url = "https://api.themoviedb.org/3/"
 # Set your TMDB API Read Access Token key here
 headers = {
     "accept": "application/json",
-    "Authorization": "Bearer XXXX"
+    "Authorization": "Bearer XXXXX"
 }
 # The font used
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
