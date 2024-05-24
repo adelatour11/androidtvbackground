@@ -12,7 +12,7 @@ url = "https://api.themoviedb.org/3/"
 # Set your TMDB API Read Access Token key here
 headers = {
     "accept": "application/json",
-    "Authorization": "Bearer XXXXX"
+    "Authorization": "Bearer XXXX"
 }
 # The font used
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
@@ -157,10 +157,10 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
         custom_position = (210, 970)
 
         # Wrap overview text
-        wrapped_overview = "\n".join(textwrap.wrap(overview,width= 70,initial_indent= "",subsequent_indent= "",expand_tabs= True,tabsize= 8,replace_whitespace= True,fix_sentence_endings= False,break_long_words= True,break_on_hyphens= True,drop_whitespace= True,max_lines= 2,placeholder= " ..."))
+        wrapped_overview = "\n".join(textwrap.wrap(overview, width=70, initial_indent="", subsequent_indent="", expand_tabs=True, tabsize=8, replace_whitespace=True, fix_sentence_endings=False, break_long_words=True, break_on_hyphens=True, drop_whitespace=True, max_lines=2, placeholder=" ..."))
 
         # Draw Overview for info
-        draw.text((overview_position[0] + shadow_offset, overview_position[1] + shadow_offset), wrapped_overview,font=font_overview, fill=shadow_color)
+        draw.text((overview_position[0] + shadow_offset, overview_position[1] + shadow_offset), wrapped_overview, font=font_overview, fill=shadow_color)
         draw.text(overview_position, wrapped_overview, font=font_overview, fill=metadata_color)
 
         # Determine genre text and additional info
@@ -176,15 +176,16 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
         info_text = f"{genre_text}  •  {year_text}  •  {additional_info}  •  {rating_text}"
 
         # Draw metadata
-        draw.text((info_position[0] + shadow_offset, info_position[1] + shadow_offset), info_text, font=font_overview,
-                  fill=shadow_color)
+        draw.text((info_position[0] + shadow_offset, info_position[1] + shadow_offset), info_text, font=font_overview, fill=shadow_color)
         draw.text(info_position, info_text, font=font_overview, fill=overview_color)
 
         # Get logo image URL
         if is_movie:
-            logo_path = get_logo("movie", movie['id'])
+            logo_path = get_logo("movie", movie['id'], language="en")
         else:
-            logo_path = get_logo("tv", tvshow['id'])
+            logo_path = get_logo("tv", tvshow['id'], language="en")
+
+        logo_drawn = False  # Flag to track if logo is drawn
 
         if logo_path:
             logo_url = f"https://image.tmdb.org/t/p/original{logo_path}"
@@ -193,19 +194,23 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
                 try:
                     logo_image = Image.open(BytesIO(logo_response.content))
                     # Resize the logo image to fit within a box while maintaining aspect ratio
-                    logo_image = resize_logo(logo_image, 1200,600)
+                    logo_image = resize_logo(logo_image, 1200, 600)
                     logo_position = (210, info_position[1] - logo_image.height - 25)  # Position for logo
                     logo_image = logo_image.convert('RGBA')
 
                     # Paste the logo onto the image
-                    bckg.paste(logo_image, logo_position,logo_image)
+                    bckg.paste(logo_image, logo_position, logo_image)
+                    logo_drawn = True  # Logo was successfully drawn
                 except Exception as e:
-                    draw.text((title_position[0] + shadow_offset, title_position[1] + shadow_offset), title, font=font_title,fill=shadow_color)
-                    draw.text(title_position, title, font=font_title, fill=main_color)
+                    print(f"Failed to draw logo for {title}: {e}")
+
+        if not logo_drawn:
+            # Draw title text if logo is not available or failed to draw
+            draw.text((title_position[0] + shadow_offset, title_position[1] + shadow_offset), title, font=font_title, fill=shadow_color)
+            draw.text(title_position, title, font=font_title, fill=main_color)
 
         # Draw custom text
-        draw.text((custom_position[0] + shadow_offset, custom_position[1] + shadow_offset), custom_text,
-                  font=font_custom, fill=shadow_color)
+        draw.text((custom_position[0] + shadow_offset, custom_position[1] + shadow_offset), custom_text, font=font_custom, fill=shadow_color)
         draw.text(custom_position, custom_text, font=font_custom, fill=metadata_color)
 
         # Save the resized image
@@ -215,6 +220,7 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
         print(f"Image saved: {filename}")
     else:
         print(f"Failed to download background for {title}")
+
 
 # Process each trending movie
 for movie in trending_movies.get('results', []):
