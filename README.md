@@ -21,6 +21,10 @@ The scripts retrieves the background of the latests shows (movies or tv shows), 
 
 ![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/e0410589-81a4-40ac-a55d-8fd6eb061721)
 
+here is the result in Android TV
+
+![y](https://github.com/adelatour11/androidtvbackground/assets/1473994/8039b728-469f-4fd9-8ca5-920e57bd16d9)
+
 
 How to :
 - install latest version of python 
