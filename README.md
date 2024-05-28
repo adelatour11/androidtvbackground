@@ -3,6 +3,9 @@
 This is a simple script to retrieve Plex or TMDB media background and use it as Android TV Wallpaper
 I developed this to use it with alternative Android TV launchers
 
+![y](https://github.com/adelatour11/androidtvbackground/assets/1473994/8039b728-469f-4fd9-8ca5-920e57bd16d9)
+
+
 To use the script, you have to specify : 
 - For Plex.py script : your plex token and plex server url
 - For TMDB.py or TMDBlogo.py : your TMDB API Read Access Token
@@ -21,9 +24,7 @@ The scripts retrieves the background of the latests shows (movies or tv shows), 
 
 ![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/e0410589-81a4-40ac-a55d-8fd6eb061721)
 
-here is the result in Android TV
 
-![y](https://github.com/adelatour11/androidtvbackground/assets/1473994/8039b728-469f-4fd9-8ca5-920e57bd16d9)
 
 
 How to :
