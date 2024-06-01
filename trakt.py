@@ -8,7 +8,7 @@ import textwrap
 
 
 # Replace with your actual Trakt API key, TMDB API Read Access Token, username, and list name
-trakt_api_key = "XXXX"
+trakt_client_key = "XXXX"
 username = "XXXX"
 list_name = "XXX"
 
