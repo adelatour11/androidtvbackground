@@ -9,6 +9,7 @@ I developed this to use it with alternative Android TV launchers
 To use the script, you have to specify : 
 - For Plex.py script : your plex token and plex server url
 - For TMDB.py or TMDBlogo.py : your TMDB API Read Access Token
+- For Trakt.py, your Trakt client key, Trakt username, Trakt list name and TMDB API Read Access Token
 
 The scripts retrieves the background of the latests shows (movies or tv shows), resizes the image, add an overlay and add text or image on top
 
@@ -24,7 +25,9 @@ The scripts retrieves the background of the latests shows (movies or tv shows), 
 
 ![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/e0410589-81a4-40ac-a55d-8fd6eb061721)
 
+![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/2e92f213-21f9-4147-b678-0ee4dd0546ad)
 
+![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/03aecbcd-e2fd-4969-b0a2-0346d1842705)
 
 
 How to :
