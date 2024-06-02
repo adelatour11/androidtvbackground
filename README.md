@@ -35,9 +35,9 @@ How to :
 - Install pip (https://pip.pypa.io/en/stable/installation/)
 - Download the content of this repository
 - Install dependencies :
-  '''
+  ```
   pip install -r requirements.txt
-  '''
+  ```
 - Edit the python scripts with your info
     - Specify you credentials
     - For plex media you can specify the number of poster to generate, specify if you want to include movies and tv, specify if you want latest added or latest aired items. You can also edit the code to change the text position or content
