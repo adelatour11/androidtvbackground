@@ -31,14 +31,17 @@ The scripts retrieves the background of the latests shows (movies or tv shows), 
 
 
 How to :
-- install latest version of python 
+- install latest version of python
+- Install pip (https://pip.pypa.io/en/stable/installation/)
 - Download the content of this repository
-- Install dependencies : pip install -r requirements.txt
+- Install dependencies :
+  '''pip install -r requirements.txt'''
 - Edit the python scripts with your info
     - Specify you credentials
     - For plex media you can specify the number of poster to generate, specify if you want to include movies and tv, specify if you want latest added or latest aired items. You can also edit the code to change the text position or content
     - There is two versions of the TMDB script, one without show logo and one without. Shows that do not have the logo on TMDB will just have the title displayed
     - You can edit the script to change the color, the text position or font
-- As you run one of the script  it will create a new folder and add the images automatically. Each time the scripts will run it will delete the content of the folder and create new images
+- As you run one of the script it will create a new folder and add the images automatically.
+- Each time the scripts will run it will delete the content of the folder and create new images
 - if you want to edit the overlay and background image I have included the source file as a vector format 
 
