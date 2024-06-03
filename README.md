@@ -60,10 +60,16 @@ The scripts retrieves the background of the latests shows (movies or tv shows), 
   ```
   and replace it by using TMDB API Discover Endpoint
   You can find details on Discovery endpoints here  : https://developer.themoviedb.org/reference/discover-movie or https://developer.themoviedb.org/reference/discover-tv
+
   For example you can change the endpoints like this
+
   ```
   # Endpoint for shows with genre action from 2022
   trending_movies_url = f'{url}discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=80&year=2022'
   trending_tvshows_url = f'{url}discover/tv?first_air_date_year=2022&include_adult=false&include_null_first_air_dates=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=80'
   ```
-  The genre is set by an id, you can get the list from these url https://developer.themoviedb.org/reference/genre-movie-list or https://developer.themoviedb.org/reference/genre-tv-list
+  
+  The genre is set by an id, you can get the list from these url
+  
+  https://developer.themoviedb.org/reference/genre-movie-list
+  https://developer.themoviedb.org/reference/genre-tv-list
