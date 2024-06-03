@@ -59,7 +59,11 @@ The scripts retrieves the background of the latests shows (movies or tv shows), 
   trending_tvshows_url = f'{url}trending/tv/week?language=en-US'
   ```
   and replace it by using TMDB API Discover Endpoint
-  You can find details on Discovery endpoints here  : https://developer.themoviedb.org/reference/discover-movie or https://developer.themoviedb.org/reference/discover-tv
+  You can find details on Discovery endpoints here  :
+
+  https://developer.themoviedb.org/reference/discover-movie
+
+  https://developer.themoviedb.org/reference/discover-tv
 
   For example you can change the endpoints like this
 
@@ -72,4 +76,5 @@ The scripts retrieves the background of the latests shows (movies or tv shows), 
   The genre is set by an id, you can get the list from these url
   
   https://developer.themoviedb.org/reference/genre-movie-list
+  
   https://developer.themoviedb.org/reference/genre-tv-list
