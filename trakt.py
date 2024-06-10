@@ -1,5 +1,5 @@
 import requests
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from PIL import Image, ImageDraw, ImageFont, ImageFilter, UnidentifiedImageError
 from io import BytesIO
 import os
 import shutil
@@ -8,14 +8,14 @@ import textwrap
 
 
 # Replace with your actual Trakt API key, TMDB API Read Access Token, username, and list name
-trakt_client_key = "XXXX"
-username = "XXXX"
+trakt_api_key = "XXXX"
+username = "XXX"
 list_name = "XXX"
 
-# Set your TMDB API Read Access Token key here
+# Set your TMDB API Read Access Token key here after Bearer
 tmdb_headers = {
     "accept": "application/json",
-    "Authorization": "Bearer XXXX"
+    "Authorization": "Bearer XXXXX"
 }
 
 # Base URL for the API
@@ -159,14 +159,19 @@ def fetch_and_save_background_images(movies, shows):
                     if logo_path:
                         logo_url = f"https://image.tmdb.org/t/p/original{logo_path}"
                         logo_response = requests.get(logo_url)                        
-                        if logo_response.status_code == 200:
-                            logo_image = Image.open(BytesIO(logo_response.content))
-                            logo_image = resize_logo(logo_image, 1000, 500)
-                            logo_image = logo_image.convert("RGBA")
-                            logo_position = (210, info_position[1] - logo_image.height - 25)
-                            bckg.paste(logo_image, logo_position, logo_image)
-                        else:
-                            print(f"Error downloading logo for {title}: status code {logo_response.status_code}")
+                        try:
+                            if logo_response.status_code == 200:
+                                logo_image = Image.open(BytesIO(logo_response.content))
+                                logo_image = resize_logo(logo_image, 1000, 500)
+                                logo_image = logo_image.convert("RGBA")
+                                logo_position = (210, info_position[1] - logo_image.height - 25)
+                                bckg.paste(logo_image, logo_position, logo_image)
+                            else:
+                                print(f"Error downloading logo for {title}: status code {logo_response.status_code}")
+                                draw.text(title_position, title, fill="white", font=font_title)
+                        except UnidentifiedImageError:
+                            print(f"Error identifying logo image for {title}")
+                            draw.text(title_position, title, fill="white", font=font_title)
                     else:
                         draw.text(title_position, title, fill="white", font=font_title)
 
