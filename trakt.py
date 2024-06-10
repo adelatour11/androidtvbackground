@@ -61,9 +61,10 @@ def get_logo(media_type, media_id, language="en"):
     logo_response = requests.get(logo_url, headers=tmdb_headers)
     logo_data = logo_response.json()
     if logo_response.status_code == 200:
-        logos = logo_data.get("logos", [])
-        if logos:
-            return logos[0]["file_path"]
+        logos = logo_response.json().get("logos", [])
+        for logo in logos:
+            if logo["iso_639_1"] == "en" and logo["file_path"].endswith(".png"):
+                return logo["file_path"]
     return None
 
 # Function to resize an image while maintaining aspect ratio
