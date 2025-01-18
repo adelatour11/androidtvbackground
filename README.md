@@ -13,13 +13,13 @@ To use the script, you have to specify :
 
 The scripts retrieves the background of the latests shows (movies or tv shows), resizes the image, add an overlay and add text or image on top
 
-![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/434e7077-daaf-41b6-8e43-08bf380fb2d3)
+![image](https://github.com/user-attachments/assets/71923ddf-6b5b-4b1c-af46-d12d9a525b6c)
 
-![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/da313f5f-287f-430f-b3fd-f56e5f139e40)
+![image](https://github.com/user-attachments/assets/ca56ad9b-4d15-4928-a4d8-971ad8f5f390)
 
-![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/25565525-1958-4944-b47f-b06344d22914)
+![image](https://github.com/user-attachments/assets/d87099eb-e5a5-4a2f-aabb-d11d9348035b)
 
-![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/b96f3e83-29a6-4e3f-a202-2e33bc80aa8f)
+![image](https://github.com/user-attachments/assets/1fee44e7-befa-458b-a082-394615939627)
 
 ![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/b28900a4-4776-4aae-b631-e30334d932dd)
 
