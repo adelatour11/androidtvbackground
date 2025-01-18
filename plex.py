@@ -176,7 +176,7 @@ def download_latest_media(order_by, limit, media_type):
                     draw.text(custom_position, custom_text, font=font_custom, fill=metadata_color)
 
                     if logo_image:
-                        logo_resized = resize_logo(logo_image, 1000, 400).convert('RGBA')
+                        logo_resized = resize_logo(logo_image, 1300, 400).convert('RGBA')
                         logo_position = (210, info_position[1] - logo_resized.height - 25)
                         bckg.paste(logo_resized, logo_position, logo_resized)
                     else:
