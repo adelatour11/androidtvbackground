@@ -15,11 +15,11 @@ headers = {
     "Authorization": "Bearer XXXX"
 }
 
-#Exclusion 
-tv_excluded_countries=['cn','jp','kr','us']
-tv_excluded_genres=['Animation','Romance']
-movie_excluded_countries=['cn','jp','kr','us']
-movie_excluded_genres=['Animation']
+#Exclusion - specify country code and genre as defined in TMDB
+tv_excluded_countries=['XX','XX','XX','XX']
+tv_excluded_genres=['XXXXX','XXXXX']
+movie_excluded_countries=['XX','XX','XX','XX']
+movie_excluded_genres=['XXX']
 
 # The font used
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
