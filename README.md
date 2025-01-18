@@ -17,7 +17,7 @@ The scripts retrieves the background of the latests shows (movies or tv shows), 
 
 ![image](https://github.com/user-attachments/assets/e560ccf7-cc11-49ce-b6c1-8395d2e309f1)
 
-![image](https://github.com/user-attachments/assets/43045560-36c9-45e6-a55a-ebf154844d51)
+![image](https://github.com/user-attachments/assets/815c3685-2b6d-4ef5-86c3-b2d67038736a)
 
 ![image](https://github.com/user-attachments/assets/c01d5d0e-d762-481d-ab66-7110a7101e22)
 
