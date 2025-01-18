@@ -14,6 +14,13 @@ headers = {
     "accept": "application/json",
     "Authorization": "Bearer XXXX"
 }
+
+#Exclusion 
+tv_excluded_countries=['cn','jp','kr','us']
+tv_excluded_genres=['Animation','Romance']
+movie_excluded_countries=['cn','jp','kr','us']
+movie_excluded_genres=['Animation']
+
 # The font used
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
 
@@ -109,10 +116,10 @@ def get_logo(media_type, media_id, language="en"):
     logo_response = requests.get(logo_url, headers=headers)
     logo_data = logo_response.json()
     if logo_response.status_code == 200:
-        # Check if there are any logos available
-        logos = logo_data.get("logos", [])
-        if logos:
-            return logos[0]["file_path"]
+        logos = logo_response.json().get("logos", [])
+        for logo in logos:
+            if logo["iso_639_1"] == "en" and logo["file_path"].endswith(".png"):
+                return logo["file_path"]
     return None
 
 def process_image(image_url, title, is_movie, genre, year, rating, duration=None, seasons=None):
@@ -133,15 +140,15 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
         # Paste images
         bckg.paste(image, (1175, 0))
         bckg.paste(overlay, (1175, 0), overlay)
-        bckg.paste(tmdblogo, (570, 977), tmdblogo)
+        bckg.paste(tmdblogo, (680, 890), tmdblogo)
 
         # Add title text with shadow
         draw = ImageDraw.Draw(bckg)
 
         # Text font
         font_title = ImageFont.truetype(urlopen(truetype_url), size=190)
-        font_overview = ImageFont.truetype(urlopen(truetype_url), size=45)
-        font_custom = ImageFont.truetype(urlopen(truetype_url), size=45)
+        font_overview = ImageFont.truetype(urlopen(truetype_url), size=50)
+        font_custom = ImageFont.truetype(urlopen(truetype_url), size=60)
 
         # Text color
         shadow_color = "black"
@@ -150,14 +157,14 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
         metadata_color = "white"
 
         # Text position
-        title_position = (200, 520)
-        overview_position = (210, 830)
+        title_position = (200, 420)
+        overview_position = (210, 730)
         shadow_offset = 2
-        info_position = (210, 750)  # Adjusted position for logo and info
-        custom_position = (210, 970)
+        info_position = (210, 650)  # Adjusted position for logo and info
+        custom_position = (210, 870)
 
         # Wrap overview text
-        wrapped_overview = "\n".join(textwrap.wrap(overview, width=70, initial_indent="", subsequent_indent="", expand_tabs=True, tabsize=8, replace_whitespace=True, fix_sentence_endings=False, break_long_words=True, break_on_hyphens=True, drop_whitespace=True, max_lines=2, placeholder=" ..."))
+        wrapped_overview = "\n".join(textwrap.wrap(overview, width=70, max_lines=2, placeholder=" ..."))
 
         # Draw Overview for info
         draw.text((overview_position[0] + shadow_offset, overview_position[1] + shadow_offset), wrapped_overview, font=font_overview, fill=shadow_color)
@@ -173,7 +180,7 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
 
         rating_text = "TMDB: " + str(rating)
         year_text = truncate(str(year), 7)
-        info_text = f"{genre_text}  •  {year_text}  •  {additional_info}  •  {rating_text}"
+        info_text = f"{genre_text}  \u2022  {year_text}  \u2022  {additional_info}  \u2022  {rating_text}"
 
         # Draw metadata
         draw.text((info_position[0] + shadow_offset, info_position[1] + shadow_offset), info_text, font=font_overview, fill=shadow_color)
@@ -194,7 +201,7 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
                 try:
                     logo_image = Image.open(BytesIO(logo_response.content))
                     # Resize the logo image to fit within a box while maintaining aspect ratio
-                    logo_image = resize_logo(logo_image, 1200, 600)
+                    logo_image = resize_logo(logo_image, 1000, 500)
                     logo_position = (210, info_position[1] - logo_image.height - 25)  # Position for logo
                     logo_image = logo_image.convert('RGBA')
 
@@ -221,9 +228,35 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
     else:
         print(f"Failed to download background for {title}")
 
+# Filter criteria
+def should_exclude_movie(movie, movie_excluded_countries=movie_excluded_countries, movie_excluded_genres=movie_excluded_genres):
+    # Check if the movie's country is in the excluded countries list
+    country = movie.get('origin_country', '').lower()
+    # Check if any genre in the movie matches the excluded genres list
+    genres = [movie_genres[genre_id] for genre_id in movie.get('genre_ids', [])]
+    
+    # Return True if movie should be excluded based on country or genre
+    if country in movie_excluded_countries or any(genre in movie_excluded_genres for genre in genres):
+        return True
+    return False
+
+
+def should_exclude_tvshow(tvshow, tv_excluded_countries=tv_excluded_countries, tv_excluded_genres=tv_excluded_genres):
+    # Check if the TV show's country is in the excluded countries list
+    country = tvshow.get('origin_country', [''])[0].lower()
+    # Check if any genre in the TV show matches the excluded genres list
+    genres = [tv_genres[genre_id] for genre_id in tvshow.get('genre_ids', [])]
+    
+    # Return True if TV show should be excluded based on country or genre
+    if country in tv_excluded_countries or any(genre in tv_excluded_genres for genre in genres):
+        return True
+    return False
 
 # Process each trending movie
 for movie in trending_movies.get('results', []):
+    if should_exclude_movie(movie):
+        continue
+    
     # Extract movie details
     title = movie['title']
     overview = movie['overview']
@@ -257,6 +290,9 @@ for movie in trending_movies.get('results', []):
 
 # Process trending TV shows
 for tvshow in trending_tvshows.get('results', []):
+    if should_exclude_tvshow(tvshow):
+        continue
+
     # Extract TV show details
     title = truncate_overview(tvshow['name'],38)
     overview = tvshow['overview']
