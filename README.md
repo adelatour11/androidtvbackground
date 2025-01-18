@@ -15,11 +15,11 @@ The scripts retrieves the background of the latests shows (movies or tv shows), 
 
 ![image](https://github.com/user-attachments/assets/71923ddf-6b5b-4b1c-af46-d12d9a525b6c)
 
-![image](https://github.com/user-attachments/assets/ca56ad9b-4d15-4928-a4d8-971ad8f5f390)
+![image](https://github.com/user-attachments/assets/e560ccf7-cc11-49ce-b6c1-8395d2e309f1)
 
-![image](https://github.com/user-attachments/assets/d87099eb-e5a5-4a2f-aabb-d11d9348035b)
+![image](https://github.com/user-attachments/assets/43045560-36c9-45e6-a55a-ebf154844d51)
 
-![image](https://github.com/user-attachments/assets/1fee44e7-befa-458b-a082-394615939627)
+![image](https://github.com/user-attachments/assets/c01d5d0e-d762-481d-ab66-7110a7101e22)
 
 ![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/b28900a4-4776-4aae-b631-e30334d932dd)
 
