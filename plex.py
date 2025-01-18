@@ -8,17 +8,18 @@ import unicodedata
 import re
 import shutil
 import textwrap
+from plexapi.server import PlexServer
 
+# Plex Server Configuration (Global Parameters)
+baseurl = 'http://XXX:XXX'
+token = 'XXXXX'
 
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
-
-from plexapi.server import PlexServer
 
 # Set the order_by parameter to 'aired' or 'added'
 order_by = 'added'
 download_movies = True
 download_series = True
-# Set the number of latest movies to download
 limit = 10
 
 # Create a directory to save the backgrounds
@@ -28,28 +29,48 @@ if os.path.exists(background_dir):
     shutil.rmtree(background_dir)
     os.makedirs(background_dir)
 
+
 def resize_image(image, height):
     ratio = height / image.height
     width = int(image.width * ratio)
     return image.resize((width, height))
 
+def resize_logo(image, width, height):
+    aspect_ratio = image.width / image.height
+    new_width = width
+    new_height = int(new_width / aspect_ratio)
+    
+    if new_height > height:
+        new_height = height
+        new_width = int(new_height * aspect_ratio)
+    
+    resized_img = image.resize((new_width, new_height))
+    return resized_img
+
 def truncate_summary(summary, max_chars):
-    if len(summary) > max_chars:
-        return summary[:max_chars]
-    else:
-        return summary
+    return textwrap.shorten(summary, width=max_chars, placeholder="...")
 
 def clean_filename(filename):
-    # Remove problematic characters from the filename
     cleaned_filename = re.sub(r'[\\/*?:"<>|]', '_', filename)
     return cleaned_filename
 
-def download_latest_media(order_by, limit, media_type):
-    baseurl = 'http://XXXX:32400'
-    token = 'XXXX'
-    plex = PlexServer(baseurl, token)
+def download_logo_in_memory(media_item):
+    logo_url = f"{baseurl}/library/metadata/{media_item.ratingKey}/clearLogo?X-Plex-Token={token}"
+    
+    try:
+        response = requests.get(logo_url, timeout=10)
+        if response.status_code == 200:
+            logo_image = Image.open(BytesIO(response.content))
+            return logo_image  # Return the logo as a PIL Image object
+        else:
+            print(f"Failed to retrieve logo for {media_item.title}. Status code: {response.status_code}")
+            return None
+    except Exception as e:
+        print(f"An error occurred while downloading the logo for {media_item.title}: {e}")
+        return None
 
-    os.makedirs(background_dir, exist_ok=True)
+def download_latest_media(order_by, limit, media_type):
+    plex = PlexServer(baseurl, token)
 
     if media_type == 'movie' and download_movies:
         media_items = plex.library.search(libtype='movie')
@@ -76,40 +97,38 @@ def download_latest_media(order_by, limit, media_type):
                 # Download the background image with a timeout of 10 seconds
                 response = requests.get(background_url, timeout=10)
                 if response.status_code == 200:
-                    # Remove problematic characters from the item title
                     filename_safe_title = unicodedata.normalize('NFKD', item.title).encode('ASCII', 'ignore').decode('utf-8')
                     filename_safe_title = clean_filename(filename_safe_title)
-                    # Save the background image to a file
                     background_filename = os.path.join(background_dir, f"{filename_safe_title}.jpg")
                     with open(background_filename, 'wb') as f:
                         f.write(response.content)
                     
-                    # Open the background image with PIL
                     image = Image.open(background_filename)
-                    bckg = Image.open(os.path.join(os.path.dirname(__file__),"bckg.png"))
+                    bckg = Image.open(os.path.join(os.path.dirname(__file__), "bckg.png"))
                     
-                    # Resize the image to have a height of 1080 pixels
+                    # Resize the image to have a height of 1500 pixels
                     image = resize_image(image, 1500)
 
-                    # Open overlay image
-                    overlay = Image.open(os.path.join(os.path.dirname(__file__),"overlay.png"))
-                    plexlogo = Image.open(os.path.join(os.path.dirname(__file__),"plexlogo.png"))
+                    overlay = Image.open(os.path.join(os.path.dirname(__file__), "overlay.png"))
+                    plexlogo = Image.open(os.path.join(os.path.dirname(__file__), "plexlogo.png"))
 
                     bckg.paste(image, (1175, 0))
-                    bckg.paste(overlay, (1175,0), overlay)
-                    bckg.paste(plexlogo, (680, 970),plexlogo)
+                    bckg.paste(overlay, (1175, 0), overlay)
+                    bckg.paste(plexlogo, (685, 870), plexlogo)
 
                     # Add text on top of the image with shadow effect
                     draw = ImageDraw.Draw(bckg)
                     
-                    #Text Font
+                    # Font Setup
                     font_title = ImageFont.truetype(urlopen(truetype_url), size=190)
                     font_info = ImageFont.truetype(urlopen(truetype_url), size=55)
-                    font_summary = ImageFont.truetype(urlopen(truetype_url), size=45)
+                    font_summary = ImageFont.truetype(urlopen(truetype_url), size=50)
                     font_metadata = ImageFont.truetype(urlopen(truetype_url), size=50)
                     font_custom = ImageFont.truetype(urlopen(truetype_url), size=60)                 
                     
                     title_text = f"{item.title}"
+                    logo_image = download_logo_in_memory(item)
+
                     if media_type == 'movie':
                         if item.audienceRating:
                             rating_text = f" IMDb: {item.audienceRating}"
@@ -129,76 +148,50 @@ def download_latest_media(order_by, limit, media_type):
                         else:
                             rating_text = ""
                         seasons_count = len(item.seasons())
-                        if seasons_count == 1:
-                            seasons_text = "Season"
-                        else:
-                            seasons_text = "Seasons"
+                        seasons_text = "Season" if seasons_count == 1 else "Seasons"
                         info_text = f"{item.year}  •  {', '.join([genre.tag for genre in item.genres])}  •  {seasons_count} {seasons_text}  •  {rating_text}"
                     summary_text = truncate_summary(item.summary, 175)
                     custom_text = "Now Available on"
-                    
-                    title_text_width, title_text_height = draw.textlength(title_text, font=font_title), draw.textlength(title_text, font=font_title)
-                    info_text_width, info_text_height = draw.textlength(info_text, font=font_info), draw.textlength(info_text, font=font_info)
-                    custom_text_width, custom_text_height = draw.textlength(custom_text, font=font_info), draw.textlength(custom_text, font=font_custom)
-                    summary_text_width, summary_text_height = draw.textlength(summary_text, font=font_summary), draw.textlength(summary_text, font=font_summary)
-                    metadata_text_width, metadata_text_height = draw.textlength(info_text, font=font_metadata), draw.textlength(info_text, font=font_metadata)
-                    
-                    #Position
-                    title_position = (200, 540)
-                    summary_position = (210, 830)
-                    info_position = (210, 520)
-                    metadata_position = (210, 920)
-                    custom_position = (210, 950)
-                    shadow_offset = 2
 
-                    #Color
+                    # Draw Text (with shadow for better visibility)
+                    shadow_offset = 2
                     shadow_color = "black"
                     main_color = "white"
-                    info_color = "white"
-                    summary_color = (150,150,150)  # Grey color for the summary
+                    info_color = (150, 150, 150)
+                    summary_color = "white"
                     metadata_color = "white"
-
-                    # Draw shadow for title
-                    draw.text((title_position[0] + shadow_offset, title_position[1] + shadow_offset), title_text, font=font_title, fill=shadow_color)
-                    # Draw main title text
-                    draw.text(title_position, title_text, font=font_title, fill=main_color)
-
-                    # Wrap summary text
                     wrapped_summary = "\n".join(textwrap.wrap(summary_text, width=95)) + "..."
-                    
-                    # Draw shadow for info
-                    draw.text((info_position[0] + shadow_offset, info_position[1] + shadow_offset), info_text, font=font_summary, fill=shadow_color)
-                    # Draw main info text
-                    draw.text(info_position, info_text, font=font_summary, fill=summary_color)
-                    
-                    # Draw shadow for summary text
+
+                    title_position = (200, 370)
+                    summary_position = (210, 700)
+                    info_position = (210, 600)
+                    metadata_position = (210, 820)
+                    custom_position = (210, 850)
+
+                    draw.text((info_position[0] + shadow_offset, info_position[1] + shadow_offset), info_text, font=font_info, fill=shadow_color)
+                    draw.text(info_position, info_text, font=font_info, fill=info_color)
                     draw.text((summary_position[0] + shadow_offset, summary_position[1] + shadow_offset), wrapped_summary, font=font_summary, fill=shadow_color)
-                    # Draw summary text
                     draw.text(summary_position, wrapped_summary, font=font_summary, fill=summary_color)
-
-
-                    # Draw shadow for custom text
-                    draw.text((custom_position[0] + shadow_offset, custom_position[1] + shadow_offset), custom_text, font=font_custom, fill=shadow_color)                  
-                    # Draw custom text
+                    draw.text((custom_position[0] + shadow_offset, custom_position[1] + shadow_offset), custom_text, font=font_custom, fill=shadow_color)
                     draw.text(custom_position, custom_text, font=font_custom, fill=metadata_color)
 
+                    if logo_image:
+                        logo_resized = resize_logo(logo_image, 1000, 400).convert('RGBA')
+                        logo_position = (210, info_position[1] - logo_resized.height - 25)
+                        bckg.paste(logo_resized, logo_position, logo_resized)
+                    else:
+                        draw.text((title_position[0] + shadow_offset, title_position[1] + shadow_offset), truncate_summary(title_text,30), font=font_title, fill=shadow_color)
+                        draw.text(title_position, truncate_summary(title_text,30), font=font_title, fill=main_color)
 
-
-                    
-                    # Save the modified image
-                    bckg = bckg.convert('RGB')  # Convert image to RGB mode to save as JPEG
+                    bckg = bckg.convert('RGB')
                     bckg.save(background_filename)
                     print(f"Image saved: {background_filename}")
 
-                    
                 else:
                     print(f"Failed to download background for {item.title}")
             except Exception as e:
                 print(f"An error occurred while processing {item.title}: {e}")
-        else:
-            print(f"No background image found for {item.title}")
 
-        # Adding a small delay to give the server some time to respond
         time.sleep(1)
 
 # Download the latest movies according to the specified order and limit
