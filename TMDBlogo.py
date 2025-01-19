@@ -15,7 +15,7 @@ headers = {
     "Authorization": "Bearer XXXX"
 }
 
-#Exclusion - specify country code and genre as defined in TMDB
+#Exclusion - specify country code and genre as defined in TMDB for example 'FR','US','CN' etc or 'Animation','Horror'
 tv_excluded_countries=['XX','XX','XX','XX']
 tv_excluded_genres=['XXXXX','XXXXX']
 movie_excluded_countries=['XX','XX','XX','XX']
