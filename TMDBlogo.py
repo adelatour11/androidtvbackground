@@ -15,11 +15,12 @@ headers = {
     "Authorization": "Bearer XXXX"
 }
 
-#Exclusion - specify country code and genre as defined in TMDB for example 'FR','US','CN' etc or 'Animation','Horror'
-tv_excluded_countries=['XX','XX','XX','XX']
-tv_excluded_genres=['XXXXX','XXXXX']
-movie_excluded_countries=['XX','XX','XX','XX']
-movie_excluded_genres=['XXX']
+#Exclusion list
+tv_excluded_countries=['xx','xx','xx'] #based on ISO 3166-1 alpha-2 codes, enter lowercase like ['cn','kr','jp','fr','us']
+tv_excluded_genres=['xxxx'] # like ['animation']
+movie_excluded_countries=['xx','xx','xx'] #based on ISO 3166-1 alpha-2 codes, enter lowercase like ['cn','kr','jp','fr','us']
+movie_excluded_genres=['xxxx'] # like ['ananimation']
+excluded_keywords = ['xxx','xxx'] #lowercase like ['adult']
 
 # The font used
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
@@ -59,6 +60,23 @@ def get_movie_details(movie_id):
     movie_details_url = f'{url}movie/{movie_id}?language=en-US'
     movie_details_response = requests.get(movie_details_url, headers=headers)
     return movie_details_response.json()
+
+# Function to fetch keywords for a movie
+def get_movie_keywords(movie_id):
+    keywords_url = f"{url}movie/{movie_id}/keywords"
+    response = requests.get(keywords_url, headers=headers)
+    if response.status_code == 200:
+        # Extract and return the names of the keywords
+        return [keyword['name'].lower() for keyword in response.json().get('keywords', [])]
+    return []
+
+# Function to fetch keywords for a TV show
+def get_tv_keywords(tv_id):
+    keywords_url = f"{url}tv/{tv_id}/keywords"
+    response = requests.get(keywords_url, headers=headers)
+    if response.status_code == 200:
+        return [keyword['name'].lower() for keyword in response.json().get('results', [])]
+    return []
 
 # Create a directory to save the backgrounds
 background_dir = "tmdb_backgrounds"
@@ -229,27 +247,46 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
         print(f"Failed to download background for {title}")
 
 # Filter criteria
-def should_exclude_movie(movie, movie_excluded_countries=movie_excluded_countries, movie_excluded_genres=movie_excluded_genres):
+def should_exclude_movie(movie, movie_excluded_countries=movie_excluded_countries, movie_excluded_genres=movie_excluded_genres, excluded_keywords=excluded_keywords):
     # Check if the movie's country is in the excluded countries list
     country = movie.get('origin_country', '').lower()
-    # Check if any genre in the movie matches the excluded genres list
-    genres = [movie_genres[genre_id] for genre_id in movie.get('genre_ids', [])]
     
-    # Return True if movie should be excluded based on country or genre
-    if country in movie_excluded_countries or any(genre in movie_excluded_genres for genre in genres):
+    # Check if any genre in the movie matches the excluded genres list
+    genres = [movie_genres.get(genre_id, '') for genre_id in movie.get('genre_ids', [])]
+    
+    # Fetch movie keywords
+    movie_keywords = get_movie_keywords(movie['id']) if excluded_keywords else []
+    
+    # Return True if excluded by country, genre, or keywords
+    if (country in movie_excluded_countries or 
+        any(genre in movie_excluded_genres for genre in genres) or 
+        any(keyword in movie_keywords for keyword in excluded_keywords)):
         return True
+    print(f"Movie ID: {movie['id']}")
+    print(f"Country: {country}")
+    print(f"Genres: {genres}")
+    print(f"Movie Keywords: {movie_keywords}")
     return False
 
-
-def should_exclude_tvshow(tvshow, tv_excluded_countries=tv_excluded_countries, tv_excluded_genres=tv_excluded_genres):
+def should_exclude_tvshow(tvshow, tv_excluded_countries=tv_excluded_countries, tv_excluded_genres=tv_excluded_genres, excluded_keywords=excluded_keywords):
     # Check if the TV show's country is in the excluded countries list
     country = tvshow.get('origin_country', [''])[0].lower()
-    # Check if any genre in the TV show matches the excluded genres list
-    genres = [tv_genres[genre_id] for genre_id in tvshow.get('genre_ids', [])]
     
-    # Return True if TV show should be excluded based on country or genre
-    if country in tv_excluded_countries or any(genre in tv_excluded_genres for genre in genres):
+    # Check if any genre in the TV show matches the excluded genres list
+    genres = [tv_genres.get(genre_id, '') for genre_id in tvshow.get('genre_ids', [])]
+    
+    # Fetch TV show keywords
+    tv_keywords = get_tv_keywords(tvshow['id']) if excluded_keywords else []
+    
+    # Return True if excluded by country, genre, or keywords (using OR conditions)
+    if (country in tv_excluded_countries or 
+        any(genre in tv_excluded_genres for genre in genres) or 
+        any(keyword in tv_keywords for keyword in excluded_keywords)):
         return True
+    print(f"TV Show ID: {tvshow['id']}")
+    print(f"Country: {country}")
+    print(f"Genres: {genres}")
+    print(f"TV Show Keywords: {tv_keywords}")
     return False
 
 # Process each trending movie
