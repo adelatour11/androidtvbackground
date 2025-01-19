@@ -15,12 +15,16 @@ headers = {
     "Authorization": "Bearer XXXX"
 }
 
-#Exclusion list
+#TV Exclusion list - this filter will exclude Tv shows from chosen countries that have a specific genre
 tv_excluded_countries=['xx','xx','xx'] #based on ISO 3166-1 alpha-2 codes, enter lowercase like ['cn','kr','jp','fr','us']
 tv_excluded_genres=['xxxx'] # like ['animation']
+
+#Movie Exclusion list - this filter will exclude movies from chosen countries that have a specific genre
 movie_excluded_countries=['xx','xx','xx'] #based on ISO 3166-1 alpha-2 codes, enter lowercase like ['cn','kr','jp','fr','us']
-movie_excluded_genres=['xxxx'] # like ['ananimation']
-excluded_keywords = ['xxx','xxx'] #lowercase like ['adult']
+movie_excluded_genres=['xxxx'] # like ['animation']
+
+#Keyword exclusion list - this filter will exclude movies or tv shows that contain a specific keyword in their TMDB profile
+excluded_keywords = ['adult'] #lowercase like ['adult']
 
 # The font used
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
