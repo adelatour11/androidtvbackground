@@ -35,7 +35,7 @@ max_air_date = datetime.now() - timedelta(days=30) #specify the number of days s
 
 # Save font locally
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
-truetype_path = '/Roboto-Light.ttf'
+truetype_path = 'Roboto-Light.ttf'
 if not os.path.exists(truetype_path):
     try:
         response = requests.get(truetype_url, timeout=10)
