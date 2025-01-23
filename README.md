@@ -51,8 +51,9 @@ The scripts retrieves the background of the latests shows (movies or tv shows), 
 ***Plex Script***
 - For the plex script you can specify the number of poster to generate, specify if you want to include movies and tv, specify if you want latest added or latest aired items. You can also edit the code to change the text position or content
 ***TMDB Scripts***
-- There is two versions of the TMDB script, one without show logo and one without. Shows that do not have the logo on TMDB will just have the title displayed
+- Shows that do not have the logo on TMDB will just have the title displayed
 - You can edit the script to change the color, the text position or font, you can specify exclusion based on origin country code or genre
+- By default the script will retrieve the posters for the movies or TV shows whose last air date is older than 30 days from the current date. For the TV Shows, the episode last air date is considered.      
 - You can edit the code to change the endpoints for trending shows that is here
   ```
   trending_movies_url = f'{url}trending/movie/week?language=en-US'
