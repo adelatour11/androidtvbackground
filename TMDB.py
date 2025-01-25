@@ -185,9 +185,9 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
         draw = ImageDraw.Draw(bckg)
 
         # Text font
-        font_title = ImageFont.truetype(urlopen(truetype_url), size=190)
-        font_overview = ImageFont.truetype(urlopen(truetype_url), size=50)
-        font_custom = ImageFont.truetype(urlopen(truetype_url), size=60)
+        font_title = ImageFont.truetype(truetype_path, size=190)
+        font_overview = ImageFont.truetype(truetype_path, size=50)
+        font_custom = ImageFont.truetype(truetype_path, size=60)
 
         # Text color
         shadow_color = "black"
