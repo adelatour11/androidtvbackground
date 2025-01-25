@@ -14,11 +14,24 @@ from plexapi.server import PlexServer
 baseurl = 'http://XXX:XXX'
 token = 'XXXX'
 
+# Save font locally
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
+truetype_path = 'Roboto-Light.ttf'
+if not os.path.exists(truetype_path):
+    try:
+        response = requests.get(truetype_url, timeout=10)
+        if response.status_code == 200:
+            with open(truetype_path, 'wb') as f:
+                f.write(response.content)
+            print("Roboto-Light font saved")
+        else:
+            print(f"Failed to download Roboto-Light font. Status code: {response.status_code}")
+    except Exception as e:
+        print(f"An error occurred while downloading the Roboto-Light font: {e}")
 
 # Set the order_by parameter to 'aired' or 'added'
-order_by = 'aired'
-download_movies = False
+order_by = 'added'
+download_movies = True
 download_series = True
 limit = 10
 
@@ -147,11 +160,11 @@ def download_latest_media(order_by, limit, media_type):
                     draw = ImageDraw.Draw(bckg)
                     
                     # Font Setup
-                    font_title = ImageFont.truetype(urlopen(truetype_url), size=190)
-                    font_info = ImageFont.truetype(urlopen(truetype_url), size=55)
-                    font_summary = ImageFont.truetype(urlopen(truetype_url), size=50)
-                    font_metadata = ImageFont.truetype(urlopen(truetype_url), size=50)
-                    font_custom = ImageFont.truetype(urlopen(truetype_url), size=60)                 
+                    font_title = ImageFont.truetype(truetype_path, size=190)
+                    font_info = ImageFont.truetype(truetype_path, size=55)
+                    font_summary = ImageFont.truetype(truetype_path, size=50)
+                    font_metadata = ImageFont.truetype(truetype_path, size=50)
+                    font_custom = ImageFont.truetype(truetype_path, size=60)                 
                     
                     title_text = f"{item.title}"
                     logo_image = download_logo_in_memory(item)
