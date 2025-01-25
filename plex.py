@@ -64,7 +64,7 @@ def truncate_summary(summary, max_chars):
     return textwrap.shorten(summary, width=max_chars, placeholder="...")
 
 def clean_filename(filename):
-    cleaned_filename = re.sub(r'[\\/*?:"<>|]', '_', filename)
+    cleaned_filename = "".join(c if c.isalnum() or c in "._-" else "_" for c in filename)
     return cleaned_filename
 
 def download_logo_in_memory(media_item):
