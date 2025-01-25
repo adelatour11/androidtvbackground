@@ -11,8 +11,8 @@ import textwrap
 from plexapi.server import PlexServer
 
 # Plex Server Configuration (Global Parameters)
-baseurl = 'http://XXX:XXX'
-token = 'XXXXX'
+baseurl = 'http://XXXX:32400'
+token = 'XXXX'
 
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
 
@@ -79,14 +79,35 @@ def download_latest_media(order_by, limit, media_type):
     else:
         print("Invalid media_type parameter.")
         return
-    
-    if order_by == 'aired':
-        media_sorted = sorted(media_items, key=lambda x: x.originallyAvailableAt, reverse=True)
-    elif order_by == 'added':
-        media_sorted = sorted(media_items, key=lambda x: x.addedAt, reverse=True)
+
+    # Adjust sorting logic for TV shows based on episodes
+    if media_type == 'tv' and order_by in ['aired', 'added']:
+        series_with_dates = []
+        for series in media_items:
+            episodes = series.episodes()
+            if episodes:
+                if order_by == 'aired':
+                    # Sort episodes by air date and get the latest
+                    latest_episode = max(episodes, key=lambda ep: ep.originallyAvailableAt or ep.addedAt)
+                elif order_by == 'added':
+                    # Sort episodes by added date and get the latest
+                    latest_episode = max(episodes, key=lambda ep: ep.addedAt)
+                
+                # Add series with the date of the latest relevant episode
+                if latest_episode:
+                    latest_date = latest_episode.originallyAvailableAt if order_by == 'aired' else latest_episode.addedAt
+                    series_with_dates.append((series, latest_date))
+
+        # Sort series based on the latest episode's date
+        media_sorted = [item[0] for item in sorted(series_with_dates, key=lambda x: x[1], reverse=True)]
     else:
-        print("Invalid order_by parameter. Please use 'aired' or 'added'.")
-        return
+        if order_by == 'aired':
+            media_sorted = sorted(media_items, key=lambda x: x.originallyAvailableAt, reverse=True)
+        elif order_by == 'added':
+            media_sorted = sorted(media_items, key=lambda x: x.addedAt, reverse=True)
+        else:
+            print("Invalid order_by parameter. Please use 'aired' or 'added'.")
+            return
 
     for item in media_sorted[:limit]:
         # Get the URL of the background image
