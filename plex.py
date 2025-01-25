@@ -11,14 +11,14 @@ import textwrap
 from plexapi.server import PlexServer
 
 # Plex Server Configuration (Global Parameters)
-baseurl = 'http://XXXX:32400'
+baseurl = 'http://XXX:XXX'
 token = 'XXXX'
 
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
 
 # Set the order_by parameter to 'aired' or 'added'
-order_by = 'added'
-download_movies = True
+order_by = 'aired'
+download_movies = False
 download_series = True
 limit = 10
 
@@ -81,33 +81,39 @@ def download_latest_media(order_by, limit, media_type):
         return
 
     # Adjust sorting logic for TV shows based on episodes
-    if media_type == 'tv' and order_by in ['aired', 'added']:
+    if media_type == 'tv' and order_by == 'added':
         series_with_dates = []
         for series in media_items:
             episodes = series.episodes()
             if episodes:
-                if order_by == 'aired':
-                    # Sort episodes by air date and get the latest
-                    latest_episode = max(episodes, key=lambda ep: ep.originallyAvailableAt or ep.addedAt)
-                elif order_by == 'added':
-                    # Sort episodes by added date and get the latest
-                    latest_episode = max(episodes, key=lambda ep: ep.addedAt)
-                
-                # Add series with the date of the latest relevant episode
-                if latest_episode:
-                    latest_date = latest_episode.originallyAvailableAt if order_by == 'aired' else latest_episode.addedAt
+                # Filter out episodes with no addedAt date
+                episodes_with_added_date = [ep for ep in episodes if ep.addedAt is not None]
+                if episodes_with_added_date:
+                    # Find the latest episode by addedAt
+                    latest_episode = max(episodes_with_added_date, key=lambda ep: ep.addedAt)
+                    latest_date = latest_episode.addedAt
                     series_with_dates.append((series, latest_date))
 
-        # Sort series based on the latest episode's date
+        # Sort series based on the latest episode's added date
+        media_sorted = [item[0] for item in sorted(series_with_dates, key=lambda x: x[1], reverse=True)]
+    elif media_type == 'tv' and order_by == 'aired':
+        series_with_dates = []
+        for series in media_items:
+            episodes = series.episodes()
+            if episodes:
+                # Filter out episodes with no air date
+                episodes_with_air_date = [ep for ep in episodes if ep.originallyAvailableAt is not None]
+                if episodes_with_air_date:
+                    # Find the latest episode by air date
+                    latest_episode = max(episodes_with_air_date, key=lambda ep: ep.originallyAvailableAt)
+                    latest_date = latest_episode.originallyAvailableAt
+                    series_with_dates.append((series, latest_date))
+
+        # Sort series based on the latest episode's air date
         media_sorted = [item[0] for item in sorted(series_with_dates, key=lambda x: x[1], reverse=True)]
     else:
-        if order_by == 'aired':
-            media_sorted = sorted(media_items, key=lambda x: x.originallyAvailableAt, reverse=True)
-        elif order_by == 'added':
-            media_sorted = sorted(media_items, key=lambda x: x.addedAt, reverse=True)
-        else:
-            print("Invalid order_by parameter. Please use 'aired' or 'added'.")
-            return
+        print("Invalid order_by parameter. Please use 'aired' or 'added'.")
+        return
 
     for item in media_sorted[:limit]:
         # Get the URL of the background image
