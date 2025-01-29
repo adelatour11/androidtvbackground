@@ -48,8 +48,10 @@ The scripts retrieves the background of the latests shows (movies or tv shows), 
 - if you want to edit the overlay and background image I have included the source file as a vector format 
 
 **If you want to edit the scripts :**
+
 ***Plex Script***
 - For the plex script you can specify the number of poster to generate, specify if you want to include movies and tv, specify if you want latest added or latest aired items. You can also edit the code to change the text position or content
+
 ***TMDB Scripts***
 - Shows that do not have the logo on TMDB will just have the title displayed
 - You can edit the script to change the color, the text position or font, you can specify exclusion based on origin country code or genre
