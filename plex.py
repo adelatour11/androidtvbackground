@@ -35,12 +35,11 @@ download_movies = True
 download_series = True
 limit = 10
 
-# Create a directory to save the backgrounds
+# Create a directory to save the backgrounds and clear its contents if it exists
 background_dir = "plex_backgrounds"
-# Clear the contents of the folder
 if os.path.exists(background_dir):
     shutil.rmtree(background_dir)
-    os.makedirs(background_dir)
+os.makedirs(background_dir, exist_ok=True)
 
 
 def resize_image(image, height):

@@ -27,9 +27,6 @@ movie_excluded_genres=['XXX'] # like ['Animation']
 # Keyword exclusion list - this filter will exclude movies or tv shows that contain a specific keyword in their TMDB profile
 excluded_keywords = ['XXX','XXX','XXX'] # like ['adult']
 
-# Directory to save the backgrounds
-background_dir = "tmdb_backgrounds"
-
 # Filter movies by release date and tv shows by last air date
 max_air_date = datetime.now() - timedelta(days=30) #specify the number of days since the movei release or the tv show last air date, shows before this date will be excluded 
 
@@ -102,8 +99,10 @@ def get_tv_keywords(tv_id):
         return [keyword['name'].lower() for keyword in response.json().get('results', [])]
     return []
 
-# Clear the contents of the folder
-shutil.rmtree(background_dir)  
+# Create a directory to save the backgrounds and clear its contents if it exists
+background_dir = "tmdb_backgrounds"
+if os.path.exists(background_dir):
+    shutil.rmtree(background_dir)
 os.makedirs(background_dir, exist_ok=True)
 
 #truncate overview
