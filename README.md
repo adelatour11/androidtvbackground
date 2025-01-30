@@ -1,83 +1,60 @@
-# Android TV Background
-
-This is a simple script to retrieve Plex or TMDB media background and use it as Android TV Wallpaper
-I developed this to use it with alternative Android TV launchers
-
-![y](https://github.com/adelatour11/androidtvbackground/assets/1473994/8039b728-469f-4fd9-8ca5-920e57bd16d9)
-
-
-To use the script, you have to specify : 
-- For Plex.py script : your plex token and plex server url
-- For TMDB.py or TMDBlogo.py : your TMDB API Read Access Token
-- For Trakt.py, your Trakt client key, Trakt username, Trakt list name and TMDB API Read Access Token
-
-The scripts retrieves the background of the latests shows (movies or tv shows), resizes the image, add an overlay and add text or image on top
-
-![image](https://github.com/user-attachments/assets/71923ddf-6b5b-4b1c-af46-d12d9a525b6c)
-
-![image](https://github.com/user-attachments/assets/e560ccf7-cc11-49ce-b6c1-8395d2e309f1)
-
-![image](https://github.com/user-attachments/assets/815c3685-2b6d-4ef5-86c3-b2d67038736a)
-
-![image](https://github.com/user-attachments/assets/c01d5d0e-d762-481d-ab66-7110a7101e22)
-
-![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/b28900a4-4776-4aae-b631-e30334d932dd)
-
-![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/e0410589-81a4-40ac-a55d-8fd6eb061721)
-
-![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/2e92f213-21f9-4147-b678-0ee4dd0546ad)
-
-![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/03aecbcd-e2fd-4969-b0a2-0346d1842705)
-
-
-**How to :**
-- install latest version of python (https://www.python.org/downloads/)
-- Install pip (follow the process here https://pip.pypa.io/en/stable/installation/)
-- Download the content of this repository
-- Go into the repository using a terminal and install dependencies :
-  ```
-  pip install -r requirements.txt
-  ```
-- Edit each python scripts with your info
-    - Specify you credentials
-        - for Plex check this article on how to find your plex token https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
-        - for TMDB create an account and get you api key here there https://www.themoviedb.org/settings/api
-        - for Trakt create your account and go there https://trakt.tv/oauth/applications to create an app and retrieve your client id 
-- As you run one of the script it will create a new folder and add the images automatically.
-- Each time the scripts will run it will delete the content of the folder and create new images
-- if you want to edit the overlay and background image I have included the source file as a vector format 
-
-**If you want to edit the scripts :**
-
-***Plex Script***
-- For the plex script you can specify the number of poster to generate, specify if you want to include movies and tv, specify if you want latest added or latest aired items. You can also edit the code to change the text position or content
-
-***TMDB Scripts***
-- Shows that do not have the logo on TMDB will just have the title displayed
-- You can edit the script to change the color, the text position or font, you can specify exclusion based on origin country code or genre
-- By default the script will retrieve the posters for the movies or TV shows whose last air date is older than 30 days from the current date. For the TV Shows, the episode last air date is considered.      
-- You can edit the code to change the endpoints for trending shows that is here
-  ```
-  trending_movies_url = f'{url}trending/movie/week?language=en-US'
-  trending_tvshows_url = f'{url}trending/tv/week?language=en-US'
-  ```
-  and replace it by using TMDB API Discover Endpoint
-  You can find details on Discovery endpoints here  :
-
-  https://developer.themoviedb.org/reference/discover-movie
-
-  https://developer.themoviedb.org/reference/discover-tv
-
-  For example you can change the endpoints like this
-
-  ```
-  # Endpoint for shows with genre action from 2022
-  trending_movies_url = f'{url}discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=80&year=2022'
-  trending_tvshows_url = f'{url}discover/tv?first_air_date_year=2022&include_adult=false&include_null_first_air_dates=false&language=en-US&page=1&sort_by=popularity.desc&with_genres=80'
-  ```
+# Android TV Background Docker
   
-  The genre is set by an id, you can get the list from these url
+Dockerized version of [androidtvbackground](https://github.com/adelatour11/androidtvbackground)
+
+### Docker Install Instructions:
+
+- docker-compose.yml file is the preferred way
+   1. Update the volume mapping to your local location for the config files as well as where the background images will be saved to.
+      Backgrounds can be saved to within a subdir of the config location if you want them both in the same spot, or a different location.
+   2. Set the env variables to 'True' for each of the scripts you want run. They are all set to False by default and will not run.
+   3. If you want to have the container stay started and create backgrounds on a schedule, set the cron to a cron format expression.  
+      ie: set `CRON="0 0 * * *"` to have the backgrounds created once a day at midnight. Set to 'False' to not use a schedule.
+
+    From within your docker-compose.yml directory, run:  
+    `docker compose up -d`
+
+- Alternative install is via docker run command line  
+   It would look something like this, depending on config options that you want:  
+   ```
+   docker run -d --name androidtvbackground -v /your/local/path/for/config:/config -v /your/local/path/for/backgrounds:/backgrounds -e PLEX=True -e TMDB=True -e TRAKT=False -e POST_SCRIPT_PY=False -e POST_SCRIPT_SH=True -e CRON="0 0 * * *" ghcr.io/ninthwalker/androidtvbackground:latest
+   ```  
+
+- The last install method is to build it yourself locally using the Dockerfile from this repo
+   1. Clone this repo and extract contents
+   2. From within the extracted folder, open a cmd prompt and run:  
+   `docker build . -t androidtvbackground`
+   3. Once built, you can reference the local image in your docker-compose.yml file or your run cmd. A run cmd would look something like this, depending on config options that you want:  
+   ```
+   docker run -d --name androidtvbackground -v /your/local/path/for/config:/config -v /your/local/path/for/backgrounds:/backgrounds -e PLEX=True -e TMDB=True -e TRAKT=False -e POST_SCRIPT_PY=False -e POST_SCRIPT_SH=True -e CRON="0 0 * * *" androidtvbackground
+   ```  
   
-  https://developer.themoviedb.org/reference/genre-movie-list
+### First run:
+
+- Script files will be copied into your mapped config volume on your host.
+  1. Edit these according to the [instructions](https://github.com/adelatour11/androidtvbackground/blob/main/README.md)
+  1. Start the container again with:
+  `docker start androidtvbackground`
   
-  https://developer.themoviedb.org/reference/genre-tv-list
+### Docker Usage Instructions: 
+
+- Each script set to 'True' will run when the docker is started. If CRON is set to a schedule, the container will stay running and create backgrounds according to your CRON schedule.  
+- If CRON is set to 'False', the container will stop after creating backgrounds and you will need to manually start it again to create more backgrounds with:  
+  `docker start <name of docker>`   
+  *Note that backgrounds will always be created the first time the container starts, even when a cron schedule is set.*  
+  
+### Docker Settings:
+    
+- Scripts can be found in the container /config directory that should be mapped to your local system for access. Edit these files as per the [instructions](https://github.com/adelatour11/androidtvbackground/blob/main/README.md)
+  - **PLEX:** If set to True, retrieves backgrounds from your own [Plex Server](plex.tv).
+  - **TMDB:** If set to True, retrieves backgrounds from [The Movie Database](themoviedb.org)
+  - **TRAKT:** If set to True, retrieves plex backgrounds from [Trakt](trakt.tv)
+  - **CRON:** If set to a cron expression (ie: `CRON="0 0 * * *"`) the docker will stay running and create backgrounds during the schedule you set. If you would rather manually start the docker to create backgrounds, set this to False
+  - **POST_SCRIPT_PY:** If set to True, you can define your own python code in the 'post_script.py' file and it will be run at the end of the background creation.
+  - **POST_SCRIPT_SH**: If set to True, you can define your own shell code in the 'post_script.sh' file and it will be run at the end of the background creation.
+    - Useful to copy the files to a specific share, directly to android tv or a subreddit for example. Note that if you define both python and shell post_scripts, the python is run first and then the shell script.
+  
+- *Note: You can also add PUID and GUID variables if you want to change the user/group the container is run as to match local system. Defaults to 99:100*
+- Note 2: Make sure variable names are capitalized as shown in the above examples. ie: `PLEX: True` and *not* `plex: True`
+
+#### Read the [instructions](https://github.com/adelatour11/androidtvbackground/blob/main/README.md) for how to configure each of the scripts with your API/cred information.
