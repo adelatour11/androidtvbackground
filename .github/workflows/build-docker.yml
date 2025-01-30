@@ -6,13 +6,13 @@ on:
       - '**/*.md'
       - 'LICENSE'
     branches:
-      - main
+      - docker
   pull_request:
     paths-ignore:
       - '**/*.md'
       - 'LICENSE'
     branches:
-      - main
+      - docker
 
 env:
   APP_NAME: androidtvbackground
