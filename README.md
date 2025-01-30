@@ -29,6 +29,8 @@ The scripts retrieves the background of the latests shows (movies or tv shows), 
 
 ![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/03aecbcd-e2fd-4969-b0a2-0346d1842705)
 
+**Note :**
+If you are looking for the docker version check out this branch https://github.com/adelatour11/androidtvbackground/tree/docker
 
 **How to :**
 - install latest version of python (https://www.python.org/downloads/)
@@ -46,6 +48,7 @@ The scripts retrieves the background of the latests shows (movies or tv shows), 
 - As you run one of the script it will create a new folder and add the images automatically.
 - Each time the scripts will run it will delete the content of the folder and create new images
 - if you want to edit the overlay and background image I have included the source file as a vector format 
+
 
 **If you want to edit the scripts :**
 
