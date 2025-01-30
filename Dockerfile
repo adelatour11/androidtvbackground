@@ -15,7 +15,7 @@ ADD https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf R
 FROM python:3.11.11-slim
 ARG VERSION
 ARG SUPERCRONIC_SHA1SUM=71b0d58cc53f6bd72cf2f293e09e294b79c666d8
-LABEL org.opencontainers.image.source="https://github.com/ninthwalker/androidtvbackground-docker" \
+LABEL org.opencontainers.image.source="https://github.com/ninthwalker/androidtvbackground" \
       org.opencontainers.image.description="Create background wallpapers from Plex/TMDB/Trakt" \
       org.opencontainers.image.authors="ninthwalker" \
       org.opencontainers.image.version=$VERSION
