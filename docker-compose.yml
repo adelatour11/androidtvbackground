@@ -1,16 +1,18 @@
 # Sample Docker Compose file for androidtvbackground
 # - Set env vars below to True/False for which scripts you want to have run
+# - Set user uid/gid to your hosts id's for volume mapping permissions. Default is 99:100
 # - Change volume mappings to your local paths
 # - Set a cron expression if you want to have backgrounds created on a schedule. ie: "0 0 * * *"
 # - Update the scripts within the config volume mapping with your own API/URL settings
-# - See full docker instructions at: https://github.com/ninthwalker/androidtvbackground-docker
-# - Androidtvbackground repo: https://github.com/adelatour11/androidtvbackground
+# - See full docker instructions at: https://github.com/ninthwalker/androidtvbackground
+# - Androidtvbackground docker repo: https://github.com/adelatour11/androidtvbackground/tree/docker
 
 services:
   androidtvbackground:
     image: ghcr.io/ninthwalker/androidtvbackground:latest
     container_name: androidtvbackground
     network_mode: bridge
+    user: 99:100
     volumes:
       - /your/local/path/for/config:/config
       - /your/local/path/for/backgrounds:/backgrounds
