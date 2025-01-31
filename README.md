@@ -8,8 +8,9 @@ Dockerized version of [androidtvbackground](https://github.com/adelatour11/andro
    1. Update the volume mapping to your local location for the config files as well as where the background images will be saved to.
       Backgrounds can be saved to within a subdir of the config location if you want them both in the same spot, or a different location.
    2. Set the env variables to 'True' for each of the scripts you want run. They are all set to False by default and will not run.
-   3. If you want to have the container stay started and create backgrounds on a schedule, set the cron to a cron format expression.  
-      ie: set `CRON="0 0 * * *"` to have the backgrounds created once a day at midnight. Set to 'False' to not use a schedule.
+   3. Set the user to your hosts user uid/gid for volume mapping permissions. This allows the container to run as nonroot for better security.
+   4. If you want to have the container stay started and create backgrounds on a schedule, set the cron to a cron format expression.  
+      ie: set `CRON="0 0 * * *"` to have the backgrounds created once a day at midnight. Set to 'False' to not use a schedule. Note that the time inside the container will be your hosts time in UTC.
 
     From within your docker-compose.yml directory, run:  
     `docker compose up -d`
@@ -17,7 +18,7 @@ Dockerized version of [androidtvbackground](https://github.com/adelatour11/andro
 - Alternative install is via docker run command line  
    It would look something like this, depending on config options that you want:  
    ```
-   docker run -d --name androidtvbackground -v /your/local/path/for/config:/config -v /your/local/path/for/backgrounds:/backgrounds -e PLEX=True -e TMDB=True -e TRAKT=False -e POST_SCRIPT_PY=False -e POST_SCRIPT_SH=True -e CRON="0 0 * * *" ghcr.io/ninthwalker/androidtvbackground:latest
+   docker run -d --user 99:100 --name androidtvbackground -v /your/local/path/for/config:/config -v /your/local/path/for/backgrounds:/backgrounds -e PLEX=True -e TMDB=True -e TRAKT=False -e POST_SCRIPT_PY=False -e POST_SCRIPT_SH=True -e CRON="0 0 * * *" ghcr.io/ninthwalker/androidtvbackground:latest
    ```  
 
 - The last install method is to build it yourself locally using the Dockerfile from this repo
@@ -26,7 +27,7 @@ Dockerized version of [androidtvbackground](https://github.com/adelatour11/andro
    `docker build . -t androidtvbackground`
    3. Once built, you can reference the local image in your docker-compose.yml file or your run cmd. A run cmd would look something like this, depending on config options that you want:  
    ```
-   docker run -d --name androidtvbackground -v /your/local/path/for/config:/config -v /your/local/path/for/backgrounds:/backgrounds -e PLEX=True -e TMDB=True -e TRAKT=False -e POST_SCRIPT_PY=False -e POST_SCRIPT_SH=True -e CRON="0 0 * * *" androidtvbackground
+   docker run -d --user 99:100 --name androidtvbackground -v /your/local/path/for/config:/config -v /your/local/path/for/backgrounds:/backgrounds -e PLEX=True -e TMDB=True -e TRAKT=False -e POST_SCRIPT_PY=False -e POST_SCRIPT_SH=True -e CRON="0 0 * * *" androidtvbackground
    ```  
   
 ### First run:
@@ -46,15 +47,16 @@ Dockerized version of [androidtvbackground](https://github.com/adelatour11/andro
 ### Docker Settings:
     
 - Scripts can be found in the container /config directory that should be mapped to your local system for access. Edit these files as per the [instructions](https://github.com/adelatour11/androidtvbackground/blob/main/README.md)
+  - **user** Set this to match the uid/gui permissions of your mapped volumes to correctly be able to access the scripts and background files.
   - **PLEX:** If set to True, retrieves backgrounds from your own [Plex Server](plex.tv).
   - **TMDB:** If set to True, retrieves backgrounds from [The Movie Database](themoviedb.org)
   - **TRAKT:** If set to True, retrieves plex backgrounds from [Trakt](trakt.tv)
   - **CRON:** If set to a cron expression (ie: `CRON="0 0 * * *"`) the docker will stay running and create backgrounds during the schedule you set. If you would rather manually start the docker to create backgrounds, set this to False
   - **POST_SCRIPT_PY:** If set to True, you can define your own python code in the 'post_script.py' file and it will be run at the end of the background creation.
   - **POST_SCRIPT_SH**: If set to True, you can define your own shell code in the 'post_script.sh' file and it will be run at the end of the background creation.
-    - Useful to copy the files to a specific share, directly to android tv or a subreddit for example. Note that if you define both python and shell post_scripts, the python is run first and then the shell script.
+    - Useful to copy the files to a specific share, directly to android tv or a subreddit for example.
   
-- *Note: You can also add PUID and GUID variables if you want to change the user/group the container is run as to match local system. Defaults to 99:100*
+- Note: that if you define both python and shell post_scripts, the python is run first and then the shell script.
 - Note 2: Make sure variable names are capitalized as shown in the above examples. ie: `PLEX: True` and *not* `plex: True`
 
 #### Read the [instructions](https://github.com/adelatour11/androidtvbackground/blob/main/README.md) for how to configure each of the scripts with your API/cred information.
