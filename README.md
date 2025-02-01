@@ -1,6 +1,6 @@
 # Android TV Background
 
-This is a simple script to retrieve Plex or TMDB media background and use it as Android TV Wallpaper
+This is a simple script to retrieve Plex, TMDB, Trakt, or Jellyfin media background and use it as Android TV Wallpaper
 I developed this to use it with alternative Android TV launchers
 
 ![y](https://github.com/adelatour11/androidtvbackground/assets/1473994/8039b728-469f-4fd9-8ca5-920e57bd16d9)
@@ -10,6 +10,7 @@ To use the script, you have to specify :
 - For Plex.py script : your plex token and plex server url
 - For TMDB.py or TMDBlogo.py : your TMDB API Read Access Token
 - For Trakt.py, your Trakt client key, Trakt username, Trakt list name and TMDB API Read Access Token
+- For Jellyfin.py : your Jellyfin API token and server URL
 
 The scripts retrieves the background of the latests shows (movies or tv shows), resizes the image, add an overlay and add text or image on top
 
@@ -45,6 +46,7 @@ If you are looking for the docker version check out this branch https://github.c
         - for Plex check this article on how to find your plex token https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/
         - for TMDB create an account and get you api key here there https://www.themoviedb.org/settings/api
         - for Trakt create your account and go there https://trakt.tv/oauth/applications to create an app and retrieve your client id 
+        - for Jellyfin, specify your API token and server URL
 - As you run one of the script it will create a new folder and add the images automatically.
 - Each time the scripts will run it will delete the content of the folder and create new images
 - if you want to edit the overlay and background image I have included the source file as a vector format 
