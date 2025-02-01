@@ -10,6 +10,7 @@ To use the script, you have to specify :
 - For Plex.py script : your plex token and plex server url
 - For TMDB.py or TMDBlogo.py : your TMDB API Read Access Token
 - For Trakt.py, your Trakt client key, Trakt username, Trakt list name and TMDB API Read Access Token
+- For Jelly fin.py, your server url, token and user id
 
 The scripts retrieves the background of the latests shows (movies or tv shows), resizes the image, add an overlay and add text or image on top
 
