@@ -51,9 +51,10 @@ Dockerized version of [androidtvbackground](https://github.com/adelatour11/andro
     
 - Scripts can be found in the container /config directory that should be mapped to your local system for access. Edit these files as per the [instructions](https://github.com/adelatour11/androidtvbackground/blob/main/README.md)
   - **user** Set this to match the uid/gui permissions of your mapped volumes to correctly be able to access the scripts and background files.
-  - **PLEX:** If set to True, retrieves backgrounds from your own [Plex Server](plex.tv).
-  - **TMDB:** If set to True, retrieves backgrounds from [The Movie Database](themoviedb.org)
-  - **TRAKT:** If set to True, retrieves plex backgrounds from [Trakt](trakt.tv)
+  - **PLEX:** If set to True, retrieves backgrounds from your own [Plex Server](https://plex.tv).
+  - **JELLYFIN:** If set to True, retrieves backgrounds from your own [Jellyfin Server](https://jellyfin.org).
+  - **TMDB:** If set to True, retrieves backgrounds from [The Movie Database](https://themoviedb.org)
+  - **TRAKT:** If set to True, retrieves plex backgrounds from [Trakt](https://trakt.tv)
   - **CRON:** If set to a cron expression (ie: `CRON="0 0 * * *"`) the docker will stay running and create backgrounds during the schedule you set. If you would rather manually start the docker to create backgrounds, set this to False
   - **POST_SCRIPT_PY:** If set to True, you can define your own python code in the 'post_script.py' file and it will be run at the end of the background creation.
   - **POST_SCRIPT_SH**: If set to True, you can define your own shell code in the 'post_script.sh' file and it will be run at the end of the background creation.
