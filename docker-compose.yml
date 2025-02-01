@@ -18,6 +18,7 @@ services:
       - /your/local/path/for/backgrounds:/backgrounds
     environment:
       PLEX: False
+      JELLYFIN: False
       TMDB: False
       TRAKT: False
       CRON: False

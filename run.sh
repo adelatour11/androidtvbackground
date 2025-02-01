@@ -4,7 +4,7 @@
 cd /app
 
 # copy in config files
-cp -f /config/plex.py /config/TMDB.py /config/trakt.py .
+cp -f /config/plex.py /config/jellyfin.py /config/TMDB.py /config/trakt.py .
 
 # copies config file if needed and then run python scripts
 echo "($(date)) [START] Background Retrieval"
@@ -15,6 +15,12 @@ if [ "$(echo "$PLEX" | tr '[:upper:]' '[:lower:]')" == "true" ]; then
   python plex.py
   mv -f plex_backgrounds/* /backgrounds/backgrounds/
   rm -rf plex_backgrounds
+fi
+if [ "$(echo "$JELLYFIN" | tr '[:upper:]' '[:lower:]')" == "true" ]; then
+  echo "($(date)) [START] Retrieving Jellyfin Backgrounds.."
+  python jellyfin.py
+  mv -f jellyfin_backgrounds/* /backgrounds/backgrounds/
+  rm -rf jellyfin_backgrounds
 fi
 if [ "$(echo "$TMDB" | tr '[:upper:]' '[:lower:]')" == "true" ]; then
   echo "($(date)) [START] Retrieving TMDB Backgrounds.."
