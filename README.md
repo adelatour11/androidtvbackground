@@ -21,6 +21,9 @@ Dockerized version of [androidtvbackground](https://github.com/adelatour11/andro
    docker run -d --user 99:100 --name androidtvbackground -v /your/local/path/for/config:/config -v /your/local/path/for/backgrounds:/backgrounds -e PLEX=True -e TMDB=True -e TRAKT=False -e POST_SCRIPT_PY=False -e POST_SCRIPT_SH=True -e CRON="0 0 * * *" ghcr.io/ninthwalker/androidtvbackground:latest
    ```  
 
+- Unraid Installation
+  1. This app is published within Unraid's community applications and can be directly installed from there.
+
 - The last install method is to build it yourself locally using the Dockerfile from this repo
    1. Clone this repo and extract contents
    2. From within the extracted folder, open a cmd prompt and run:  
