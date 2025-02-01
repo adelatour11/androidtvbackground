@@ -18,7 +18,7 @@ Dockerized version of [androidtvbackground](https://github.com/adelatour11/andro
 - Alternative install is via docker run command line  
    It would look something like this, depending on config options that you want:  
    ```
-   docker run -d --user 99:100 --name androidtvbackground -v /your/local/path/for/config:/config -v /your/local/path/for/backgrounds:/backgrounds -e PLEX=True -e TMDB=True -e TRAKT=False -e POST_SCRIPT_PY=False -e POST_SCRIPT_SH=True -e CRON="0 0 * * *" ghcr.io/ninthwalker/androidtvbackground:latest
+   docker run -d --user 99:100 --name androidtvbackground -v /your/local/path/for/config:/config -v /your/local/path/for/backgrounds:/backgrounds -e PLEX=True -e JELLYFIN=False -e TMDB=True -e TRAKT=False -e POST_SCRIPT_PY=False -e POST_SCRIPT_SH=True -e CRON="0 0 * * *" ghcr.io/ninthwalker/androidtvbackground:latest
    ```  
 
 - Unraid Installation
@@ -30,7 +30,7 @@ Dockerized version of [androidtvbackground](https://github.com/adelatour11/andro
    `docker build . -t androidtvbackground`
    3. Once built, you can reference the local image in your docker-compose.yml file or your run cmd. A run cmd would look something like this, depending on config options that you want:  
    ```
-   docker run -d --user 99:100 --name androidtvbackground -v /your/local/path/for/config:/config -v /your/local/path/for/backgrounds:/backgrounds -e PLEX=True -e TMDB=True -e TRAKT=False -e POST_SCRIPT_PY=False -e POST_SCRIPT_SH=True -e CRON="0 0 * * *" androidtvbackground
+   docker run -d --user 99:100 --name androidtvbackground -v /your/local/path/for/config:/config -v /your/local/path/for/backgrounds:/backgrounds -e PLEX=True -e JELLYFIN=False -e TMDB=True -e TRAKT=False -e POST_SCRIPT_PY=False -e POST_SCRIPT_SH=True -e CRON="0 0 * * *" androidtvbackground
    ```  
   
 ### First run:
