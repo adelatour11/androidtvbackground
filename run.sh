@@ -41,7 +41,6 @@ if [ "$(echo "$POST_SCRIPT_PY" | tr '[:upper:]' '[:lower:]')" == "true" ]; then
     echo "($(date)) [START] python post_script"
     python /config/post_script.py
     echo "($(date)) [COMPLETED] Python post_script"
-  fi
 fi
 
 # Creates shell script if needed and runs existing
@@ -49,7 +48,6 @@ if [ "$(echo "$POST_SCRIPT_SH" | tr '[:upper:]' '[:lower:]')" == "true" ]; then
     echo "($(date)) [START] shell post_script"
     /bin/sh /config/post_script.sh
     echo "($(date)) [COMPLETED] shell post_script"
-  fi
 fi
 
 # Rotate log if greater than 10Mb
