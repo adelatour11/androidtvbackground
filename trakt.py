@@ -50,7 +50,7 @@ def clean_filename(filename):
 
 # Function to fetch movies and shows from Trakt API
 def get_trakt_movies_and_shows(api_key, username, list_name):
-    url = f"https://api.trakt.tv/users/{username}/{list_name}/items"
+    url = f"https://api.trakt.tv/users/{username}/lists/{list_name}/items"
     traktheaders = {
         "Content-Type": "application/json",
         "trakt-api-version": "2",
