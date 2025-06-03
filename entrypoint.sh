@@ -3,7 +3,7 @@
 # set file creation mode
 umask 0002
 
-# copies config files if needed and then runs python scripts 
+# copies config files if needed and then runs python scripts
 if [ ! -f /config/plex.py ]; then
 # begin initial setup
   echo "
@@ -28,7 +28,8 @@ __      __    _ _
   cp /app/plex.py /app/TMDB.py /app/trakt.py /app/jellyfin.py /config/
 
   # Create post-processing scripts if needed
-  . "/create_post_scripts.sh"
+  chmod +x /config/create_post_scripts.sh
+  /bin/sh /config/create_post_scripts.sh >> /config/log.txt 2>&1
 
   echo "Setup complete! Please read directions for settings & usage"
 else

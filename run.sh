@@ -7,7 +7,7 @@ cd /app
 cp -f /config/plex.py /config/jellyfin.py /config/TMDB.py /config/trakt.py .
 
 # Create post-processing scripts if needed
-. "/create_post_scripts.sh"
+  /bin/sh /config/create_post_scripts.sh >> /config/log.txt 2>&1
 
 # copies config file if needed and then run python scripts
 echo "($(date)) [START] Background Retrieval"
