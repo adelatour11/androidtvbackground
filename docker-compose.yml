@@ -25,6 +25,9 @@ services:
       TMDB: False
       TRAKT: False
       CRON: False
+      # Note: If both POST_SCRIPT_PY and POST_SCRIPT_SH are set to True,
+      # the Python script will run before the shell script.
+      # Duplicate or conflicting code in both may cause errors or unexpected behavior.
       POST_SCRIPT_PY: False
       POST_SCRIPT_SH: False
       BASEURL: ${BASEURL}
