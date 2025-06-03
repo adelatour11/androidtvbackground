@@ -25,7 +25,7 @@ __      __    _ _
 -----------------------------------------
 "
   echo "New install detected. Copying config files.."
-  cp /app/plex.py /app/TMDB.py /app/trakt.py /config/
+  cp /app/plex.py /app/TMDB.py /app/trakt.py /app/jellyfin.py /config/
 
 # Creates python script if needed
   if [ "$(echo "$POST_SCRIPT_PY" | tr '[:upper:]' '[:lower:]')" == "true" ]; then

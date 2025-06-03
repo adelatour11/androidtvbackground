@@ -1,6 +1,6 @@
 # Use intermediate to reduce final image size
 FROM python:3.11.11-alpine3.21 AS builder
-ARG ANDROIDTVBACKGROUND_REPO=https://github.com/adelatour11/androidtvbackground.git
+ARG ANDROIDTVBACKGROUND_REPO=https://github.com/RWoof/androidtvbackground.git
 ARG Roboto_Light_URL=https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf
 ARG SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.33/supercronic-linux-amd64
 WORKDIR /app

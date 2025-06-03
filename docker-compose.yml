@@ -9,7 +9,7 @@
 
 services:
   androidtvbackground:
-    image: ghcr.io/ninthwalker/androidtvbackground:latest
+    image: ghcr.io/RWoof/androidtvbackground:latest
     container_name: androidtvbackground
     network_mode: bridge
     user: 99:100
