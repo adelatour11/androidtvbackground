@@ -24,7 +24,7 @@ from plexapi.server import PlexServer
 # token = ''    # Your Plex API token, example: token='f6a5e7a6d9f6a8d6f7a5e8d5'
 
 # OPTION 2: Use environment variables (recommended)
-# Open the .env file in your text editor and set the environment variables:
+# Open your .env file in your text editor and set the environment variables:
 # Example: BASEURL='http://192.168.1.100:32400'
 # Example: TOKEN='f6a5e7a6d9f6a8d6f7a5e8d5'
 
