@@ -28,7 +28,7 @@ __      __    _ _
   cp /app/plex.py /app/TMDB.py /app/trakt.py /app/jellyfin.py /config/
 
   # Create post-processing scripts if needed
-  /bin/sh /config/create_post_scripts.sh >> /config/log.txt 2>&1
+  /bin/sh /create_post_scripts.sh >> /config/log.txt 2>&1
 
   echo "Setup complete! Please read directions for settings & usage"
 else
