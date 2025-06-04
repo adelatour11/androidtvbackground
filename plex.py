@@ -487,16 +487,6 @@ def generate_background_for_item(item, media_type, group_type='',
         else:
             custom_text = default_label
 
-        # Validate all user-configurable settings before use
-        # Spelling errors can still break this
-        main_color = validate_color(main_color, "white")
-        info_color = validate_color(info_color, (150, 150, 150))
-        summary_color = validate_color(summary_color, "white")
-        metadata_color = validate_color(metadata_color, "white")
-
-        shadow_color = validate_color(shadow_color, "black")
-        shadow_offset = validate_shadow_offset(shadow_offset, 2)
-
         # Info text
         info_position = (210, 650)
         draw_text_with_shadow(
@@ -884,6 +874,16 @@ def main_process(order_by, limit, download_movies, download_series,
             )
 
 # === Main Execution Logic ===
+
+# Validate user-configurable color and offset settings before use
+# Spelling errors can still break this
+main_color = validate_color(main_color, "white")
+info_color = validate_color(info_color, (150, 150, 150))
+summary_color = validate_color(summary_color, "white")
+metadata_color = validate_color(metadata_color, "white")
+
+shadow_color = validate_color(shadow_color, "black")
+shadow_offset = validate_shadow_offset(shadow_offset, 2)
 
 # Attempt to download the user-configured font
 debug and print(f"[DEBUG] Attempting to download user-configured font: {user_font_name}")
