@@ -35,8 +35,10 @@ download_series = True      # Allow background generation for Plex TV series
 limit = 10                  # Max backgrounds per content type (TV/movies), so total can be up to limit × enabled types
 debug = False               # Enable debug message printing
 
-# Plex logo color
+# Plex logo settings
 logo_variant = "white"  # "white" or "color"
+plex_logo_horizontal_offset = 0  # Adjust right (+) or left (-) by this many pixels (default: 0 for Roboto-Light.ttf)
+plex_logo_vertical_offset = 7    # Adjust down (+) or up (-) by this many pixels (default: 7 for Roboto-Light.ttf)
 
 # Max length of a TV or movie summary in characters (set to None to use the default of 525)
 max_summary_chars = None
@@ -51,8 +53,26 @@ random_label = "Random pick from"             # Label for random picks in mix mo
 default_label = "New or updated on"           # Fallback label for unexpected cases (default: "New or updated on")
 
 # User-configurable font URL and name; if unavailble, script tries fallback fonts
+# May need to adjust the vertical adjustment for the Plex logo if it doesn't line
+# up, see logo_vertical_adjustment above.
 user_font_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'  # URL to download TTF
 user_font_name = 'Roboto-Light.ttf'  # Filename to save the font as
+
+# Text colors (can be color names like "white", "black", or RGB tuples like (255, 255, 255))
+# Examples of valid color inputs:
+#   - "white"
+#   - "black"
+#   - (255, 0, 0)  # red in RGB tuple form
+#   - (150, 150, 150)  # gray in RGB tuple form
+# Note: RGB tuples must be 3 integers in range 0-255.
+main_color      = "white"             # Main title or header text color
+info_color      = (150, 150, 150)     # Subdued secondary info text color (gray tone)
+summary_color   = "white"             # Summary text color
+metadata_color  = "white"             # Metadata text color (e.g., year, genre)
+
+# Shadow styling
+shadow_color    = "black"             # Shadow color behind text
+shadow_offset   = 2                   # Shadow offset in pixels (x and y direction)
 
 # Seconds to sleep between processing each media item to reduce Plex server load
 plex_api_delay_seconds = 1.0  # Default 1 second; adjust as needed if Plex is struggling to keep up
@@ -143,6 +163,34 @@ def initialize_plex_connection():
             print(f"[ERROR] Failed to connect to Plex server: {e}")
     else:
         debug and print("[DEBUG] Plex server is already initialized.")
+
+def validate_color(color, default):
+    """
+    Validate color input.
+    Accepts color names (str) or RGB tuples (3 ints 0-255).
+    Returns a valid color or default.
+    """
+    if not color:
+        return default
+    if isinstance(color, str) and color.strip():
+        return color
+    if isinstance(color, tuple) and len(color) == 3:
+        if all(isinstance(c, int) and 0 <= c <= 255 for c in color):
+            return color
+    return default
+
+def validate_shadow_offset(offset, default):
+    """
+    Validate shadow offset.
+    Must be an integer (positive, zero, or negative).
+    """
+    if isinstance(offset, int):
+        return offset
+    # Try to convert if possible
+    try:
+        return int(offset)
+    except (ValueError, TypeError):
+        return default
 
 def resize_image(image: Image.Image, target_height: int) -> Image.Image:
     """
@@ -424,6 +472,9 @@ def generate_background_for_item(item, media_type, group_type='',
             max_width=summary_pixel_width,
             draw=draw
         )
+        # Adds a newline between each summary line, may not be enough for fonts
+        # with fancy flourishes but should work most of the time. Can improve this
+        # logic if it causes issues with line overlap to allow for a custom line spacing
         wrapped_summary = "\n".join(wrapped_summary_lines)
 
         # Custom label text, uses the user-defined custom text options
@@ -436,13 +487,15 @@ def generate_background_for_item(item, media_type, group_type='',
         else:
             custom_text = default_label
 
-        # Colors
-        shadow_color = "black"
-        main_color = "white"
-        info_color = (150, 150, 150)
-        summary_color = "white"
-        metadata_color = "white"
-        shadow_offset = 2
+        # Validate all user-configurable settings before use
+        # Spelling errors can still break this
+        main_color = validate_color(main_color, "white")
+        info_color = validate_color(info_color, (150, 150, 150))
+        summary_color = validate_color(summary_color, "white")
+        metadata_color = validate_color(metadata_color, "white")
+
+        shadow_color = validate_color(shadow_color, "black")
+        shadow_offset = validate_shadow_offset(shadow_offset, 2)
 
         # Info text
         info_position = (210, 650)
@@ -466,7 +519,19 @@ def generate_background_for_item(item, media_type, group_type='',
             shadow_color=shadow_color,
             shadow_offset=(shadow_offset, shadow_offset)
 )
-        # Custom label and logo positioning
+
+        # Catch errors with Plex logo offset variable
+        try:
+            plex_logo_vertical_offset = int(plex_logo_vertical_offset)
+        except (NameError, ValueError, TypeError):
+            plex_logo_vertical_offset = 7  # Default vertical shift
+
+        try:
+            plex_logo_horizontal_offset = int(plex_logo_horizontal_offset)
+        except (NameError, ValueError, TypeError):
+            plex_logo_horizontal_offset = 0  # Default horizontal shift
+
+        # Custom label and attempt at Plex logo positioning
         draw_bbox = draw.textbbox((0, 0), custom_text, font=font_custom)
         text_width = draw_bbox[2] - draw_bbox[0]
         summary_bbox = draw.textbbox((0, 0), wrapped_summary, font=font_summary)
@@ -478,8 +543,8 @@ def generate_background_for_item(item, media_type, group_type='',
 
         logo_width, logo_height = plex_logo.size
         padding = 20
-        logo_x = custom_x + text_width + padding
-        logo_y = custom_y + (text_height - logo_height) // 2 + 7
+        logo_x = custom_x + text_width + padding + plex_logo_horizontal_offset
+        logo_y = custom_y + (text_height - logo_height) // 2 + plex_logo_vertical_offset
 
         draw_text_with_shadow(
             draw,
