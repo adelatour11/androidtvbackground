@@ -38,8 +38,8 @@ COPY . .
 # Setup env & update perms
 RUN mv /app/supercronic /supercronic && \
     echo "$SUPERCRONIC_SHA1SUM  supercronic" | sha1sum -c - && \
-    chmod -R ug=rw,o=rw,a-x+X /app entrypoint.sh run.sh supercronic && \
-    chmod +x entrypoint.sh supercronic
+    chmod -R ug=rw,o=rw,a-x+X /app create_post_scripts.sh entrypoint.sh run.sh supercronic && \
+    chmod +x create_post_scripts.sh entrypoint.sh supercronic
 
 # Run as nonroot
 USER 99:100
