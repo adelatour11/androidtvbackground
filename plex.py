@@ -510,17 +510,6 @@ def generate_background_for_item(item, media_type, group_type='',
             shadow_offset=(shadow_offset, shadow_offset)
 )
 
-        # Catch errors with Plex logo offset variable
-        try:
-            plex_logo_vertical_offset = int(plex_logo_vertical_offset)
-        except (NameError, ValueError, TypeError):
-            plex_logo_vertical_offset = 7  # Default vertical shift
-
-        try:
-            plex_logo_horizontal_offset = int(plex_logo_horizontal_offset)
-        except (NameError, ValueError, TypeError):
-            plex_logo_horizontal_offset = 0  # Default horizontal shift
-
         # Custom label and attempt at Plex logo positioning
         draw_bbox = draw.textbbox((0, 0), custom_text, font=font_custom)
         text_width = draw_bbox[2] - draw_bbox[0]
@@ -884,6 +873,17 @@ metadata_color = validate_color(metadata_color, "white")
 
 shadow_color = validate_color(shadow_color, "black")
 shadow_offset = validate_shadow_offset(shadow_offset, 2)
+
+# Catch errors with Plex logo offset variable
+try:
+    plex_logo_vertical_offset = int(plex_logo_vertical_offset)
+except (NameError, ValueError, TypeError):
+    plex_logo_vertical_offset = 7  # Default vertical shift
+
+try:
+    plex_logo_horizontal_offset = int(plex_logo_horizontal_offset)
+except (NameError, ValueError, TypeError):
+    plex_logo_horizontal_offset = 0  # Default horizontal shift
 
 # Attempt to download the user-configured font
 debug and print(f"[DEBUG] Attempting to download user-configured font: {user_font_name}")
