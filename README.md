@@ -11,6 +11,7 @@ Dockerized version of [androidtvbackground](https://github.com/adelatour11/andro
    3. Set the user to your hosts user uid/gid for volume mapping permissions. This allows the container to run as nonroot for better security.
    4. If you want to have the container stay started and create backgrounds on a schedule, set the cron to a cron format expression.  
       ie: set `CRON="0 0 * * *"` to have the backgrounds created once a day at midnight. Set to 'False' to not use a schedule. Note that the time inside the container will be your hosts time in UTC.
+   5. If you wish to set your Plex baseurl and token in a .env file, copy the .env.example to .env and edit the file before the next step.
 
     From within your docker-compose.yml directory, run:  
     `docker compose up -d`
@@ -59,8 +60,10 @@ Dockerized version of [androidtvbackground](https://github.com/adelatour11/andro
   - **POST_SCRIPT_PY:** If set to True, you can define your own python code in the 'post_script.py' file and it will be run at the end of the background creation.
   - **POST_SCRIPT_SH**: If set to True, you can define your own shell code in the 'post_script.sh' file and it will be run at the end of the background creation.
     - Useful to copy the files to a specific share, directly to android tv or a subreddit for example.
-  
-- Note: that if you define both python and shell post_scripts, the python is run first and then the shell script.
+  - **BASEURL: ${BASEURL}**: This will attempt to pull a Plex baseurl from a .env file. Can ignore if not using this
+  - **TOKEN: ${TOKEN}**: This will attempt to pull a Plex token from a .env file. Can ignore if not using this
+
+- Note: that if you define both python and shell post_scripts, the python is run first and then the shell script. Make sure there are no conflicts or repetition between the scripts.
 - Note 2: Make sure variable names are capitalized as shown in the above examples. ie: `PLEX: True` and *not* `plex: True`
 
 #### Read the [instructions](https://github.com/adelatour11/androidtvbackground/blob/main/README.md) for how to configure each of the scripts with your API/cred information.

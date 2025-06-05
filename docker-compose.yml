@@ -9,18 +9,26 @@
 
 services:
   androidtvbackground:
-    image: ghcr.io/ninthwalker/androidtvbackground:latest
+    image: ghcr.io/rwoof/androidtvbackground:latest
     container_name: androidtvbackground
     network_mode: bridge
     user: 99:100
     volumes:
       - /your/local/path/for/config:/config
       - /your/local/path/for/backgrounds:/backgrounds
+      # Optional: Uncomment and edit the line below to enable copying generated backgrounds
+      # to a custom folder after creation. This works only if POST_SCRIPT_SH=True is set.
+      # - /path/on/host/tvbackgrounds:/config/tvbackgrounds
     environment:
       PLEX: False
       JELLYFIN: False
       TMDB: False
       TRAKT: False
       CRON: False
+      # Note: If both POST_SCRIPT_PY and POST_SCRIPT_SH are set to True,
+      # the Python script will run before the shell script.
+      # Duplicate or conflicting code in both may cause errors or unexpected behavior.
       POST_SCRIPT_PY: False
       POST_SCRIPT_SH: False
+      BASEURL: ${BASEURL}
+      TOKEN: ${TOKEN}

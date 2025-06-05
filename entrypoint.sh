@@ -3,7 +3,7 @@
 # set file creation mode
 umask 0002
 
-# copies config files if needed and then runs python scripts 
+# copies config files if needed and then runs python scripts
 if [ ! -f /config/plex.py ]; then
 # begin initial setup
   echo "
@@ -25,22 +25,11 @@ __      __    _ _
 -----------------------------------------
 "
   echo "New install detected. Copying config files.."
-  cp /app/plex.py /app/TMDB.py /app/trakt.py /config/
+  cp /app/plex.py /app/TMDB.py /app/trakt.py /app/jellyfin.py /config/
 
-# Creates python script if needed
-  if [ "$(echo "$POST_SCRIPT_PY" | tr '[:upper:]' '[:lower:]')" == "true" ]; then
-    if [ ! -f /config/post_script.py ]; then
-      echo "Creating post_script.py script"
-      touch /config/post_script.py
-    fi
-  fi
-  # Creates shell script if needed
-  if [ "$(echo "$POST_SCRIPT_SH" | tr '[:upper:]' '[:lower:]')" == "true" ]; then
-    if [ ! -f /config/post_script.sh ]; then
-      echo "Creating post_script.sh script"
-      touch /config/post_script.sh
-    fi
-  fi
+  # Create post-processing scripts if needed
+  /bin/sh /create_post_scripts.sh >> /config/log.txt 2>&1
+
   echo "Setup complete! Please read directions for settings & usage"
 else
   # configure, verify and start cron
