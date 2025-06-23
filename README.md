@@ -7,7 +7,8 @@ I developed this to use it with alternative Android TV launchers
 
 
 To use the script, you have to specify : 
-- For Plex.py script : your plex token and plex server url
+- For Plex.py script : your plex token and plex server url either in the script or in a `.env` file
+    - Create a `.env` file by copying `.env.example` and update it with your Plex token and server URL
 - For TMDB.py or TMDBlogo.py : your TMDB API Read Access Token
 - For Trakt.py, your Trakt client key, Trakt username, Trakt list name and TMDB API Read Access Token
 - For Jellyfin.py, your server url, token and user id
