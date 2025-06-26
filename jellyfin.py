@@ -16,6 +16,7 @@ user_id ="XXX"
 # Save font locally
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
 truetype_path = 'Roboto-Light.ttf'
+
 if not os.path.exists(truetype_path):
     try:
         response = requests.get(truetype_url, timeout=10)
@@ -29,7 +30,7 @@ if not os.path.exists(truetype_path):
         print(f"An error occurred while downloading the Roboto-Light font: {e}")
 
 # Set the order_by parameter to 'aired' or 'added'
-order_by = 'DateCreated'
+order_by = 'DateCreated' # 'DateCreated', 'DateLastContentAdded', 'PremiereDate'
 download_movies = True
 download_series = True
 limit = 10
@@ -118,6 +119,7 @@ def download_latest_media(order_by, limit, media_type):
 
     # Filter out excluded genres, tags, and libraries
     filtered_items = []
+
     for item in media_items:
         if any(genre in excluded_genres for genre in item.get('Genres', [])):
             continue
@@ -135,11 +137,13 @@ def download_latest_media(order_by, limit, media_type):
         if background_url:
             try:
                 # Download the background image with a timeout of 10 seconds
-                response = requests.get(background_url, timeout=10)
+                response = requests.get(background_url, timeout=15)
+
                 if response.status_code == 200:
                     filename_safe_title = unicodedata.normalize('NFKD', item['Name']).encode('ASCII', 'ignore').decode('utf-8')
                     filename_safe_title = clean_filename(filename_safe_title)
-                    background_filename = os.path.join(background_dir, f"{filename_safe_title}.jpg")
+                    background_filename = os.path.join(background_dir, f"{filename_safe_title}_{item['ProductionYear']}.jpg")
+                    
                     with open(background_filename, 'wb') as f:
                         f.write(response.content)
                     
@@ -171,7 +175,7 @@ def download_latest_media(order_by, limit, media_type):
 
                     if media_type == 'Movie':
                         if 'CommunityRating' in item:
-                            rating_text = f" IMDb: {item['CommunityRating']}"
+                            rating_text = f" IMDb: {item['CommunityRating']:.1f}"
                         else:
                             rating_text = ""
                         duration_ticks = item['RunTimeTicks']
@@ -180,19 +184,32 @@ def download_latest_media(order_by, limit, media_type):
                         info_text = f"{item['PremiereDate'][:4]}  •  {', '.join(item['Genres'])}  •  {duration_text}  •  {rating_text}"
                     else:
                         if 'CommunityRating' in item:
-                            rating_text = f" IMDb: {item['CommunityRating']}"
+                            rating_text = f" IMDb: {item['CommunityRating']:.1f}"
                         else:
                             rating_text = ""
+                        
                         seasons_url = f"{baseurl}/Shows/{item['Id']}/Seasons?api_key={token}"
                         response = requests.get(seasons_url, timeout=10)
+
                         if response.status_code == 200:
-                            seasons = response.json()
-                            seasons_count = len(seasons)
-                            seasons_text = f"Season" if seasons_count == 1 else f"Seasons"
-                            seasons_text = f"{seasons_count} {seasons_text}  •  "
+                            full_response_data = response.json()
+                            
+                            if 'Items' in full_response_data and isinstance(full_response_data['Items'], list):
+                                actual_seasons = [
+                                    s for s in full_response_data['Items'] 
+                                    if s.get('Type') == 'Season' and s.get('IndexNumber', 0) > 0
+                                ]
+                                
+                                seasons_count = len(actual_seasons)
+                                seasons_text = f"Season" if seasons_count == 1 else f"Seasons"
+                                seasons_text = f"{seasons_count} {seasons_text} • " 
+                            else:
+                                seasons_text = ""
                         else:
                             seasons_text = ""
-                        info_text = f"{item['PremiereDate'][:4]}  •  {', '.join(item['Genres'])}  •  {seasons_text}{rating_text}"    
+                        
+                        info_text = f"{item['PremiereDate'][:4]}  •  {', '.join(item['Genres'])}  •  {seasons_text}{rating_text}"
+
                     summary_text = truncate_summary(item['Overview'], 175)
                     custom_text = "Now Available on"
 
@@ -202,7 +219,7 @@ def download_latest_media(order_by, limit, media_type):
                     info_color = (150, 150, 150)
                     summary_color = "white"
                     metadata_color = "white"
-                    wrapped_summary = "\n".join(textwrap.wrap(summary_text, width=95)) + "..."
+                    wrapped_summary = "\n".join(textwrap.wrap(summary_text, width=95))
 
                     title_position = (200, 420)
                     summary_position = (210, 730)
