@@ -137,7 +137,7 @@ def download_latest_media(order_by, limit, media_type):
         if background_url:
             try:
                 # Download the background image with a timeout of 10 seconds
-                response = requests.get(background_url, timeout=15)
+                response = requests.get(background_url, timeout=10)
 
                 if response.status_code == 200:
                     filename_safe_title = unicodedata.normalize('NFKD', item['Name']).encode('ASCII', 'ignore').decode('utf-8')
