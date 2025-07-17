@@ -7,7 +7,7 @@ I developed this to use it with alternative Android TV launchers
 
 
 To use the script, you have to specify : 
-- For Plex.py script : your plex token and plex server url either in the script or in a `.env` file
+- For Plex.py script & plexfriend.py : your plex token and plex server url either in the script or in a `.env` file
     - Create a `.env` file by copying `.env.example` and update it with your Plex token and server URL
 - For TMDB.py or TMDBlogo.py : your TMDB API Read Access Token
 - For Trakt.py, your Trakt client key, Trakt username, Trakt list name and TMDB API Read Access Token
@@ -56,6 +56,7 @@ If you are looking for the docker version check out this branch https://github.c
 
 ***Plex Script***
 - For the plex script you can specify the number of poster to generate, specify if you want to include movies and tv, specify if you want latest added or latest aired items. You can also edit the code to change the text position or content
+- the plexfriend.py script retrieves the tvshows and movies from your friends shared libraries
 
 ***TMDB Scripts***
 - Shows that do not have the logo on TMDB will just have the title displayed
