@@ -8,9 +8,10 @@ from datetime import datetime
 import math
 import random
 import shutil
-import textwrap
 import unicodedata
 from io import BytesIO
+from typing import Tuple
+import textwrap
 
 # === Third-Party Imports ===
 import requests
@@ -102,7 +103,7 @@ def resize_logo(img, w, h):
     new_h = int(new_w/aspect)
     return img.resize((new_w, new_h))
 
-def truncate_summary(summary: str, max_chars: int) -> tuple[str, bool]:
+def truncate_summary(summary: str, max_chars: int) -> Tuple[str, bool]:
     """
     Truncates a summary only if needed, at word boundaries, if it exceeds the character limit.
 
@@ -117,7 +118,6 @@ def truncate_summary(summary: str, max_chars: int) -> tuple[str, bool]:
         was_truncated = shortened != summary
         return shortened, was_truncated
     except ValueError:
-        # If no space to fit anything (e.g. max_chars < len(placeholder))
         return "...", True
 
 def wrap_text_by_pixel_width(text, font, max_width, draw):
