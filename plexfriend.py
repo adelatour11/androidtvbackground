@@ -171,9 +171,9 @@ def generate_background_for_item(item, media_type, group_type,
 
 
     # filename
-    today = datetime.today().date().strftime('%Y-%m-%d')
+    today = datetime.today().date().strftime('%Y%m%d')
     safe = unicodedata.normalize('NFKD', item.title).encode('ASCII','ignore').decode()
-    safe = today + "-" + friend + "-" + clean_filename(safe)
+    safe = clean_filename(safe) + "_" + today
     out_path = os.path.join(target_folder,  f"{safe}.jpg")
 
     # compose canvas
