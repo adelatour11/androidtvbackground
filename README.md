@@ -1,6 +1,6 @@
 # Android TV Background
 
-This is a simple script to retrieve Plex, Jellyfin, TMDB or Trakt media background and use it as Android TV Wallpaper
+This is a simple script to retrieve Plex (your local server or friend's servers), Jellyfin, TMDB or Trakt media background and use it as Android TV Wallpaper
 I developed this to use it with alternative Android TV launchers
 
 ![y](https://github.com/adelatour11/androidtvbackground/assets/1473994/8039b728-469f-4fd9-8ca5-920e57bd16d9)
