@@ -31,6 +31,9 @@ The scripts retrieves the background of the latests shows (movies or tv shows), 
 
 ![image](https://github.com/adelatour11/androidtvbackground/assets/1473994/03aecbcd-e2fd-4969-b0a2-0346d1842705)
 
+<img width="3840" height="2160" alt="image" src="https://github.com/user-attachments/assets/9c6fd3d9-99ec-4a7e-8845-49ce3daa7739" />
+
+
 **Note :**
 If you are looking for the docker version check out this branch https://github.com/adelatour11/androidtvbackground/tree/docker
 
