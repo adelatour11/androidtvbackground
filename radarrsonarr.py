@@ -171,13 +171,37 @@ def process_image(image_url, title, overview, genre, year, rating, custom_text, 
 def get_radarr_upcoming():
     start = datetime.utcnow().date()
     end = start + timedelta(days=DAYS_AHEAD)
-    url = f"{RADARR_URL}/api/v3/calendar?start={start}&end={end}"
     headers = {"X-Api-Key": RADARR_API_KEY}
-    items = fetch_json(url, headers=headers)
+    url = f"{RADARR_URL}/api/v3/movie"
+    movies = fetch_json(url, headers=headers)
+    
     entries = []
-    for movie in items:
-        if movie.get("monitored") and not movie.get("hasFile"):
-            entries.append((movie.get("tmdbId"), True))  # True = is_movie
+    for movie in movies:
+        if not movie.get("monitored") or movie.get("hasFile"):
+            continue
+
+        # Get release dates
+        digital_date = movie.get("digitalRelease")
+        physical_date = movie.get("physicalRelease")
+
+        # Convert ISO 8601 to datetime.date if present
+        def parse_iso_date(d):
+            try:
+                return datetime.strptime(d, "%Y-%m-%dT%H:%M:%SZ").date()
+            except Exception:
+                return None
+
+        digital_dt = parse_iso_date(digital_date)
+        physical_dt = parse_iso_date(physical_date)
+
+        # Check if release is within range
+        is_digital_in_range = digital_dt and start <= digital_dt <= end
+        is_physical_in_range = physical_dt and start <= physical_dt <= end
+
+        if is_digital_in_range or is_physical_in_range:
+            print(f"[Radarr] Upcoming: {movie.get('title')} (TMDB {movie.get('tmdbId')}) → Digital: {digital_date} | Physical: {physical_date}")
+            entries.append((movie.get("tmdbId"), True))
+
     return entries
 
 # --- FETCH FROM SONARR ---
