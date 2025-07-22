@@ -1,6 +1,6 @@
 # Android TV Background
 
-This is a simple script to retrieve Plex (your local server or friend's servers), Jellyfin, TMDB or Trakt media background and use it as Android TV Wallpaper
+This is a simple script to retrieve Plex (your local server or friend's servers), Jellyfin, TMDB, Radarr/Sonarr or Trakt media background and use it as Android TV Wallpaper
 I developed this to use it with alternative Android TV launchers
 
 ![y](https://github.com/adelatour11/androidtvbackground/assets/1473994/8039b728-469f-4fd9-8ca5-920e57bd16d9)
@@ -10,6 +10,7 @@ To use the script, you have to specify :
 - For Plex.py script & plexfriend.py : your plex token and plex server url either in the script or in a `.env` file
     - Create a `.env` file by copying `.env.example` and update it with your Plex token and server URL
 - For TMDB.py or TMDBlogo.py : your TMDB API Read Access Token
+- For radarrsonarr.py your TMDB API Read Access Token, your Radarr API key, you Sonarr API key
 - For Trakt.py, your Trakt client key, Trakt username, Trakt list name and TMDB API Read Access Token
 - For Jellyfin.py, your server url, token and user id
 
