@@ -123,7 +123,7 @@ def get_tv_keywords(tv_id):
     return []
 
 # Create a directory to save the backgrounds and clear its contents if it exists
-background_dir = "/volume1/Station/ATVBackgrounds"
+background_dir = "XXXX"
 #if os.path.exists(background_dir):
 #    shutil.rmtree(background_dir)
 #os.makedirs(background_dir, exist_ok=True)
