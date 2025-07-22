@@ -13,22 +13,44 @@ url = "https://api.themoviedb.org/3/"
 # Set your TMDB API Read Access Token key here
 headers = {
     "accept": "application/json",
-    "Authorization": "Bearer XXXXX"
+    "Authorization": "Bearer XXXXX
 }
 
-# TV Exclusion list - this filter will exclude Tv shows from chosen countries that have a specific genre
-tv_excluded_countries=['XX','XX','XX'] #based on ISO 3166-1 alpha-2 codes, enter lowercase like ['cn','kr','jp','fr','us']
-tv_excluded_genres=['XXXX'] # like ['Animation']
+
+# Get current date in YYYYMMDD format
+date_str = datetime.now().strftime("%Y%m%d")
+
+# Set the number of movies and tvshwos to get
+numberofmovies = 5
+numberoftvshows = 5
+
+# TV Exclusion list - this filter will exclude TV shows from chosen countries that have a specific genre
+tv_excluded_countries = ['XX', 'XX', 'XX', 'XX', 'XX', 'XX']  # ISO 3166-1 alpha-2 codes lowercas, jp, kr, us for Japan, Korea, and the US
+tv_excluded_genres = {
+    'XX': ['XXXX', 'XXXX', 'XXXX'],  # Exclude Animation and Drama from Japan
+    'XX': ['XXXX', 'XXX', 'XXXX', 'XXXX'],  # Exclude Animation and Drama from Korea
+    'XX': ['XXXX','XXXX'],           # Exclude Animation from the US
+    'XX': ['*'],
+    'XX': ['*'],
+    'X': ['*']
+}
 
 # Movie Exclusion list - this filter will exclude movies from chosen countries that have a specific genre
-movie_excluded_countries=['XX','XX','XXX'] #based on ISO 3166-1 alpha-2 codes, enter lowercase like ['cn','kr','jp','fr','us']
-movie_excluded_genres=['XXX'] # like ['Animation']
+movie_excluded_countries = ['XX', 'XX', 'XX', 'XX', 'XX', 'XX']  # ISO 3166-1 alpha-2 codes lowercas, jp, kr, us for Japan, Korea, and the US
+movie_excluded_genres = {
+    'XX': ['XX'],  # Exclude Animation and Drama from Japan
+    'kr': ['XX'],  # Exclude Animation and Drama from Korea
+    'XX': ['XX'],  # Exclude Animation and Drama from US
+    'XX': ['*'],
+    'XX': ['*'],
+    'XX': ['*']
+}
 
-# Keyword exclusion list - this filter will exclude movies or tv shows that contain a specific keyword in their TMDB profile
-excluded_keywords = ['XXX','XXX','XXX'] # like ['adult']
+# Keyword exclusion list - this filter will exclude movies or TV shows that contain a specific keyword in their TMDB profile
+excluded_keywords = ['XX', 'XX', 'XX', 'XX', 'XX', 'XX', 'XX','XX']  # like ['adult']
 
-# Filter movies by release date and tv shows by last air date
-max_air_date = datetime.now() - timedelta(days=30) #specify the number of days since the movei release or the tv show last air date, shows before this date will be excluded 
+# Filter movies by release date and TV shows by last air date
+max_air_date = datetime.now() - timedelta(days=90)  # specify the number of days since the movie release or the TV show last air date, shows before this date will be excluded
 
 # Save font locally
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
@@ -45,7 +67,6 @@ if not os.path.exists(truetype_path):
     except Exception as e:
         print(f"An error occurred while downloading the Roboto-Light font: {e}")
 
-
 # Endpoint for trending shows
 trending_movies_url = f'{url}trending/movie/week?language=en-US'
 trending_tvshows_url = f'{url}trending/tv/week?language=en-US'
@@ -53,10 +74,12 @@ trending_tvshows_url = f'{url}trending/tv/week?language=en-US'
 # Fetching trending movies
 trending_movies_response = requests.get(trending_movies_url, headers=headers)
 trending_movies = trending_movies_response.json()
+trending_movies = {'results': trending_movies.get('results', [])[:numberofmovies]}
 
 # Fetching trending TV shows
 trending_tvshows_response = requests.get(trending_tvshows_url, headers=headers)
 trending_tvshows = trending_tvshows_response.json()
+#trending_tvshows = {'results': trending_tvshows.get('results', [])}
 
 # Fetching genres for movies
 genres_url = f'{url}genre/movie/list?language=en-US'
@@ -100,26 +123,26 @@ def get_tv_keywords(tv_id):
     return []
 
 # Create a directory to save the backgrounds and clear its contents if it exists
-background_dir = "tmdb_backgrounds"
-if os.path.exists(background_dir):
-    shutil.rmtree(background_dir)
-os.makedirs(background_dir, exist_ok=True)
+background_dir = "/volume1/Station/ATVBackgrounds"
+#if os.path.exists(background_dir):
+#    shutil.rmtree(background_dir)
+#os.makedirs(background_dir, exist_ok=True)
 
-#truncate overview
+# Truncate overview
 def truncate_overview(overview, max_chars):
     if len(overview) > max_chars:
         return overview[:max_chars]
     else:
         return overview
 
-#truncate
+# Truncate
 def truncate(overview, max_chars):
     if len(overview) > max_chars:
         return overview[:max_chars-3]
     else:
         return overview
 
-# resize image
+# Resize image
 def resize_image(image, height):
     ratio = height / image.height
     width = int(image.width * ratio)
@@ -128,17 +151,17 @@ def resize_image(image, height):
 def resize_logo(image, width, height):
     # Get the aspect ratio of the image
     aspect_ratio = image.width / image.height
-    
+
     # Calculate new width and height to maintain aspect ratio
     new_width = width
     new_height = int(new_width / aspect_ratio)
-    
+
     # If the calculated height is greater than the desired height,
     # recalculate the width to fit the desired height
     if new_height > height:
         new_height = height
         new_width = int(new_height * aspect_ratio)
-    
+
     # Resize the image
     resized_img = image.resize((new_width, new_height))
     return resized_img
@@ -259,75 +282,98 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
         draw.text(custom_position, custom_text, font=font_custom, fill=metadata_color)
 
         # Save the resized image
-        filename = os.path.join(background_dir, f"{clean_filename(title)}.jpg")
+        filename = os.path.join(background_dir, f"{clean_filename(title)}_{date_str}.jpg")
         bckg = bckg.convert('RGB')
         bckg.save(filename)
         print(f"Image saved: {filename}")
     else:
         print(f"Failed to download background for {title}")
 
-# Filter criteria
+# Filter criteria for movies
 def should_exclude_movie(movie, movie_excluded_countries=movie_excluded_countries, movie_excluded_genres=movie_excluded_genres, excluded_keywords=excluded_keywords):
     # Check if the movie's country is in the excluded countries list
-    country = movie.get('origin_country', '').lower()
-    
-    # Check if any genre in the movie matches the excluded genres list
-    genres = [movie_genres.get(genre_id, '') for genre_id in movie.get('genre_ids', [])]
-    
-    # Fetch movie keywords
-    movie_keywords = get_movie_keywords(movie['id']) if excluded_keywords else []
-    
-    # Check release date
-    release_date_str = movie.get('release_date')
-    release_date = datetime.strptime(release_date_str, "%Y-%m-%d") if release_date_str else None
+	origin_countries = [c.lower() for c in movie.get('origin_country', [])]
+	genres = [movie_genres.get(genre_id, '') for genre_id in movie.get('genre_ids', [])]
+	
+	# Fetch movie keywords
+	movie_keywords = get_movie_keywords(movie['id']) if excluded_keywords else []
+	
+	# Check release date
+	release_date_str = movie.get('release_date')
+	release_date = datetime.strptime(release_date_str, "%Y-%m-%d") if release_date_str else None
+	
+	# Exclusion logic by country and genre
+	for country in origin_countries:
+	    if country in movie_excluded_countries:
+	        excluded = movie_excluded_genres.get(country, [])
+	        if excluded == ['*'] or any(genre in excluded for genre in genres):
+	            return True
+	
+	# Exclusion by keyword or date
+	if any(keyword in movie_keywords for keyword in excluded_keywords):
+	    return True
+	
+	if release_date and release_date < max_air_date:
+	    return True
+	
+	return False
 
-    # Return True if excluded by country, genre, keywords, or release date
-    if (country in movie_excluded_countries or 
-        any(genre in movie_excluded_genres for genre in genres) or 
-        any(keyword in movie_keywords for keyword in excluded_keywords) or
-        (release_date and release_date < max_air_date)):
-        return True
-    return False
 
+# Filter criteria for TV shows
 def should_exclude_tvshow(tvshow, tv_excluded_countries=tv_excluded_countries, tv_excluded_genres=tv_excluded_genres, excluded_keywords=excluded_keywords):
-    # Check if the TV show's country is in the excluded countries list
-    country = tvshow.get('origin_country', [''])[0].lower()
-    
-    # Check if any genre in the TV show matches the excluded genres list
+    # Ensure 'origin_country' is a list or string and get the country (case insensitive)
+    origin_countries = [c.lower() for c in tvshow.get('origin_country', [])]
     genres = [tv_genres.get(genre_id, '') for genre_id in tvshow.get('genre_ids', [])]
-    
-    # Fetch TV show keywords
-    tv_keywords = get_tv_keywords(tvshow['id']) if excluded_keywords else []
-    
-    # Check next episode to air date
-    last_air_date_str = get_tv_show_details(tvshow['id']).get('last_air_date')
-    last_air_date = datetime.strptime(last_air_date_str, "%Y-%m-%d") if last_air_date_str else None
 
-    # Return True if excluded by country, genre, keywords, or next episode air date
-    if (country in tv_excluded_countries or 
-        any(genre in tv_excluded_genres for genre in genres) or 
-        any(keyword in tv_keywords for keyword in excluded_keywords) or
-        (last_air_date and last_air_date < max_air_date)):
+    for country in origin_countries:
+        if country in tv_excluded_countries:
+            excluded = tv_excluded_genres.get(country, [])
+            if excluded == ['*'] or any(genre in excluded for genre in genres):
+                return True
+
+    # Fetch TV show keywords and check against the exclusion list
+    tv_keywords = get_tv_keywords(tvshow['id']) if excluded_keywords else []
+    if any(keyword in tv_keywords for keyword in excluded_keywords):
         return True
+
+    # Check last air date
+    last_air_date_str = get_tv_show_details(tvshow['id']).get('last_air_date')
+    if last_air_date_str:
+        try:
+            last_air_date = datetime.strptime(last_air_date_str, "%Y-%m-%d")
+        except ValueError:
+            last_air_date = None
+    else:
+        last_air_date = None
+
+    # Exclude if older than max_air_date
+    if last_air_date and last_air_date < max_air_date:
+        return True
+
+    # Include future shows
+    if last_air_date and last_air_date > datetime.now():
+        return False
+
     return False
 
 
 # Process each trending movie
 for movie in trending_movies.get('results', []):
     if should_exclude_movie(movie):
+        print(f"Excluded Movie: {movie['title']} ({movie.get('origin_country')})")
         continue
-    
+
     # Extract movie details
     title = movie['title']
     overview = movie['overview']
     year = movie['release_date']
-    rating = round(movie['vote_average'],1)
+    rating = round(movie['vote_average'], 1)
     genre = ', '.join([movie_genres[genre_id] for genre_id in movie['genre_ids']])
-    
+
     # Fetch additional movie details
     movie_details = get_movie_details(movie['id'])
     duration = movie_details.get('runtime', 0)
-    
+
     # Format duration as hours and minutes
     if duration:
         hours = duration // 60
@@ -348,31 +394,30 @@ for movie in trending_movies.get('results', []):
         # Print error message if no backdrop image found
         print(f"No backdrop image found for {title}")
 
-
-
 # Process trending TV shows
 for tvshow in trending_tvshows.get('results', []):
     if should_exclude_tvshow(tvshow):
+        print(f"Excluded TV Show: {tvshow['name']} ({tvshow.get('origin_country')})")
         continue
 
     # Extract TV show details
-    title = truncate_overview(tvshow['name'],38)
+    title = truncate_overview(tvshow['name'], 38)
     overview = tvshow['overview']
     year = tvshow['first_air_date']
-    rating = round(tvshow['vote_average'],1)
+    rating = round(tvshow['vote_average'], 1)
     genre = ', '.join([tv_genres[genre_id] for genre_id in tvshow['genre_ids']])
-    
+
     # Fetch additional TV show details
     tv_details = get_tv_show_details(tvshow['id'])
     seasons = tv_details.get('number_of_seasons', 0)
-    
+
     # Check if backdrop image is available
     backdrop_path = tvshow['backdrop_path']
     custom_text = "Now Trending on"
     if backdrop_path:
         # Construct image URL
         image_url = f"https://image.tmdb.org/t/p/original{backdrop_path}"
-        
+
         # Process the image
         process_image(image_url, title, is_movie=False, genre=genre, year=year, rating=rating, seasons=seasons)
     else:
