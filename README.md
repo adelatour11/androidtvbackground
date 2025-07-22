@@ -34,6 +34,12 @@ The scripts retrieves the background of the latests shows (movies or tv shows), 
 
 <img width="3840" height="2160" alt="image" src="https://github.com/user-attachments/assets/9c6fd3d9-99ec-4a7e-8845-49ce3daa7739" />
 
+![The_Fantastic_Four__First_Steps_20250722](https://github.com/user-attachments/assets/422f4fdf-8ee0-499e-9298-b26dc1a24275)
+
+![Foundation_20250722](https://github.com/user-attachments/assets/9adcc755-879a-4b29-99dd-ce373ce141f4)
+
+
+
 
 **Note :**
 If you are looking for the docker version check out this branch https://github.com/adelatour11/androidtvbackground/tree/docker
