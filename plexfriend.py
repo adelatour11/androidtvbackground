@@ -5,8 +5,6 @@
 import os
 import time
 from datetime import datetime
-import math
-import random
 import shutil
 import unicodedata
 from io import BytesIO
@@ -17,7 +15,8 @@ import textwrap
 import requests
 from PIL import Image, ImageDraw, ImageFont
 from plexapi.myplex import MyPlexAccount
-from plexapi.server import PlexServer
+from dotenv import load_dotenv
+load_dotenv(verbose=True)
 
 # === User Configurable Options ===
 PLEX_TOKEN = os.getenv('XXXX') or 'XXXX'

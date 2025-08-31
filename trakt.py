@@ -3,23 +3,23 @@ from PIL import Image, ImageDraw, ImageFont, ImageFilter, UnidentifiedImageError
 from io import BytesIO
 import os
 import shutil
-from urllib.request import urlopen
 import textwrap
+from dotenv import load_dotenv
 
+load_dotenv(verbose=True)
 
 # Replace with your actual Trakt API key, TMDB API Read Access Token, username, and list name
-trakt_api_key = "XXXX"
-username = "XXX"
-list_name = "XXX"
+TRAKT_API_KEY = os.getenv('TRAKT_API_KEY')
+TRAKT_USERNAME = os.getenv('TRAKT_USERNAME')
+TRAKT_LISTNAME = os.getenv('TRAKT_LISTNAME')
+TMDB_BEARER_TOKEN = os.getenv('TMDB_BEARER_TOKEN')
+TMDB_BASE_URL = os.getenv('TMDB_BASE_URL')
 
 # Set your TMDB API Read Access Token key here after Bearer
 tmdb_headers = {
     "accept": "application/json",
-    "Authorization": "Bearer XXXXX"
+    "Authorization": f"Bearer {TMDB_BEARER_TOKEN}"
 }
-
-# Base URL for the API
-url = "https://api.themoviedb.org/3/"
 
 # Save font locally
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
@@ -69,7 +69,7 @@ def get_trakt_movies_and_shows(api_key, username, list_name):
 
 # Function to fetch the logo for a movie or TV show from TMDB
 def get_logo(media_type, media_id, language="en"):
-    logo_url = f"{url}{media_type}/{media_id}/images?language={language}"
+    logo_url = f"{TMDB_BASE_URL}{media_type}/{media_id}/images?language={language}"
     logo_response = requests.get(logo_url, headers=tmdb_headers)
     logo_data = logo_response.json()
     if logo_response.status_code == 200:
@@ -100,13 +100,13 @@ def resize_logo(image, width, height):
 
 # Function to get details of a TV show from TMDB
 def get_tv_show_details(tv_id):
-    tv_details_url = f'{url}tv/{tv_id}?language=en-US'
+    tv_details_url = f'{TMDB_BASE_URL}tv/{tv_id}?language=en-US'
     tv_details_response = requests.get(tv_details_url, headers=tmdb_headers)
     return tv_details_response.json()
 
 # Function to get details of a movie from TMDB
 def get_movie_details(movie_id):
-    movie_details_url = f'{url}movie/{movie_id}?language=en-US'
+    movie_details_url = f'{TMDB_BASE_URL}movie/{movie_id}?language=en-US'
     movie_details_response = requests.get(movie_details_url, headers=tmdb_headers)
     return movie_details_response.json()
 

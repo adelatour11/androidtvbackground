@@ -4,14 +4,30 @@ import time
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import unicodedata
-import re
 import shutil
 import textwrap
+from dotenv import load_dotenv
+load_dotenv(verbose=True)
 
 # Jellyfin Server Configuration (Global Parameters)
-baseurl = 'http://XXX:XXX'
-token = 'XXX'
-user_id ="XXX"
+baseurl = os.getenv('JELLYFIN_BASEURL')
+token = os.getenv('JELLYFIN_TOKEN')
+user_id = os.getenv('JELLYFIN_USER_ID')
+# try to connect to the server and get the user name
+
+try:
+    print('Trying to connect to JellyFin')
+    print(f'baseurl:{baseurl}')
+    print(f'token:{token}')
+    print(f'user_id:{user_id}')
+    url = f"{baseurl}/Users/{user_id}"
+    response = requests.get(url, headers={"X-Emby-Token": token})
+    response.raise_for_status()
+    data = response.json()
+    print(f"Connected to Jellyfin! User name: {data.get('Name')}")
+except requests.exceptions.RequestException as e:
+    print(f"Failed to connect to Jellyfin: {e}")
+    exit(1)
 
 # Save font locally
 truetype_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
@@ -84,7 +100,7 @@ def download_logo_in_memory(media_item):
         print(f"An error occurred while downloading the logo for {media_item['Name']}: {e}")
         return None
 
-def get_excluded_library_ids():
+def get_excluded_library_paths():
     """Fetch library IDs based on excluded library names."""
     headers = {'X-Emby-Token': token}
     response = requests.get(f"{baseurl}/Library/VirtualFolders", headers=headers)
@@ -92,12 +108,14 @@ def get_excluded_library_ids():
     if response.status_code == 200:
         libraries = response.json()
         # print(json.dumps(libraries,indent=4))
-        return {lib['ItemId'] for lib in libraries if lib['Name'] in excluded_libraries}
+        locs = [lib['Locations'] for lib in libraries if lib['Name'] in excluded_libraries]
+        locs = [item for sublist in locs for item in sublist]
+        return set(locs)
     else:
         print("Failed to retrieve library information.")
         return set()
 
-excluded_library_ids = get_excluded_library_ids()
+excluded_library_paths = get_excluded_library_paths()
 
 def download_latest_media(order_by, limit, media_type):
     headers = {'X-Emby-Token': token}
@@ -107,7 +125,7 @@ def download_latest_media(order_by, limit, media_type):
         'IncludeItemTypes': media_type,
         'Recursive': 'true',
         'SortOrder': 'Descending',
-        'Fields': 'PrimaryImageAspectRatio,CanDelete,MediaSourceCount,Overview,Genres,RunTimeTicks,CommunityRating,PremiereDate,Tags',
+        'Fields': 'Path,Overview,Genres,CommunityRating,PremiereDate,Tags',
     }
     response = requests.get(f"{baseurl}/Users/{user_id}/Items", headers=headers, params=params)
 
@@ -125,7 +143,7 @@ def download_latest_media(order_by, limit, media_type):
             continue
         if any(tag in excluded_tags for tag in item.get('Tags', [])):
             continue
-        if item.get('ParentId') in excluded_library_ids:
+        if any(excluded_path in item.get('Path') for excluded_path in excluded_library_paths):
             continue
         filtered_items.append(item)
 
