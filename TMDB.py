@@ -6,14 +6,17 @@ import shutil
 from urllib.request import urlopen
 import textwrap
 from datetime import datetime, timedelta
+from dotenv import load_dotenv
+load_dotenv(verbose=True)
 
-# Base URL for the API
-url = "https://api.themoviedb.org/3/"
+TMDB_BEARER_TOKEN = os.getenv('TMDB_BEARER_TOKEN')
+TMDB_BASE_URL = os.getenv('TMDB_BASE_URL')
+
 
 # Set your TMDB API Read Access Token key here
 headers = {
     "accept": "application/json",
-    "Authorization": "Bearer XXXXX
+    "Authorization": f"Bearer {TMDB_BEARER_TOKEN}"
 }
 
 
@@ -72,32 +75,32 @@ if not os.path.exists(truetype_path):
 
 
 # Fetching genres for movies
-genres_url = f'{url}genre/movie/list?language=en-US'
+genres_url = f'{TMDB_BASE_URL}/genre/movie/list?language=en-US'
 genres_response = requests.get(genres_url, headers=headers)
 genres_data = genres_response.json()
 movie_genres = {genre['id']: genre['name'] for genre in genres_data.get('genres', [])}
 
 # Fetching genres for TV shows
-genres_url = f'{url}genre/tv/list?language=en-US'
+genres_url = f'{TMDB_BASE_URL}/genre/tv/list?language=en-US'
 genres_response = requests.get(genres_url, headers=headers)
 genres_data = genres_response.json()
 tv_genres = {genre['id']: genre['name'] for genre in genres_data.get('genres', [])}
 
 # Fetching TV show details
 def get_tv_show_details(tv_id):
-    tv_details_url = f'{url}tv/{tv_id}?language=en-US'
+    tv_details_url = f'{TMDB_BASE_URL}/tv/{tv_id}?language=en-US'
     tv_details_response = requests.get(tv_details_url, headers=headers)
     return tv_details_response.json()
 
 # Fetching movie details
 def get_movie_details(movie_id):
-    movie_details_url = f'{url}movie/{movie_id}?language=en-US'
+    movie_details_url = f'{TMDB_BASE_URL}/movie/{movie_id}?language=en-US'
     movie_details_response = requests.get(movie_details_url, headers=headers)
     return movie_details_response.json()
 
 # Function to fetch keywords for a movie
 def get_movie_keywords(movie_id):
-    keywords_url = f"{url}movie/{movie_id}/keywords"
+    keywords_url = f"{TMDB_BASE_URL}/movie/{movie_id}/keywords"
     response = requests.get(keywords_url, headers=headers)
     if response.status_code == 200:
         # Extract and return the names of the keywords
@@ -106,7 +109,7 @@ def get_movie_keywords(movie_id):
 
 # Function to fetch keywords for a TV show
 def get_tv_keywords(tv_id):
-    keywords_url = f"{url}tv/{tv_id}/keywords"
+    keywords_url = f"{TMDB_BASE_URL}/tv/{tv_id}/keywords"
     response = requests.get(keywords_url, headers=headers)
     if response.status_code == 200:
         return [keyword['name'].lower() for keyword in response.json().get('results', [])]
@@ -181,12 +184,12 @@ def should_exclude_tvshow(tvshow, tv_excluded_countries=tv_excluded_countries, t
     return False
 
 # Endpoint for trending shows
-trending_movies_url = f'{url}trending/movie/week?language=en-US'
-trending_tvshows_url = f'{url}trending/tv/week?language=en-US'
+trending_movies_url = f'{TMDB_BASE_URL}/trending/movie/week?language=en-US'
+trending_tvshows_url = f'{TMDB_BASE_URL}/trending/tv/week?language=en-US'
 
 # Fetch more than required to allow filtering
 initial_fetch_count = numberofmovies + 10  # Fetch 15 to get at least 5 valid ones
-trending_movies_url = f'{url}trending/movie/week?language=en-US'
+trending_movies_url = f'{TMDB_BASE_URL}/trending/movie/week?language=en-US'
 trending_movies_response = requests.get(trending_movies_url, headers=headers)
 all_movies = trending_movies_response.json().get('results', [])[:initial_fetch_count]
 
@@ -206,7 +209,7 @@ trending_movies = {'results': valid_movies}
 
 # Fetching trending TV shows
 initial_fetch_count = numberoftvshows + 10  # Fetch more than needed
-trending_tvshows_url = f'{url}trending/tv/week?language=en-US'
+trending_tvshows_url = f'{TMDB_BASE_URL}/trending/tv/week?language=en-US'
 trending_tvshows_response = requests.get(trending_tvshows_url, headers=headers)
 all_tvshows = trending_tvshows_response.json().get('results', [])[:initial_fetch_count]
 
@@ -270,7 +273,7 @@ def clean_filename(filename):
 
 # Fetch movie or TV show logo in English
 def get_logo(media_type, media_id, language="en"):
-    logo_url = f"{url}{media_type}/{media_id}/images?language={language}"
+    logo_url = f"{TMDB_BASE_URL}/{media_type}/{media_id}/images?language={language}"
     logo_response = requests.get(logo_url, headers=headers)
     logo_data = logo_response.json()
     if logo_response.status_code == 200:

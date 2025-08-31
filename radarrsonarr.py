@@ -5,22 +5,44 @@ from datetime import datetime, timedelta
 from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
 import os, shutil, textwrap
+from dotenv import load_dotenv
+load_dotenv(verbose=True)
 
 # --- CONFIGURATION ---
-RADARR_URL = "http://XXXX:XXX"
-SONARR_URL = "http://XXX:XXXX"
-RADARR_API_KEY = "XXXX"
-SONARR_API_KEY = "XXXX"
-TMDB_BEARER_TOKEN = "XXXXX"
-DAYS_AHEAD = 7
+RADARR_URL = os.getenv('RADARR_URL')
+SONARR_URL = os.getenv('SONARR_URL')
+RADARR_API_KEY = os.getenv('RADARR_API_KEY')
+SONARR_API_KEY = os.getenv('SONARR_API_KEY')
+TMDB_BEARER_TOKEN = os.getenv('TMDB_BEARER_TOKEN')
+DAYS_AHEAD = int(os.getenv('DAYS_AHEAD'))
+TMDB_BASE_URL = os.getenv('TMDB_BASE_URL')
+TMDB_IMG_BASE = os.getenv('TMDB_IMG_BASE')
+RADARR_SONARR_LOGO = os.getenv('RADARR_SONARR_LOGO')
+
+try:
+    url = f"{RADARR_URL}/api/v3/system/status"
+    resp = requests.get(url, headers={"X-Api-Key": RADARR_API_KEY})
+    resp.raise_for_status()
+    data = resp.json()
+    print(f"Radarr: {data.get('appName')} v{data.get('version')}")
+except Exception as e:
+    print(f"Radarr connection failed: {e}")
+
+try:
+    url = f"{SONARR_URL}/api/v3/system/status"
+    resp = requests.get(url, headers={"X-Api-Key": SONARR_API_KEY})
+    resp.raise_for_status()
+    data = resp.json()
+    print(f"Sonarr: {data.get('appName')} v{data.get('version')}")
+except Exception as e:
+    print(f"Sonarr connection failed: {e}")
+
 
 TMDB_HEADERS = {
     "accept": "application/json",
     "Authorization": f"Bearer {TMDB_BEARER_TOKEN}"
 }
 
-TMDB_BASE_URL = "https://api.themoviedb.org/3"
-TMDB_IMG_BASE = "https://image.tmdb.org/t/p/original"
 
 # --- UTILITIES ---
 def fetch_json(url, headers=None, params=None):
@@ -33,10 +55,10 @@ def fetch_json(url, headers=None, params=None):
         return {}
 
 # Create a directory to save the backgrounds and clear its contents if it exists
-background_dir = "/volume1/Station/ATVBackgrounds"
-#if os.path.exists(background_dir):
-#    shutil.rmtree(background_dir)
-#os.makedirs(background_dir, exist_ok=True)
+background_dir = "radarrsonarr_backgrounds"
+if os.path.exists(background_dir):
+   shutil.rmtree(background_dir)
+os.makedirs(background_dir, exist_ok=True)
 
 def resize_image(image, height):
     ratio = height / image.height
@@ -100,17 +122,17 @@ def process_image(image_url, title, overview, genre, year, rating, custom_text, 
         # Base and overlays
         bckg = Image.open(os.path.join(os.path.dirname(__file__), "bckg.png"))
         overlay = Image.open(os.path.join(os.path.dirname(__file__), "overlay.png"))
-        plexlogo = Image.open(os.path.join(os.path.dirname(__file__), "plexlogo.png"))
+        logo = Image.open(os.path.join(os.path.dirname(__file__), RADARR_SONARR_LOGO))
 
         bckg.paste(image, (1175, 0))
         if overlay:
             bckg.paste(overlay, (1175, 0), overlay)
-        if plexlogo:
+        if logo:
         	if is_movie:
         		logo_position = (970, 890)  # position for movies
         	else:
         		logo_position = (1010, 890)  # position for TV shows
-        	bckg.paste(plexlogo, logo_position, plexlogo)
+        	bckg.paste(logo, logo_position, logo)
 
 
         draw = ImageDraw.Draw(bckg)

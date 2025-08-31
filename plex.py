@@ -7,12 +7,13 @@ import shutil
 import textwrap
 import unicodedata
 from io import BytesIO
-from urllib.request import urlopen
 
 # === Third-Party Imports ===
 import requests
 from PIL import Image, ImageDraw, ImageFont
 from plexapi.server import PlexServer
+from dotenv import load_dotenv
+load_dotenv(verbose=True)
 
 # === User Configurable Options ===
 
@@ -88,8 +89,8 @@ if os.path.exists(background_dir):
 os.makedirs(background_dir, exist_ok=True)
 
 # If baseurl or token are not hardcoded, then load from environment variables
-baseurl = locals().get('baseurl', os.getenv('BASEURL'))  # Plex server base URL either hardcoded or from environment
-token = locals().get('token', os.getenv('TOKEN'))  # Plex API token either hardcoded from environment
+baseurl = locals().get('baseurl', os.getenv('PLEX_BASEURL'))  # Plex server base URL either hardcoded or from environment
+token = locals().get('token', os.getenv('PLEX_TOKEN'))  # Plex API token either hardcoded from environment
 
 # Validate that either hardcoded values or environment variables are set
 if not baseurl or baseurl.strip() == '' or not token or token.strip() == '':
