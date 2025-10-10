@@ -42,6 +42,19 @@ The scripts retrieves the background of the latests shows (movies or tv shows), 
 
 
 
+**New Scripts**
+I have a included a series of scripts to have a colorized version of each background
+plex_color.py / TMDB_color.py / radarrsonarr_color.py / plexfriends_color.py
+It looks linke this
+
+![One_Battle_After_Another_20251010](https://github.com/user-attachments/assets/1257d570-8c9b-4e11-8fb5-69369e9f3ba6)
+
+![TRON_Ares_20251010](https://github.com/user-attachments/assets/cc898508-de38-4654-8a78-76cc8713b5b4)
+
+![Monster_The_Ed_Gein_Story_20251010](https://github.com/user-attachments/assets/61f19068-68bc-433d-8177-75e366c696c7)
+
+
+
 **Note :**
 If you are looking for the docker version check out this branch https://github.com/adelatour11/androidtvbackground/tree/docker
 
