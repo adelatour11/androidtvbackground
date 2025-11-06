@@ -49,7 +49,7 @@ if [ "$(echo "$RADARRSONARR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   mv -f radarrsonarr_backgrounds/* /backgrounds/backgrounds/
   rm -rf radarrsonarr_backgrounds
 fi
-if [ "$(echo "$RADARRSONARR_COLOR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
+if [ "$(echo "$RADARRSONARRCOLOR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   echo "($(date)) [START] Retrieving RADARRSONARR_color Backgrounds.."
   python radarrsonarr_color.py
   mv -f radarrsonarr_backgrounds/* /backgrounds/backgrounds/
