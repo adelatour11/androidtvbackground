@@ -52,7 +52,7 @@ shadow_offset  = 2
 plex_api_delay_seconds = 1.0
 
 # Prepare output directory
-background_dir = 'plex_backgrounds'
+background_dir = 'plexfriend_backgrounds'
 if os.path.exists(background_dir):
     shutil.rmtree(background_dir)
 os.makedirs(background_dir, exist_ok=True)
