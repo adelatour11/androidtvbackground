@@ -1,5 +1,4 @@
-# plexfriends_all.py
-# Fetch friends' libraries and generate backgrounds using your exact image-processing logic
+# Fetch friends' libraries 
 
 # === Standard Library Imports ===
 import os
