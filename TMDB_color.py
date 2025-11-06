@@ -1,5 +1,4 @@
 # TMDB background generator using a colored background and vignetting effect
-
 import requests
 import numpy as np
 import re
@@ -14,11 +13,10 @@ load_dotenv(verbose=True)
 TMDB_BEARER_TOKEN = os.getenv('TMDB_BEARER_TOKEN')
 TMDB_BASE_URL = os.getenv('TMDB_BASE_URL')
 
-
 # Set your TMDB API Read Access Token key here
 headers = {
     "accept": "application/json",
-    "Authorization": "Bearer {TMDB_BEARER_TOKEN}"
+    "Authorization": f"Bearer {TMDB_BEARER_TOKEN}"
 }
 
 
@@ -26,27 +24,33 @@ headers = {
 date_str = datetime.now().strftime("%Y%m%d")
 
 # Set the number of movies and tvshwos to get
-numberofmovies = 7
-numberoftvshows = 7
+numberofmovies = 5
+numberoftvshows = 5
 
 # TV Exclusion list - this filter will exclude TV shows from chosen countries that have a specific genre
-tv_excluded_countries = ['xx', 'yy', 'zz']  # ISO 3166-1 alpha-2 codes for Japan, Korea, and the US
+tv_excluded_countries = ['XX', 'XX', 'XX', 'XX', 'XX', 'XX']  # ISO 3166-1 alpha-2 codes lowercas, jp, kr, us for Japan, Korea, and the US
 tv_excluded_genres = {
-    'xx': ['Animation', '3D animation', 'Drama'],
-    'yy': ['*'],
-    'zz': ['*']
+    'XX': ['XXXX', 'XXXX', 'XXXX'],  # Exclude Animation and Drama from Japan
+    'XX': ['XXXX', 'XXX', 'XXXX', 'XXXX'],  # Exclude Animation and Drama from Korea
+    'XX': ['XXXX','XXXX'],           # Exclude Animation from the US
+    'XX': ['*'],
+    'XX': ['*'],
+    'X': ['*']
 }
 
 # Movie Exclusion list - this filter will exclude movies from chosen countries that have a specific genre
-movie_excluded_countries = ['jp', 'kr', 'us', 'cn', 'in', 'il']  # ISO 3166-1 alpha-2 codes for Japan, Korea, and the US
+movie_excluded_countries = ['XX', 'XX', 'XX', 'XX', 'XX', 'XX']  # ISO 3166-1 alpha-2 codes lowercas, jp, kr, us for Japan, Korea, and the US
 movie_excluded_genres = {
-    'xx': ['Animation', '3D animation', 'Drama'],
-    'yy': ['*'],
-    'zz': ['*']
+    'XX': ['XX'],  # Exclude Animation and Drama from Japan
+    'kr': ['XX'],  # Exclude Animation and Drama from Korea
+    'XX': ['XX'],  # Exclude Animation and Drama from US
+    'XX': ['*'],
+    'XX': ['*'],
+    'XX': ['*']
 }
 
 # Keyword exclusion list - this filter will exclude movies or TV shows that contain a specific keyword in their TMDB profile
-excluded_keywords = ['abcd', 'efgh']  # like ['adult']
+excluded_keywords = ['XX', 'XX', 'XX', 'XX', 'XX', 'XX', 'XX','XX']  # like ['adult']
 
 # Filter movies by release date and TV shows by last air date
 max_air_date = datetime.now() - timedelta(days=90)  # specify the number of days since the movie release or the TV show last air date, shows before this date will be excluded
@@ -68,33 +72,34 @@ if not os.path.exists(truetype_path):
 
 
 
+
 # Fetching genres for movies
-genres_url = f'{TMDB_BASE_URL}genre/movie/list?language=en-US'
+genres_url = f'{TMDB_BASE_URL}/genre/movie/list?language=en-US'
 genres_response = requests.get(genres_url, headers=headers)
 genres_data = genres_response.json()
 movie_genres = {genre['id']: genre['name'] for genre in genres_data.get('genres', [])}
 
 # Fetching genres for TV shows
-genres_url = f'{TMDB_BASE_URL}genre/tv/list?language=en-US'
+genres_url = f'{TMDB_BASE_URL}/genre/tv/list?language=en-US'
 genres_response = requests.get(genres_url, headers=headers)
 genres_data = genres_response.json()
 tv_genres = {genre['id']: genre['name'] for genre in genres_data.get('genres', [])}
 
 # Fetching TV show details
 def get_tv_show_details(tv_id):
-    tv_details_url = f'{TMDB_BASE_URL}tv/{tv_id}?language=en-US'
+    tv_details_url = f'{TMDB_BASE_URL}/tv/{tv_id}?language=en-US'
     tv_details_response = requests.get(tv_details_url, headers=headers)
     return tv_details_response.json()
 
 # Fetching movie details
 def get_movie_details(movie_id):
-    movie_details_url = f'{TMDB_BASE_URL}movie/{movie_id}?language=en-US'
+    movie_details_url = f'{TMDB_BASE_URL}/movie/{movie_id}?language=en-US'
     movie_details_response = requests.get(movie_details_url, headers=headers)
     return movie_details_response.json()
 
 # Function to fetch keywords for a movie
 def get_movie_keywords(movie_id):
-    keywords_url = f"{TMDB_BASE_URL}movie/{movie_id}/keywords"
+    keywords_url = f"{TMDB_BASE_URL}/movie/{movie_id}/keywords"
     response = requests.get(keywords_url, headers=headers)
     if response.status_code == 200:
         # Extract and return the names of the keywords
@@ -108,6 +113,7 @@ def get_tv_keywords(tv_id):
     if response.status_code == 200:
         return [keyword['name'].lower() for keyword in response.json().get('results', [])]
     return []
+
 
 
 # Filter criteria for movies
@@ -178,12 +184,12 @@ def should_exclude_tvshow(tvshow, tv_excluded_countries=tv_excluded_countries, t
     return False
 
 # Endpoint for trending shows
-trending_movies_url = f'{TMDB_BASE_URL}trending/movie/week?language=en-US'
-trending_tvshows_url = f'{TMDB_BASE_URL}trending/tv/week?language=en-US'
+trending_movies_url = f'{TMDB_BASE_URL}/trending/movie/week?language=en-US'
+trending_tvshows_url = f'{TMDB_BASE_URL}/trending/tv/week?language=en-US'
 
 # Fetch more than required to allow filtering
 initial_fetch_count = numberofmovies + 10  # Fetch 15 to get at least 5 valid ones
-trending_movies_url = f'{TMDB_BASE_URL}trending/movie/week?language=en-US'
+trending_movies_url = f'{TMDB_BASE_URL}/trending/movie/week?language=en-US'
 trending_movies_response = requests.get(trending_movies_url, headers=headers)
 all_movies = trending_movies_response.json().get('results', [])[:initial_fetch_count]
 
@@ -203,7 +209,7 @@ trending_movies = {'results': valid_movies}
 
 # Fetching trending TV shows
 initial_fetch_count = numberoftvshows + 10  # Fetch more than needed
-trending_tvshows_url = f'{TMDB_BASE_URL}trending/tv/week?language=en-US'
+trending_tvshows_url = f'{TMDB_BASE_URL}/trending/tv/week?language=en-US'
 trending_tvshows_response = requests.get(trending_tvshows_url, headers=headers)
 all_tvshows = trending_tvshows_response.json().get('results', [])[:initial_fetch_count]
 
@@ -217,10 +223,10 @@ for tvshow in all_tvshows:
 trending_tvshows = {'results': valid_tvshows}
 
 # Create a directory to save the backgrounds and clear its contents if it exists
-background_dir = "tmdbbackgrounds_color"
-if os.path.exists(background_dir):
-    shutil.rmtree(background_dir)
-os.makedirs(background_dir, exist_ok=True)
+background_dir = "tmdbbackgrounds"
+#if os.path.exists(background_dir):
+#    shutil.rmtree(background_dir)
+#os.makedirs(background_dir, exist_ok=True)
 
 # Truncate overview
 def truncate_overview(overview, max_chars):
@@ -259,6 +265,8 @@ def resize_logo(image, width, height):
     # Resize the image
     resized_img = image.resize((new_width, new_height))
     return resized_img
+
+
 
 
 
@@ -352,14 +360,12 @@ def generate_background_fast(input_img, target_width=3000):
 
 def clean_filename(filename):
     # Remove problematic characters from the filename
-    cleaned = ''.join(c if c.isalnum() or c in '._-' else '_' for c in filename)
-    # Collapse multiple underscores
-    cleaned = re.sub(r'_+', '_', cleaned)
-    return cleaned
+    cleaned_filename = "".join(c if c.isalnum() or c in "._-" else "_" for c in filename)
+    return cleaned_filename
 
 # Fetch movie or TV show logo in English
 def get_logo(media_type, media_id, language="en"):
-    logo_url = f"{TMDB_BASE_URL}{media_type}/{media_id}/images?language={language}"
+    logo_url = f"{TMDB_BASE_URL}/{media_type}/{media_id}/images?language={language}"
     logo_response = requests.get(logo_url, headers=headers)
     logo_data = logo_response.json()
     if logo_response.status_code == 200:
