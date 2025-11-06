@@ -21,8 +21,12 @@ services:
       # - /path/on/host/tvbackgrounds:/config/tvbackgrounds
     environment:
       PLEX: False
+      PLEXCOLOR: False
       JELLYFIN: False
       TMDB: False
+      TMDBCOLOR: False
+      RADARRSONARR: False
+      RADARRSONARRCOLOR: False
       TRAKT: False
       CRON: False
       # Note: If both POST_SCRIPT_PY and POST_SCRIPT_SH are set to True,
