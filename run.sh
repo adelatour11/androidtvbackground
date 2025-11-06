@@ -19,6 +19,12 @@ if [ "$(echo "$PLEX" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   mv -f plex_backgrounds/* /backgrounds/backgrounds/
   rm -rf plex_backgrounds
 fi
+if [ "$(echo "$PLEXCOLOR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
+  echo "($(date)) [START] Retrieving Plex_color Backgrounds.."
+  python plex_color.py
+  mv -f plex_backgrounds/* /backgrounds/backgrounds/
+  rm -rf plex_backgrounds
+fi
 if [ "$(echo "$JELLYFIN" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   echo "($(date)) [START] Retrieving Jellyfin Backgrounds.."
   python jellyfin.py
@@ -30,6 +36,24 @@ if [ "$(echo "$TMDB" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   python TMDB.py
   mv -f tmdb_backgrounds/* /backgrounds/backgrounds/
   rm -rf tmdb_backgrounds
+fi
+if [ "$(echo "$TMDBCOLOR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
+  echo "($(date)) [START] Retrieving TMDB_color Backgrounds.."
+  python TMDB_color.py
+  mv -f tmdb_backgrounds/* /backgrounds/backgrounds/
+  rm -rf tmdb_backgrounds
+fi
+if [ "$(echo "$RADARRSONARR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
+  echo "($(date)) [START] Retrieving RADARRSONARR Backgrounds.."
+  python radarrsonarr.py
+  mv -f radarrsonarr_backgrounds/* /backgrounds/backgrounds/
+  rm -rf radarrsonarr_backgrounds
+fi
+if [ "$(echo "$RADARRSONARR_COLOR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
+  echo "($(date)) [START] Retrieving RADARRSONARR_color Backgrounds.."
+  python radarrsonarr_color.py
+  mv -f radarrsonarr_backgrounds/* /backgrounds/backgrounds/
+  rm -rf radarrsonarr_backgrounds
 fi
 if [ "$(echo "$TRAKT" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   echo "($(date)) [START] Retrieving Trakt Backgrounds.."
