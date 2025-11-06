@@ -1,29 +1,50 @@
 # TMDB background generator for Radarr and Sonarr upcoming releases using a colored background and vignetting effect
 
 import requests
-from PIL import Image, ImageFilter
 import numpy as np
-import re
 from datetime import datetime, timedelta, timezone
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from io import BytesIO
 import os, shutil, textwrap
+from dotenv import load_dotenv
+load_dotenv(verbose=True)
 
 # --- CONFIGURATION ---
-RADARR_URL = "XXXXX"
-SONARR_URL = "XXXXX"
-RADARR_API_KEY = "XXXXX"
-SONARR_API_KEY = "XXXXX"
-TMDB_BEARER_TOKEN = "XXXXX"
-DAYS_AHEAD = 14
+RADARR_URL = os.getenv('RADARR_URL')
+SONARR_URL = os.getenv('SONARR_URL')
+RADARR_API_KEY = os.getenv('RADARR_API_KEY')
+SONARR_API_KEY = os.getenv('SONARR_API_KEY')
+TMDB_BEARER_TOKEN = os.getenv('TMDB_BEARER_TOKEN')
+DAYS_AHEAD = int(os.getenv('DAYS_AHEAD'))
+TMDB_BASE_URL = os.getenv('TMDB_BASE_URL')
+TMDB_IMG_BASE = os.getenv('TMDB_IMG_BASE')
+RADARR_SONARR_LOGO = os.getenv('RADARR_SONARR_LOGO')
+
+
+try:
+    url = f"{RADARR_URL}/api/v3/system/status"
+    resp = requests.get(url, headers={"X-Api-Key": RADARR_API_KEY})
+    resp.raise_for_status()
+    data = resp.json()
+    print(f"Radarr: {data.get('appName')} v{data.get('version')}")
+except Exception as e:
+    print(f"Radarr connection failed: {e}")
+
+try:
+    url = f"{SONARR_URL}/api/v3/system/status"
+    resp = requests.get(url, headers={"X-Api-Key": SONARR_API_KEY})
+    resp.raise_for_status()
+    data = resp.json()
+    print(f"Sonarr: {data.get('appName')} v{data.get('version')}")
+except Exception as e:
+    print(f"Sonarr connection failed: {e}")
+
 
 TMDB_HEADERS = {
     "accept": "application/json",
     "Authorization": f"Bearer {TMDB_BEARER_TOKEN}"
 }
 
-TMDB_BASE_URL = "https://api.themoviedb.org/3"
-TMDB_IMG_BASE = "https://image.tmdb.org/t/p/original"
 
 # --- UTILITIES ---
 def fetch_json(url, headers=None, params=None):
@@ -38,7 +59,7 @@ def fetch_json(url, headers=None, params=None):
 # Create a directory to save the backgrounds and clear its contents if it exists
 background_dir = "radarrsonarr_backgrounds"
 if os.path.exists(background_dir):
-    shutil.rmtree(background_dir)
+   shutil.rmtree(background_dir)
 os.makedirs(background_dir, exist_ok=True)
 
 def resize_image(image, height):
@@ -51,10 +72,8 @@ date_str = datetime.now().strftime("%Y%m%d")
 
 def clean_filename(filename):
     # Remove problematic characters from the filename
-    cleaned = ''.join(c if c.isalnum() or c in '._-' else '_' for c in filename)
-    # Collapse multiple underscores
-    cleaned = re.sub(r'_+', '_', cleaned)
-    return cleaned
+    cleaned_filename = "".join(c if c.isalnum() or c in "._-" else "_" for c in filename)
+    return cleaned_filename
 
 def resize_logo(image, width, height):
     aspect_ratio = image.width / image.height
@@ -95,8 +114,6 @@ def format_duration(minutes):
     hours = minutes // 60
     mins = minutes % 60
     return f"{hours}h{mins:02d}min"
-
-
 def vignette_side(h, w, fade_ratio=5, fade_power=5.0, position="bottom-left", offset_left=0, offset_bottom=0):
     """
     Create a vignette mask for the given position.
