@@ -1,76 +1,85 @@
-# plexfriends_color.py
-# Fetch friends' libraries and generate backgrounds using color background and vignetting effect
-# Refactored to align with single-server plex script style
+# plexfriends_all.py
+# Fetch friends' libraries and generate backgrounds using your exact image-processing logic
 
+# === Standard Library Imports ===
 import os
-import re
 import time
-import unicodedata
-import textwrap
-import numpy as np
-import requests
 from datetime import datetime
+import shutil
+import unicodedata
 from io import BytesIO
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
-from plexapi.myplex import MyPlexAccount
+from typing import Tuple
+import textwrap
 
+# === Third-Party Imports ===
+import requests
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
+import numpy as np
+from plexapi.myplex import MyPlexAccount
+from dotenv import load_dotenv
+load_dotenv(verbose=True)
 
 # === User Configurable Options ===
-PLEX_TOKEN = os.getenv('XXXX') or 'XXXX'
-TARGET_FRIEND  = None  # e.g. "Alice Dupont"
-
-order_by        = "added"   # 'aired' or 'added'
+PLEX_TOKEN = os.getenv('XXX') or 'XXX'
+TARGET_FRIEND = None  # e.g. "Alice Dupont"
+order_by = 'added'      # 'aired', 'added', or 'mix'
 download_movies = True
 download_series = True
-limit           = 5
-debug           = False
+limit = 5
+debug = False
 
-background_dir  = "plexfriends_color"
-
-logo_variant    = "white"  # "color" or "white"
+logo_variant = 'white'
 plex_logo_horizontal_offset = 0
-plex_logo_vertical_offset   = 7
+plex_logo_vertical_offset = 7
 
 max_summary_chars = 175
 max_summary_width = 1400
 summary_max_lines = 3
 
-added_label   = "Now Available on"
-aired_label   = "Recent release"
-random_label  = "Shared on"
-default_label = "Now shared on"
 
-truetype_url  = "https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf"
-truetype_path = "Roboto-Light.ttf"
+added_label = 'Now shared on'
+aired_label = 'Recent release, shared on'
+random_label = 'Shared on'
+default_label = 'Now shared on'
 
-main_color     = "white"
-info_color     = (200, 200, 200)
-summary_color  = "white"
-metadata_color = "white"
-shadow_color   = "black"
+env_font_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf'
+env_font_name = 'Roboto-Light.ttf'
+
+main_color     = 'white'
+info_color     = (150, 150, 150)
+summary_color  = 'white'
+metadata_color = 'white'
+shadow_color   = 'black'
 shadow_offset  = 2
 
 plex_api_delay_seconds = 1.0
 
-# === Font Download ===
+# Prepare output directory
+background_dir = 'plex_backgrounds'
+if os.path.exists(background_dir):
+    shutil.rmtree(background_dir)
+os.makedirs(background_dir, exist_ok=True)
+
+# === Download Font ===
 def download_font(url, path):
-    if not os.path.exists(path):
-        try:
+    try:
+        if not os.path.exists(path):
             r = requests.get(url, timeout=10)
             if r.status_code == 200:
-                with open(path, "wb") as f:
-                    f.write(r.content)
-                print("[INFO] Font downloaded")
-        except Exception as e:
-            print(f"[WARN] Font download failed: {e}")
+                with open(path, 'wb') as f: f.write(r.content)
+                return True
+            return False
+        return True
+    except:
+        return False
 
-# === Friend Servers Discovery ===
+# === Discover Friend Servers ===
 def get_friend_servers(token, target_friend=None):
     account = MyPlexAccount(token=token)
     friend_map = {u.id: u.title for u in account.users()}
     servers = {}
     for res in account.resources():
-        if res.provides == "server" and not res.owned:
+        if res.provides == 'server' and not res.owned:
             owner = friend_map.get(res.ownerId)
             if not owner or (target_friend and owner != target_friend):
                 continue
@@ -84,8 +93,11 @@ def get_friend_servers(token, target_friend=None):
 
 # === Utilities ===
 def clean_filename(name):
-    cleaned = "".join(c if c.isalnum() or c in "._-" else "_" for c in name)
-    return re.sub(r"_+", "_", cleaned)
+    return ''.join(c if c.isalnum() or c in '._-' else '_' for c in name)
+
+def resize_image(img, h):
+    ratio = h / img.height
+    return img.resize((int(img.width*ratio), h))
 
 def resize_logo(img, w, h):
     aspect = img.width / img.height
@@ -96,8 +108,20 @@ def resize_logo(img, w, h):
 def truncate_summary(summary, max_chars):
     return textwrap.shorten(summary or "", width=max_chars, placeholder="...")
 
+def wrap_text_by_pixel_width(text, font, max_width, draw):
+    words, lines, cur = text.split(), [], ''
+    for w in words:
+        test = (cur+' '+w).strip()
+        if draw.textlength(test, font=font) <= max_width:
+            cur = test
+        else:
+            if cur: lines.append(cur)
+            cur = w
+    if cur: lines.append(cur)
+    return lines
+
 def draw_text_with_shadow(draw, pos, text, font, fill, shadow, offset=(2,2)):
-    x, y = pos
+    x,y = pos
     draw.text((x+offset[0], y+offset[1]), text, font=font, fill=shadow)
     draw.text((x, y), text, font=font, fill=fill)
 
@@ -133,8 +157,8 @@ def download_logo_in_memory(item, baseurl, token):
         r = requests.get(url, timeout=10)
         if r.status_code == 200:
             return Image.open(BytesIO(r.content))
-    except Exception as e:
-        if debug: print(f"[WARN] Logo fetch failed for {item.title}: {e}")
+    except:
+        pass
     return None
 
 # === Background Pipeline ===
@@ -181,7 +205,7 @@ def generate_background_fast(input_img, target_width=3000):
     canvas.paste(img_resized, (3840-w,0), img_resized)
     return canvas.convert("RGB")
 
-# === Core Processing ===
+# === Core Image Processing ===
 def generate_background_for_item(item, media_type, order_type, plex_logo, target_folder, friend, plex):
     art_url = item.artUrl
     if not art_url:
@@ -198,10 +222,10 @@ def generate_background_for_item(item, media_type, order_type, plex_logo, target
     canvas = generate_background_fast(art, target_width=2700)
     draw = ImageDraw.Draw(canvas)
 
-    ft_title   = ImageFont.truetype(truetype_path, size=190)
-    ft_info    = ImageFont.truetype(truetype_path, size=55)
-    ft_summary = ImageFont.truetype(truetype_path, size=50)
-    ft_custom  = ImageFont.truetype(truetype_path, size=60)
+    ft_title   = ImageFont.truetype(env_font_name, size=190)
+    ft_info    = ImageFont.truetype(env_font_name, size=55)
+    ft_summary = ImageFont.truetype(env_font_name, size=50)
+    ft_custom  = ImageFont.truetype(env_font_name, size=60)
 
     # Metadata
     if media_type == "movie":
@@ -263,6 +287,26 @@ def generate_background_for_item(item, media_type, order_type, plex_logo, target
     canvas.convert("RGB").save(out_path,quality=95)
     print(f"Saved: {out_path}")
 
+
+# === Sorting Helpers ===
+def sort_movies(movies,k): return sorted([m for m in movies if getattr(m,k,None)], key=lambda x:getattr(x,k), reverse=True)
+def sort_shows(shows,k):
+    arr=[]
+    for s in shows:
+        eps=[e for e in s.episodes() if getattr(e,k,None)]
+        if eps: arr.append((s,max(eps,key=lambda e:getattr(e,k))))
+    return [s for s,_ in sorted(arr,key=lambda t:getattr(t[1],k),reverse=True)]
+
+# === Download Latest Media ===
+def download_latest_media(plex,order,lim,typ,base_bg,over,logo,friend):
+    items = plex.library.search(libtype='movie' if typ=='movie' else 'show')
+    key   = 'originallyAvailableAt' if order=='aired' else 'addedAt'
+    sorted_items = (sort_movies if typ=='movie' else sort_shows)(items,key)[:lim]
+    odir = os.path.join(background_dir)
+    for itm in sorted_items:
+        generate_background_for_item(itm,typ,order,base_bg,over,logo,odir)
+        time.sleep(plex_api_delay_seconds)
+
 # === Media Fetching ===
 def sort_movies(movies,k): return sorted([m for m in movies if getattr(m,k,None)], key=lambda x:getattr(x,k), reverse=True)
 def sort_shows(shows,k):
@@ -283,7 +327,7 @@ def download_latest_media(plex, order, lim, typ, plex_logo, friend):
 
 # === Main ===
 def main_for_friend(plex, friend):
-    download_font(truetype_url, truetype_path)
+    download_font(env_font_url, env_font_name)
     logo_file = "plexlogo.png" if logo_variant=="white" else "plexlogo_color.png"
     plex_logo = Image.open(os.path.join(os.path.dirname(__file__),logo_file)).convert("RGBA")
 
