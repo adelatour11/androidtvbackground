@@ -4,7 +4,7 @@
 cd /app
 
 # copy in config files
-cp -f /config/plex.py cp /config/plex_color.py /config/jellyfin.py /config/radarrsonarr.py /config/radarrsonarr_color.py /config/TMDB.py /config/TMDB_color.py /config/trakt.py .
+cp -f /config/plex.py cp /config/plex_color.py /config/plexfriend.py cp /config/plexfriend_color.py /config/jellyfin.py /config/radarrsonarr.py /config/radarrsonarr_color.py /config/TMDB.py /config/TMDB_color.py /config/trakt.py .
 
 # Create post-processing scripts if needed
   /bin/sh /create_post_scripts.sh >> /config/log.txt 2>&1
@@ -24,6 +24,18 @@ if [ "$(echo "$PLEXCOLOR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   python plex_color.py
   mv -f plex_backgrounds/* /backgrounds/backgrounds/
   rm -rf plex_backgrounds
+fi
+if [ "$(echo "$PLEXFRIEND" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
+  echo "($(date)) [START] Retrieving Plex Backgrounds.."
+  python plexfriend.py
+  mv -f plexfriend_backgrounds/* /backgrounds/backgrounds/
+  rm -rf plexfriend_backgrounds
+fi
+if [ "$(echo "$PLEXFRIENDCOLOR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
+  echo "($(date)) [START] Retrieving Plex_color Backgrounds.."
+  python plexfriend_color.py
+  mv -f plexfriend_backgrounds/* /backgrounds/backgrounds/
+  rm -rf plexfriend_backgrounds
 fi
 if [ "$(echo "$JELLYFIN" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   echo "($(date)) [START] Retrieving Jellyfin Backgrounds.."
