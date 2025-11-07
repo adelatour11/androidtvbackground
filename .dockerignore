@@ -1,7 +1,6 @@
 .git
 .gitignore
 .github
-.env
 .dockerignore
 Dockerfile
 images
