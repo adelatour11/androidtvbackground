@@ -28,8 +28,6 @@ mkdir -p tmdb_backgrounds
 mkdir -p radarrsonarr_backgrounds
 mkdir -p trakt_backgrounds
 
-
-mkdir 
 if [ "$(echo "$PLEX" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   echo "($(date)) [START] Retrieving Plex Backgrounds.."
   python plex.py
