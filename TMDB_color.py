@@ -475,7 +475,7 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
         bckg.paste(tmdblogo, (680, custom_position[1] + 20), tmdblogo)
 
         # Save
-        filename = os.path.join(background_dir, f"{clean_filename(title)}_{date_str}.jpg")
+        filename = os.path.join(background_dir, f"{clean_filename(title)}.jpg")
         bckg = bckg.convert('RGB')
         bckg.save(filename)
         print(f"Image saved: {filename}")
