@@ -10,7 +10,7 @@ cp -f /config/.env /config/plex.py /config/plex_color.py /config/plexfriend.py /
 /bin/sh /create_post_scripts.sh >> /config/log.txt 2>&1
 
 # copies config file if needed and then run python scripts
-echo "($(date)) [START] Background Retrieval"
+echo "($(date)) [INITIATE] Clearing folders"
 rm -f /backgrounds/*
 rm -rf plex_backgrounds
 rm -rf plexfriend_backgrounds
@@ -18,8 +18,6 @@ rm -rf jellyfin_backgrounds
 rm -rf tmdb_backgrounds
 rm -rf radarrsonarr_backgrounds
 rm -rf trakt_backgrounds
-
-
 mkdir -p /backgrounds/
 mkdir -p plex_backgrounds
 mkdir -p plexfriend_backgrounds
@@ -27,6 +25,7 @@ mkdir -p jellyfin_backgrounds
 mkdir -p tmdb_backgrounds
 mkdir -p radarrsonarr_backgrounds
 mkdir -p trakt_backgrounds
+echo "($(date)) [START] Background Retrieval"
 
 if [ "$(echo "$PLEX" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   echo "($(date)) [START] Retrieving Plex Backgrounds.."
