@@ -12,20 +12,12 @@ if [ ! -f /config/plex.py ]; then
 -----------------------------------------
 Code by: adelatour11
 -----------------------------------------
-Docker brought to you by:                
- _  _ _     _   _                        
-| \| (_)_ _| |_| |_                      
-| .' | | ' \  _| ' \                     
-|_|\_|_|_||_\__|_||_|                    
-__      __    _ _                        
-\ \    / /_ _| | |_____ _ _              
- \ \/\/ / _' | | / / -_) '_|             
-  \_/\_/\__,_|_|_\_\___|_|               
-                                         
+Docker brought to you by adelatour11 
+with the support of NinthWalker                                         
 -----------------------------------------
 "
   echo "New install detected. Copying config files.."
-  cp /app/.env /app/plex.py /app/plex_color.py /app/plexfriend.py /app/plexfriend_color.py /app/TMDB.py /app/TMDB_color.py /app/TMDB_color.py /app/radarrsonarr.py /app/radarrsonarr_color.py /app/trakt.py /app/jellyfin.py /config/
+  cp /app/.env.example /app/plex.py /app/plex_color.py /app/plexfriend.py /app/plexfriend_color.py /app/TMDB.py /app/TMDB_color.py /app/TMDB_color.py /app/radarrsonarr.py /app/radarrsonarr_color.py /app/trakt.py /app/jellyfin.py /config/
 
   # Create post-processing scripts if needed
   /bin/sh /create_post_scripts.sh >> /config/log.txt 2>&1
