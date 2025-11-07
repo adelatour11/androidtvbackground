@@ -1,6 +1,6 @@
 # Use intermediate to reduce final image size
 FROM python:3.11.11-alpine3.21 AS builder
-ARG ANDROIDTVBACKGROUND_REPO=https://github.com/rwoof/androidtvbackground.git
+ARG ANDROIDTVBACKGROUND_REPO=https://github.com/adelatour11/androidtvbackground.git
 ARG Roboto_Light_URL=https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Light.ttf
 ARG SUPERCRONIC_URL=https://github.com/aptible/supercronic/releases/download/v0.2.33/supercronic-linux-amd64
 WORKDIR /app
@@ -22,9 +22,9 @@ ADD $SUPERCRONIC_URL supercronic
 FROM alpine:3.21
 ARG VERSION
 ARG SUPERCRONIC_SHA1SUM=71b0d58cc53f6bd72cf2f293e09e294b79c666d8
-LABEL org.opencontainers.image.source="https://github.com/rwoof/androidtvbackground" \
+LABEL org.opencontainers.image.source="https://github.com/adelatour11/androidtvbackground" \
       org.opencontainers.image.description="Create background wallpapers from Plex/TMDB/Trakt" \
-      org.opencontainers.image.authors="ninthwalker" \
+      org.opencontainers.image.authors="adelatour11" \
       org.opencontainers.image.version=$VERSION
 
 # Set volume and copy files
