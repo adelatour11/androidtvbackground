@@ -282,7 +282,7 @@ def generate_background_for_item(item, media_type, order_type, plex_logo, target
     # Save
     today = datetime.today().strftime("%Y%m%d")
     safe = clean_filename(unicodedata.normalize("NFKD",item.title).encode("ASCII","ignore").decode())
-    out_path = os.path.join(target_folder,f"{safe}_{today}.jpg")
+    out_path = os.path.join(target_folder,f"{safe}.jpg")
     canvas.convert("RGB").save(out_path,quality=95)
     print(f"Saved: {out_path}")
 
