@@ -222,11 +222,11 @@ for tvshow in all_tvshows:
         break
 trending_tvshows = {'results': valid_tvshows}
 
-# Create a directory to save the backgrounds and clear its contents if it exists
+# Create a directory to save the backgrounds and clear its contents
 background_dir = "tmdbbackgrounds"
-#if os.path.exists(background_dir):
-#    shutil.rmtree(background_dir)
-#os.makedirs(background_dir, exist_ok=True)
+if os.path.exists(background_dir):
+    shutil.rmtree(background_dir)
+os.makedirs(background_dir, exist_ok=True)
 
 # Truncate overview
 def truncate_overview(overview, max_chars):
