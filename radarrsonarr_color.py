@@ -279,7 +279,7 @@ def process_image(image_url, title, overview, genre, year, rating, custom_text, 
             bckg.paste(plexlogo, logo_position, plexlogo)
 
         # --- Save final image ---
-        filename = os.path.join(background_dir, f"{clean_filename(title)}_{date_str}.jpg")
+        filename = os.path.join(background_dir, f"{clean_filename(title)}.jpg")
         bckg.save(filename, quality=95)
         print(f"Generated: {filename}")
 
