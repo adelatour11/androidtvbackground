@@ -4,7 +4,7 @@
 cd /app
 
 # copy in config files
-cp -f /config/.env /config/plex.py cp /config/plex_color.py /config/plexfriend.py cp /config/plexfriend_color.py /config/jellyfin.py /config/radarrsonarr.py /config/radarrsonarr_color.py /config/TMDB.py /config/TMDB_color.py /config/trakt.py .
+cp -f /config/.env /config/plex.py /config/plex_color.py /config/plexfriend.py /config/plexfriend_color.py /config/jellyfin.py /config/radarrsonarr.py /config/radarrsonarr_color.py /config/TMDB.py /config/TMDB_color.py /config/trakt.py .
 
 # Create post-processing scripts if needed
   /bin/sh /create_post_scripts.sh >> /config/log.txt 2>&1
