@@ -382,7 +382,7 @@ def process_image(image_url, title, is_movie, genre, year, rating, duration=None
         draw.text(custom_position, custom_text, font=font_custom, fill=metadata_color)
 
         # Save the resized image
-        filename = os.path.join(background_dir, f"{clean_filename(title)}_{date_str}.jpg")
+        filename = os.path.join(background_dir, f"{clean_filename(title)}.jpg")
         bckg = bckg.convert('RGB')
         bckg.save(filename)
         print(f"Image saved: {filename}")
