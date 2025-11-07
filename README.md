@@ -15,37 +15,18 @@ Dockerized version of [androidtvbackground](https://github.com/adelatour11/andro
 
     From within your docker-compose.yml directory, run:  
     `docker compose up -d`
-
-- Alternative install is via docker run command line  
-   It would look something like this, depending on config options that you want:  
-   ```
-   docker run -d --user 99:100 --name androidtvbackground -v /your/local/path/for/config:/config -v /your/local/path/for/backgrounds:/backgrounds -e PLEX=True -e JELLYFIN=False -e TMDB=True -e TRAKT=False -e POST_SCRIPT_PY=False -e POST_SCRIPT_SH=True -e CRON="0 0 * * *" ghcr.io/ninthwalker/androidtvbackground:latest
-   ```  
-
-- Unraid Installation
-  1. This app is published within Unraid's community applications and can be directly installed from there.
-
-- The last install method is to build it yourself locally using the Dockerfile from this repo
-   1. Clone this repo and extract contents
-   2. From within the extracted folder, open a cmd prompt and run:  
-   `docker build . -t androidtvbackground`
-   3. Once built, you can reference the local image in your docker-compose.yml file or your run cmd. A run cmd would look something like this, depending on config options that you want:  
-   ```
-   docker run -d --user 99:100 --name androidtvbackground -v /your/local/path/for/config:/config -v /your/local/path/for/backgrounds:/backgrounds -e PLEX=True -e JELLYFIN=False -e TMDB=True -e TRAKT=False -e POST_SCRIPT_PY=False -e POST_SCRIPT_SH=True -e CRON="0 0 * * *" androidtvbackground
-   ```  
   
 ### First run:
 
 - Script files will be copied into your mapped config volume on your host.
   1. Edit these according to the [instructions](https://github.com/adelatour11/androidtvbackground/blob/main/README.md)
-  1. Start the container again with:
-  `docker start androidtvbackground`
+  2. Copy in the /config folder the .env.example to .env and edit the file before the next step.
+  3. Restart the container again with:
   
 ### Docker Usage Instructions: 
 
 - Each script set to 'True' will run when the docker is started. If CRON is set to a schedule, the container will stay running and create backgrounds according to your CRON schedule.  
-- If CRON is set to 'False', the container will stop after creating backgrounds and you will need to manually start it again to create more backgrounds with:  
-  `docker start <name of docker>`   
+- If CRON is set to 'False', the container will stop after creating backgrounds and you will need to manually start it again to create more backgrounds
   *Note that backgrounds will always be created the first time the container starts, even when a cron schedule is set.*  
   
 ### Docker Settings:
