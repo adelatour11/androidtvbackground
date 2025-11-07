@@ -5,6 +5,7 @@ import re
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
 from io import BytesIO
 import os
+import shutil
 import textwrap
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
