@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 load_dotenv(verbose=True)
 
 # === User Configurable Options ===
-PLEX_TOKEN = os.getenv('XXXX') or 'XXXX'
+PLEX_TOKEN = locals().get('token', os.getenv('PLEX_TOKEN'))
 TARGET_FRIEND = None  # e.g. "Alice Dupont"
 order_by = 'added'      # 'aired', 'added', or 'mix'
 download_movies = True
