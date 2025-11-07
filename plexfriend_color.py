@@ -45,7 +45,7 @@ env_font_url = 'https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto
 env_font_name = 'Roboto-Light.ttf'
 
 main_color     = 'white'
-info_color     = (150, 150, 150)
+info_color     = 'white'
 summary_color  = 'white'
 metadata_color = 'white'
 shadow_color   = 'black'
