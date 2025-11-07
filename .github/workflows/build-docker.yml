@@ -39,14 +39,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # DOCKER
-      - name: Login to Docker Registry
-        uses: docker/login-action@v3
-        with:
-          registry: docker.io
-          username: ${{ secrets.DOCKERHUB_USER }}
-          password: ${{ secrets.DOCKERHUB_TOKEN}}
-
       # Build & Push to multiple registries
       - name: Build and push docker image with tags
         id: build-push
@@ -59,5 +51,3 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ env.APP_NAME }}:${{ env.VERSION }}
             ghcr.io/${{ github.repository_owner }}/${{ env.APP_NAME }}:latest
-            docker.io/${{ secrets.DOCKERHUB_USER }}/${{ env.APP_NAME }}:${{ env.VERSION }}
-            docker.io/${{ secrets.DOCKERHUB_USER }}/${{ env.APP_NAME }}:latest
