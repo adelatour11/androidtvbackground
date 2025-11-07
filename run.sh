@@ -35,19 +35,19 @@ if [ "$(echo "$PLEX" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   rm -rf plex_backgrounds
 fi
 if [ "$(echo "$PLEXCOLOR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
-  echo "($(date)) [START] Retrieving Plex_color Backgrounds.."
+  echo "($(date)) [START] Retrieving Plex Color Backgrounds.."
   python plex_color.py
   mv -f plex_backgrounds/* /backgrounds/
   rm -rf plex_backgrounds
 fi
 if [ "$(echo "$PLEXFRIEND" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
-  echo "($(date)) [START] Retrieving Plex Backgrounds.."
+  echo "($(date)) [START] Retrieving Plex Friend Backgrounds.."
   python plexfriend.py
   mv -f plexfriend_backgrounds/* /backgrounds/
   rm -rf plexfriend_backgrounds
 fi
 if [ "$(echo "$PLEXFRIENDCOLOR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
-  echo "($(date)) [START] Retrieving Plex_color Backgrounds.."
+  echo "($(date)) [START] Retrieving Plex Friend Color Backgrounds.."
   python plexfriend_color.py
   mv -f plexfriend_backgrounds/* /backgrounds/
   rm -rf plexfriend_backgrounds
@@ -65,7 +65,7 @@ if [ "$(echo "$TMDB" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   rm -rf tmdb_backgrounds
 fi
 if [ "$(echo "$TMDBCOLOR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
-  echo "($(date)) [START] Retrieving TMDB_color Backgrounds.."
+  echo "($(date)) [START] Retrieving TMDB Color Backgrounds.."
   python TMDB_color.py
   mv -f tmdb_backgrounds/* /backgrounds/
   rm -rf tmdb_backgrounds
@@ -77,7 +77,7 @@ if [ "$(echo "$RADARRSONARR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   rm -rf radarrsonarr_backgrounds
 fi
 if [ "$(echo "$RADARRSONARRCOLOR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
-  echo "($(date)) [START] Retrieving RADARRSONARR_color Backgrounds.."
+  echo "($(date)) [START] Retrieving RADARRSONARR Color Backgrounds.."
   python radarrsonarr_color.py
   mv -f radarrsonarr_backgrounds/* /backgrounds/
   rm -rf radarrsonarr_backgrounds
