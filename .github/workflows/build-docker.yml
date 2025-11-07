@@ -21,6 +21,9 @@ jobs:
   build-and-push:
     if: github.repository == 'adelatour11/androidtvbackground'
     runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Github Checkout
         uses: actions/checkout@v4
