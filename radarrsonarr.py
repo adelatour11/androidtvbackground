@@ -181,7 +181,7 @@ def process_image(image_url, title, overview, genre, year, rating, custom_text, 
         draw.text((custom_pos[0] + shadow_offset, custom_pos[1] + shadow_offset), custom_text, font=font_custom, fill="black")
         draw.text(custom_pos, custom_text, font=font_custom, fill="white")
 
-        filename = os.path.join(background_dir, f"{clean_filename(title)}_{date_str}.jpg")
+        filename = os.path.join(background_dir, f"{clean_filename(title)}.jpg")
         bckg = bckg.convert('RGB')
         bckg.save(filename)
         print(f"Generated: {filename}")
