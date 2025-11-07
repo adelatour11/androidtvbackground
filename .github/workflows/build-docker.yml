@@ -19,7 +19,7 @@ env:
 
 jobs:
   build-and-push:
-    if: github.repository == 'ninthwalker/androidtvbackground'
+    if: github.repository == 'adelatour11/androidtvbackground'
     runs-on: ubuntu-24.04
     steps:
       - name: Github Checkout
