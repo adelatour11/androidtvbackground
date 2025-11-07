@@ -11,66 +11,83 @@ cp -f /config/.env /config/plex.py /config/plex_color.py /config/plexfriend.py /
 
 # copies config file if needed and then run python scripts
 echo "($(date)) [START] Background Retrieval"
-rm -f /backgrounds/backgrounds/*
-mkdir -p /backgrounds/backgrounds
+rm -f /backgrounds/*
+rm -rf plex_backgrounds
+rm -rf plexfriend_backgrounds
+rm -rf jellyfin_backgrounds
+rm -rf tmdb_backgrounds
+rm -rf radarrsonarr_backgrounds
+rm -rf trakt_backgrounds
+
+
+mkdir -p /backgrounds/
+mkdir -p plex_backgrounds
+mkdir -p plexfriend_backgrounds
+mkdir -p jellyfin_backgrounds
+mkdir -p tmdb_backgrounds
+mkdir -p radarrsonarr_backgrounds
+mkdir -p trakt_backgrounds
+
+
+mkdir 
 if [ "$(echo "$PLEX" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   echo "($(date)) [START] Retrieving Plex Backgrounds.."
   python plex.py
-  mv -f plex_backgrounds/* /backgrounds/backgrounds/
+  mv -f plex_backgrounds/* /backgrounds/
   rm -rf plex_backgrounds
 fi
 if [ "$(echo "$PLEXCOLOR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   echo "($(date)) [START] Retrieving Plex_color Backgrounds.."
   python plex_color.py
-  mv -f plex_backgrounds/* /backgrounds/backgrounds/
+  mv -f plex_backgrounds/* /backgrounds/
   rm -rf plex_backgrounds
 fi
 if [ "$(echo "$PLEXFRIEND" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   echo "($(date)) [START] Retrieving Plex Backgrounds.."
   python plexfriend.py
-  mv -f plexfriend_backgrounds/* /backgrounds/backgrounds/
+  mv -f plexfriend_backgrounds/* /backgrounds/
   rm -rf plexfriend_backgrounds
 fi
 if [ "$(echo "$PLEXFRIENDCOLOR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   echo "($(date)) [START] Retrieving Plex_color Backgrounds.."
   python plexfriend_color.py
-  mv -f plexfriend_backgrounds/* /backgrounds/backgrounds/
+  mv -f plexfriend_backgrounds/* /backgrounds/
   rm -rf plexfriend_backgrounds
 fi
 if [ "$(echo "$JELLYFIN" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   echo "($(date)) [START] Retrieving Jellyfin Backgrounds.."
   python jellyfin.py
-  mv -f jellyfin_backgrounds/* /backgrounds/backgrounds/
+  mv -f jellyfin_backgrounds/* /backgrounds/
   rm -rf jellyfin_backgrounds
 fi
 if [ "$(echo "$TMDB" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   echo "($(date)) [START] Retrieving TMDB Backgrounds.."
   python TMDB.py
-  mv -f tmdb_backgrounds/* /backgrounds/backgrounds/
+  mv -f tmdb_backgrounds/* /backgrounds/
   rm -rf tmdb_backgrounds
 fi
 if [ "$(echo "$TMDBCOLOR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   echo "($(date)) [START] Retrieving TMDB_color Backgrounds.."
   python TMDB_color.py
-  mv -f tmdb_backgrounds/* /backgrounds/backgrounds/
+  mv -f tmdb_backgrounds/* /backgrounds/
   rm -rf tmdb_backgrounds
 fi
 if [ "$(echo "$RADARRSONARR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   echo "($(date)) [START] Retrieving RADARRSONARR Backgrounds.."
   python radarrsonarr.py
-  mv -f radarrsonarr_backgrounds/* /backgrounds/backgrounds/
+  mv -f radarrsonarr_backgrounds/* /backgrounds/
   rm -rf radarrsonarr_backgrounds
 fi
 if [ "$(echo "$RADARRSONARRCOLOR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   echo "($(date)) [START] Retrieving RADARRSONARR_color Backgrounds.."
   python radarrsonarr_color.py
-  mv -f radarrsonarr_backgrounds/* /backgrounds/backgrounds/
+  mv -f radarrsonarr_backgrounds/* /backgrounds/
   rm -rf radarrsonarr_backgrounds
 fi
 if [ "$(echo "$TRAKT" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   echo "($(date)) [START] Retrieving Trakt Backgrounds.."
   python trakt.py
-  mv -f trakt_backgrounds/* /backgrounds/backgrounds/
+  mv -f trakt_backgrounds/* /backgrounds/
   rm -rf trakt_backgrounds
 fi
 echo "($(date)) [COMPLETED] Background Retrieval"
