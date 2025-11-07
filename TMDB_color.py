@@ -1,4 +1,4 @@
-tmdb_backgrounds# TMDB background generator using a colored background and vignetting effect
+# TMDB background generator using a colored background and vignetting effect
 import requests
 import numpy as np
 import re
