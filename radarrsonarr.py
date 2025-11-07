@@ -177,7 +177,7 @@ def process_image(image_url, title, overview, genre, year, rating, custom_text, 
         draw.text((overview_pos[0] + shadow_offset, overview_pos[1] + shadow_offset), wrapped_overview, font=font_overview, fill="black")
         draw.text(overview_pos, wrapped_overview, font=font_overview, fill="white")
         draw.text((info_pos[0] + shadow_offset, info_pos[1] + shadow_offset), info_text, font=font_overview, fill="black")
-        draw.text(info_pos, info_text, font=font_overview, fill=(150,150,150))
+        draw.text(info_pos, info_text, font=font_overview, fill="white")
         draw.text((custom_pos[0] + shadow_offset, custom_pos[1] + shadow_offset), custom_text, font=font_custom, fill="black")
         draw.text(custom_pos, custom_text, font=font_custom, fill="white")
 
