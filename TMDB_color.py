@@ -1,4 +1,4 @@
-# TMDB background generator using a colored background and vignetting effect
+tmdb_backgrounds# TMDB background generator using a colored background and vignetting effect
 import requests
 import numpy as np
 import re
@@ -224,7 +224,7 @@ trending_tvshows = {'results': valid_tvshows}
 
 # Create a directory to save the backgrounds and clear its contents if it exists
 
-background_dir = "tmdbbackgrounds"
+background_dir = "tmdb_backgrounds"
 if os.path.exists(background_dir):
     shutil.rmtree(background_dir)
 os.makedirs(background_dir, exist_ok=True)
