@@ -13,6 +13,7 @@ load_dotenv(verbose=True)
 
 TMDB_BEARER_TOKEN = os.getenv('TMDB_BEARER_TOKEN')
 TMDB_BASE_URL = os.getenv('TMDB_BASE_URL')
+LANGUAGE = os.getenv("TMDB_LANGUAGE", "en-US")
 
 # Set your TMDB API Read Access Token key here
 headers = {
@@ -21,7 +22,7 @@ headers = {
 }
 
 
-# Get current date in YYYYMMDD format
+# Get current date in YYYYMMDD formaat
 date_str = datetime.now().strftime("%Y%m%d")
 
 # Set the number of movies and tvshwos to get
@@ -75,26 +76,26 @@ if not os.path.exists(truetype_path):
 
 
 # Fetching genres for movies
-genres_url = f'{TMDB_BASE_URL}/genre/movie/list?language=en-US'
+genres_url = f'{TMDB_BASE_URL}/genre/movie/list?language={LANGUAGE}'
 genres_response = requests.get(genres_url, headers=headers)
 genres_data = genres_response.json()
 movie_genres = {genre['id']: genre['name'] for genre in genres_data.get('genres', [])}
 
 # Fetching genres for TV shows
-genres_url = f'{TMDB_BASE_URL}/genre/tv/list?language=en-US'
+genres_url = f'{TMDB_BASE_URL}/genre/tv/list?language={LANGUAGE}'
 genres_response = requests.get(genres_url, headers=headers)
 genres_data = genres_response.json()
 tv_genres = {genre['id']: genre['name'] for genre in genres_data.get('genres', [])}
 
 # Fetching TV show details
 def get_tv_show_details(tv_id):
-    tv_details_url = f'{TMDB_BASE_URL}/tv/{tv_id}?language=en-US'
+    tv_details_url = f'{TMDB_BASE_URL}/tv/{tv_id}?language={LANGUAGE}'
     tv_details_response = requests.get(tv_details_url, headers=headers)
     return tv_details_response.json()
 
 # Fetching movie details
 def get_movie_details(movie_id):
-    movie_details_url = f'{TMDB_BASE_URL}/movie/{movie_id}?language=en-US'
+    movie_details_url = f'{TMDB_BASE_URL}/movie/{movie_id}?language={LANGUAGE}'
     movie_details_response = requests.get(movie_details_url, headers=headers)
     return movie_details_response.json()
 
@@ -185,12 +186,12 @@ def should_exclude_tvshow(tvshow, tv_excluded_countries=tv_excluded_countries, t
     return False
 
 # Endpoint for trending shows
-trending_movies_url = f'{TMDB_BASE_URL}/trending/movie/week?language=en-US'
-trending_tvshows_url = f'{TMDB_BASE_URL}/trending/tv/week?language=en-US'
+trending_movies_url = f'{TMDB_BASE_URL}/trending/movie/week?language={LANGUAGE}'
+trending_tvshows_url = f'{TMDB_BASE_URL}/trending/tv/week?language={LANGUAGE}'
 
 # Fetch more than required to allow filtering
 initial_fetch_count = numberofmovies + 10  # Fetch 15 to get at least 5 valid ones
-trending_movies_url = f'{TMDB_BASE_URL}/trending/movie/week?language=en-US'
+trending_movies_url = f'{TMDB_BASE_URL}/trending/movie/week?language={LANGUAGE}'
 trending_movies_response = requests.get(trending_movies_url, headers=headers)
 all_movies = trending_movies_response.json().get('results', [])[:initial_fetch_count]
 
@@ -210,7 +211,7 @@ trending_movies = {'results': valid_movies}
 
 # Fetching trending TV shows
 initial_fetch_count = numberoftvshows + 10  # Fetch more than needed
-trending_tvshows_url = f'{TMDB_BASE_URL}/trending/tv/week?language=en-US'
+trending_tvshows_url = f'{TMDB_BASE_URL}/trending/tv/week?language={LANGUAGE}'
 trending_tvshows_response = requests.get(trending_tvshows_url, headers=headers)
 all_tvshows = trending_tvshows_response.json().get('results', [])[:initial_fetch_count]
 
@@ -366,17 +367,39 @@ def clean_filename(filename):
     cleaned_filename = "".join(c if c.isalnum() or c in "._-" else "_" for c in filename)
     return cleaned_filename
 
+
 # Fetch movie or TV show logo in English
-def get_logo(media_type, media_id, language="en"):
-    logo_url = f"{TMDB_BASE_URL}/{media_type}/{media_id}/images?language={language}"
-    logo_response = requests.get(logo_url, headers=headers)
-    logo_data = logo_response.json()
-    if logo_response.status_code == 200:
-        logos = logo_response.json().get("logos", [])
-        for logo in logos:
-            if logo["iso_639_1"] == "en" and logo["file_path"].endswith(".png"):
-                return logo["file_path"]
-    return None
+def get_logo(media_type, media_id, language):
+    # Prepare language code (fr-FR -> fr)
+    lang_code = language.split("-")[0]
+
+    # Build TMDB API URL
+    url = f"{TMDB_BASE_URL}/{media_type}/{media_id}/images?language={LANGUAGE}"
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        return None
+
+    logos = response.json().get("logos", [])
+
+    # If no logos at all, try English fallback
+    if not logos:
+        url_en = f"{TMDB_BASE_URL}/{media_type}/{media_id}/images?language=en"
+        response_en = requests.get(url_en, headers=headers)
+        if response_en.status_code == 200:
+            logos_en = response_en.json().get("logos", [])
+            if logos_en:
+                return sorted(logos_en, key=lambda x: x.get("vote_average", 0), reverse=True)[0]["file_path"]
+        return None
+
+    # 1. Exact match for requested language
+    lang_match = [l for l in logos if l.get("iso_639_1") == LANGUAGE]
+    if lang_match:
+        # Pick highest rated
+        return sorted(lang_match, key=lambda x: x.get("vote_average", 0), reverse=True)[0]["file_path"]
+
+    # 4. Last fallback: best-rated logo overall
+    return sorted(logos, key=lambda x: x.get("vote_average", 0), reverse=True)[0]["file_path"]
+
 
 def process_image(image_url, title, is_movie, genre, year, rating, duration=None, seasons=None):
     response = requests.get(image_url, timeout=10)
