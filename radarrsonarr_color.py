@@ -19,6 +19,7 @@ DAYS_AHEAD = int(os.getenv('DAYS_AHEAD'))
 TMDB_BASE_URL = os.getenv('TMDB_BASE_URL')
 TMDB_IMG_BASE = os.getenv('TMDB_IMG_BASE')
 RADARR_SONARR_LOGO = os.getenv('RADARR_SONARR_LOGO')
+LANGUAGE = os.getenv("TMDB_LANGUAGE", "en-US")
 
 
 try:
@@ -91,22 +92,44 @@ def wrap_text(text, width=70, max_lines=2):
     return "\n".join(textwrap.wrap(text, width=width, max_lines=max_lines, placeholder=" ..."))
 
 def resolve_tmdb_from_tvdb(tvdb_id):
-    url = f"{TMDB_BASE_URL}/find/{tvdb_id}"
+    url = f"{TMDB_BASE_URL}/find/{tvdb_id}?language={LANGUAGE}"
     params = {"external_source": "tvdb_id"}
     result = fetch_json(url, headers=TMDB_HEADERS, params=params)
     if result.get("tv_results"):
         return result["tv_results"][0]["id"]
     return None
 
-def get_logo(media_type, media_id, language="en"):
-    url = f"{TMDB_BASE_URL}/{media_type}/{media_id}/images?language={language}"
-    resp = requests.get(url, headers=TMDB_HEADERS)
-    if resp.status_code == 200:
-        logos = resp.json().get("logos", [])
-        for logo in logos:
-            if logo["iso_639_1"] == "en" and logo["file_path"].endswith(".png"):
-                return logo["file_path"]
-    return None
+def get_logo(media_type, media_id, language):
+    # Prepare language code (fr-FR -> fr)
+    lang_code = language.split("-")[0]
+
+    # Build TMDB API URL
+    url = f"{TMDB_BASE_URL}/{media_type}/{media_id}/images?language={LANGUAGE}"
+    response = requests.get(url, headers={"accept": "application/json","Authorization": f"Bearer {TMDB_BEARER_TOKEN}"})
+    if response.status_code != 200:
+        return None
+
+    logos = response.json().get("logos", [])
+
+    # If no logos at all, try English fallback
+    if not logos:
+        url_en = f"{TMDB_BASE_URL}/{media_type}/{media_id}/images?language=en"
+        response_en = requests.get(url_en, headers={"accept": "application/json","Authorization": f"Bearer {TMDB_BEARER_TOKEN}"})
+        if response_en.status_code == 200:
+            logos_en = response_en.json().get("logos", [])
+            if logos_en:
+                return sorted(logos_en, key=lambda x: x.get("vote_average", 0), reverse=True)[0]["file_path"]
+        return None
+
+    # 1. Exact match for requested language
+    lang_match = [l for l in logos if l.get("iso_639_1") == LANGUAGE]
+    if lang_match:
+        # Pick highest rated
+        return sorted(lang_match, key=lambda x: x.get("vote_average", 0), reverse=True)[0]["file_path"]
+
+    # 4. Last fallback: best-rated logo overall
+    return sorted(logos, key=lambda x: x.get("vote_average", 0), reverse=True)[0]["file_path"]
+
 
 def format_duration(minutes):
     if not minutes:
@@ -359,7 +382,7 @@ def get_sonarr_upcoming():
 # --- FETCH DETAILS FROM TMDB ---
 def get_tmdb_details(tmdb_id, is_movie):
     media_type = "movie" if is_movie else "tv"
-    data = fetch_json(f"{TMDB_BASE_URL}/{media_type}/{tmdb_id}", headers=TMDB_HEADERS)
+    data = fetch_json(f"{TMDB_BASE_URL}/{media_type}/{tmdb_id}?language={LANGUAGE}", headers=TMDB_HEADERS)
     return {
         "title": data.get("title") or data.get("name"),
         "overview": data.get("overview", ""),
