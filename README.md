@@ -40,7 +40,10 @@ The scripts retrieves the background of the latests shows (movies or tv shows), 
 ![Foundation_20250722](https://github.com/user-attachments/assets/9adcc755-879a-4b29-99dd-ce373ce141f4)
 
 
-
+**New Feature**
+You can now set the language for TMDB.py, TMDB_color.py, radarrsonarr.py and radarrsonarr_color.py
+in the .en file you can specify a language code : TMDB_LANGUAGE = "pt-BR"
+FYI, if there is no logo in the specified language it retrieves the english version logo/
 
 **New Scripts**
 I have a included a series of scripts to have a colorized version of each background
