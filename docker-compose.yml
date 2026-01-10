@@ -24,6 +24,7 @@ services:
       PLEXFRIEND: False
       PLEXFRIENDCOLOR: True
       JELLYFIN: False
+      JELLYFINCOLOR: False
       TMDB: False
       TMDBCOLOR: True
       RADARRSONARR: False

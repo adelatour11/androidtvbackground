@@ -17,7 +17,7 @@ with the support of NinthWalker
 -----------------------------------------
 "
   echo "New install detected. Copying config files.."
-  cp /app/.env.example /app/plex.py /app/plex_color.py /app/plexfriend.py /app/plexfriend_color.py /app/TMDB.py /app/TMDB_color.py /app/TMDB_color.py /app/radarrsonarr.py /app/radarrsonarr_color.py /app/trakt.py /app/jellyfin.py /config/
+  cp /app/.env.example /app/plex.py /app/plex_color.py /app/plexfriend.py /app/plexfriend_color.py /app/TMDB.py /app/TMDB_color.py /app/TMDB_color.py /app/radarrsonarr.py /app/radarrsonarr_color.py /app/trakt.py /app/jellyfin.py /app/jellyfin_color.py /config/
 
   # Create post-processing scripts if needed
   /bin/sh /create_post_scripts.sh >> /config/log.txt 2>&1

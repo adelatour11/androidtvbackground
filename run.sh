@@ -57,6 +57,12 @@ if [ "$(echo "$JELLYFIN" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   mv -f jellyfin_backgrounds/* /backgrounds/
   rm -rf jellyfin_backgrounds
 fi
+if [ "$(echo "$JELLYFINCOLOR" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
+  echo "($(date)) [START] Retrieving Jellyfin Color Backgrounds.."
+  python jellyfin_color.py
+  mv -f jellyfin_backgrounds/* /backgrounds/
+  rm -rf jellyfin_backgrounds
+fi
 if [ "$(echo "$TMDB" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
   echo "($(date)) [START] Retrieving TMDB Backgrounds.."
   python TMDB.py
