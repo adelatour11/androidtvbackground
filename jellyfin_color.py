@@ -23,7 +23,7 @@ try:
     print(f'token:{token}')
     print(f'user_id:{user_id}')
     url = f"{baseurl}/Users/{user_id}"
-    response = requests.get(url, headers={"X-Emby-Token": token})
+    response = requests.get(url, headers={"Authorization": f'MediaBrowser Token="{token}"'})
     response.raise_for_status()
     data = response.json()
     print(f"Connected to Jellyfin! User name: {data.get('Name')}")
@@ -88,7 +88,7 @@ def clean_filename(filename):
     return cleaned_filename
 
 def download_logo_in_memory(media_item):
-    logo_url = f"{baseurl}/Items/{media_item['Id']}/Images/Logo?api_key={token}"
+    logo_url = f"{baseurl}/Items/{media_item['Id']}/Images/Logo"
     
     try:
         response = requests.get(logo_url, timeout=10)
@@ -104,7 +104,7 @@ def download_logo_in_memory(media_item):
 
 def get_excluded_library_paths():
     """Fetch library IDs based on excluded library names."""
-    headers = {'X-Emby-Token': token}
+    headers = {"Authorization": f'MediaBrowser Token="{token}"'}
     response = requests.get(f"{baseurl}/Library/VirtualFolders", headers=headers)
     
     if response.status_code == 200:
@@ -120,7 +120,7 @@ def get_excluded_library_paths():
 excluded_library_paths = get_excluded_library_paths()
 
 def download_latest_media(order_by, limit, media_type):
-    headers = {'X-Emby-Token': token}
+    headers = {"Authorization": f'MediaBrowser Token="{token}"'}
     params = {
         'SortBy': order_by,
         'Limit': limit,
@@ -152,7 +152,7 @@ def download_latest_media(order_by, limit, media_type):
     # Process the sorted media
     for item in filtered_items:
         # Get the URL of the background image
-        background_url = f"{baseurl}/Items/{item['Id']}/Images/Backdrop?api_key={token}"
+        background_url = f"{baseurl}/Items/{item['Id']}/Images/Backdrop"
 
         if background_url:
             try:
@@ -210,8 +210,8 @@ def download_latest_media(order_by, limit, media_type):
                         else:
                             rating_text = ""
                         
-                        seasons_url = f"{baseurl}/Shows/{item['Id']}/Seasons?api_key={token}"
-                        response = requests.get(seasons_url, timeout=10)
+                        seasons_url = f"{baseurl}/Shows/{item['Id']}/Seasons"
+                        response = requests.get(seasons_url, headers=headers, timeout=10)
 
                         if response.status_code == 200:
                             full_response_data = response.json()
