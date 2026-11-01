@@ -18,7 +18,6 @@ user_id = os.getenv('JELLYFIN_USER_ID')
 try:
     print('Trying to connect to JellyFin')
     print(f'baseurl:{baseurl}')
-    print(f'token:{token}')
     print(f'user_id:{user_id}')
     url = f"{baseurl}/Users/{user_id}"
     response = requests.get(url, headers={"Authorization": f'MediaBrowser Token="{token}"'})
